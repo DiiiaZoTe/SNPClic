@@ -8,28 +8,10 @@ import {
 import { ExternalLink } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 
-import LEGAL_CONTENT from "./content.json";
-import type { LegalContentType, LegalType } from "../type";
+import { LEGAL_CONTENT } from "./content";
+import type { LegalContentType } from "../type";
 
-const AUTHORS = [
-  ["Directeur de publication", "Docteur Christophe Carrière"],
-  ["Recherche", "Katarina Vencel"],
-  ["Développement", "Alexander Vencel"],
-];
-
-const SITE_INFORMATION = [
-  ["Nom du site", "SNPClic"],
-  ["Lien du site", "https://snpclic.fr"],
-  ["Hébergeur", "Cloudflare", "https://cloudflare.com"],
-];
-
-const LICENSE_INFORMATION = [
-  ["Licence", "AGPL-3.0", "https://www.gnu.org/licenses/agpl-3.0.fr.html"],
-  ["Code source", "GitHub", "#"],
-];
-
-export default function Page() {
-  const legalContent = LEGAL_CONTENT as LegalType;
+export default function Page() {;
 
   return (
     <>
@@ -37,7 +19,7 @@ export default function Page() {
         <Balancer>Mentions légales</Balancer>
       </h1>
       <div className="w-full grid lg:grid-cols-2 gap-4 sm:gap-8">
-        {legalContent.map(({ title, content }) => (
+        {LEGAL_CONTENT.map(({ title, content }) => (
           <CustomCard key={title} title={title} content={content} />
         ))}
 

@@ -7,4 +7,8 @@ export const siteConfig = {
   author: "Katarina Vencel",
 }
 
+export const githubConfig = {
+  repo: "/"
+}
+
 export type SiteConfig = typeof siteConfig

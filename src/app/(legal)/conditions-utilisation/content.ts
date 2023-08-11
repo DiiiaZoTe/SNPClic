@@ -1,4 +1,6 @@
-[
+import type { ConditionsType } from "../type";
+
+export const TERMS_CONTENT = [
   {
     "title": "Acceptation des Conditions",
     "content": "En utilisant ce site web, vous acceptez de vous conformer et d'être lié par les présentes conditions d'utilisation. Si vous n'êtes pas d'accord avec l'une de ces conditions, vous n'êtes pas autorisé à utiliser ou accéder à ce site."
@@ -19,4 +21,4 @@
     "title": "Modification des Conditions",
     "content": "Nous nous réservons le droit de modifier ces conditions à tout moment. Votre utilisation continue du site constitue votre acceptation de ces modifications."
   }
-]
+] as ConditionsType;

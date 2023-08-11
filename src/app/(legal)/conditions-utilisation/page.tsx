@@ -1,18 +1,15 @@
 import { Balancer } from "react-wrap-balancer";
 
-import TERMS_CONTENT from "./content.json";
-import { ConditionsType } from "../type";
+import { TERMS_CONTENT } from "./content";
 
 export default function Page() {
-  const termContent = TERMS_CONTENT as ConditionsType;
-
   return (
     <>
       <h1 className="text-4xl font-bold tracking-tight text-center">
         <Balancer>Conditions d'Utilisation</Balancer>
       </h1>
       <div className="flex flex-col gap-8 max-w-xl">
-        {termContent.map(({ title, content }, index) => (
+        {TERMS_CONTENT.map(({ title, content }, index) => (
           <div key={title} className="flex flex-row gap-6">
             <div className="flex flex-col gap-4 items-center">
               <p className="scroll-m-20 text-2xl font-semibold tracking-tight">

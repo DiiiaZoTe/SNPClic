@@ -7,10 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         links={[
           ["Mentions Légales", "/mentions-legales"],
           ["Conditions d'Utilisation", "/conditions-utilisation"],
-          [
-            "Politique de Protection des Données Personnelles",
-            "/protection-donnees-personnelles",
-          ],
+          ["Politique de Confidentialité", "/politique-confidentialite"],
         ]}
         className="grid md:grid-cols-3 bg-card md:gap-8 font-medium flex-wrap items-center w-full border border-border rounded-[var(--radius)]"
         listItemClass="h-full"

@@ -1,18 +1,15 @@
 import Balancer from "react-wrap-balancer";
 
-import PRIVACY_CONTENT from "./content.json";
-import { ConditionsType } from "../type";
+import { PRIVACY_CONTENT } from "./content";
 
 export default function Page() {
-  const privacyContent = PRIVACY_CONTENT as ConditionsType;
-
   return (
     <>
       <h1 className="text-4xl font-bold tracking-tight text-center">
-        <Balancer>Politique de Protection des Données Personnelles</Balancer>
+        <Balancer>Politique de Confidentialité</Balancer>
       </h1>
       <div className="flex flex-col gap-8 max-w-xl">
-        {privacyContent.map(({ title, content }, index) => (
+        {PRIVACY_CONTENT.map(({ title, content }, index) => (
           <div key={title} className="flex flex-row gap-6">
             <div className="flex flex-col gap-4 items-center">
               <p className="scroll-m-20 text-2xl font-semibold tracking-tight">

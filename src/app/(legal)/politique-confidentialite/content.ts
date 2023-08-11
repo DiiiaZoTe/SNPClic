@@ -1,4 +1,8 @@
-[
+import type { ConditionsType } from "../type";
+
+const CONTACT_EMAIL = "katarina.vencel@hotmail.fr";
+
+export const PRIVACY_CONTENT = [
   {
     "title": "Aucune Collecte de Données Personnelles",
     "content": "Nous ne collectons aucune information personnelle sur les visiteurs de notre site. Vous pouvez utiliser notre site sans fournir aucune information personnelle."
@@ -21,6 +25,6 @@
   },
   {
     "title": "Contact",
-    "content": "Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter à l'adresse email: katarina.vencel@hotmail.fr"
+    "content": `Si vous avez des questions concernant cette politique de confidentialité, vous pouvez nous contacter à l'adresse email: ${CONTACT_EMAIL}`
   }
-]
+] as ConditionsType;

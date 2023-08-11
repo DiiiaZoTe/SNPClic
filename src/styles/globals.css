@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
+    --background: 0 0% 100%;
     --foreground: 0 0% 15%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 15%;
     --popover: 0 0% 98%;
     --popover-foreground: 0 0% 15%;
-    --primary: 142.1 83% 42.5%; /* Keeping your primary color */
+    --primary: 142 83% 42.5%; /* Keeping your primary color */
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 90%;
     --secondary-foreground: 0 0% 23%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 90%;
     --input: 0 0% 95%;
-    --ring: 142.1 83% 42.5%; /* Keeping your primary color for ring */
+    --ring: 142 83% 42.5%; /* Keeping your primary color for ring */
     --radius: 0.3rem;
   }
 
@@ -33,7 +33,7 @@
     --card-foreground: 0 0% 75%;
     --popover: 0 0% 8%; /* Even darker popover background */
     --popover-foreground: 0 0% 75%;
-    --primary: 142.1 70.6% 45.3%; /* Keeping your primary color for dark mode */
+    --primary: 142 70.6% 45.3%; /* Keeping your primary color for dark mode */
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 20%; /* Even darker secondary background */
     --secondary-foreground: 0 0% 65%;
@@ -45,7 +45,7 @@
     --destructive-foreground: 0 0% 95%;
     --border: 0 0% 20%; /* Even darker border */
     --input: 0 0% 15%; /* Even darker input background */
-    --ring: 142.1 70.6% 45.3%; /* Keeping your primary color for ring in dark mode */
+    --ring: 142 70.6% 45.3%; /* Keeping your primary color for ring in dark mode */
   }
 }
 
@@ -72,20 +72,20 @@
   ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     /* background: theme("colors.neutral.300"); */
-    background: hsl(142.1 0% 80%);
+    background: hsl(0 0% 80%);
   }
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     /* background: theme("colors.neutral.400"); */
-    background: hsl(142.1 0% 60%);
+    background: hsl(0 0% 60%);
   }
 
   /* ----------- Highlight content ----------- */
   ::selection {
-    background: hsl(142.1 76.2% 91%);
+    background: hsl(142 76% 91%);
   }
   html.dark ::selection {
-    background: hsl(142.1 76.2% 14%);
+    background: hsl(142 76% 14%);
   }
 }
 

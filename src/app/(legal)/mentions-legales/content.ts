@@ -1,4 +1,7 @@
-[
+import { githubConfig } from "@/config/site";
+import type { LegalType } from "../type";
+
+export const LEGAL_CONTENT = [
   {
     "title": "Auteurs",
     "content": [
@@ -45,8 +48,8 @@
       {
         "subtitle": "Code source",
         "subcontent": "GitHub",
-        "url": "#"
+        "url": githubConfig.repo
       }
     ]
   }
-]
+] as LegalType;
