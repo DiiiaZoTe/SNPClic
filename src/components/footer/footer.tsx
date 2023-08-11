@@ -23,16 +23,15 @@ export const Footer = () => {
             </div>
           </div>
           <div className="grid gap-8 sm:ml-auto sm:grid-flow-col-dense text-center sm:text-left">
-            {/* <div className="flex flex-col sm:ml-auto gap-8 sm:flex-row text-center sm:text-left"> */}
             <div className="flex flex-col">
-              <p className="font-semibold">Resources</p>
+              <p className="font-semibold">Ressources</p>
               <Link href="/faq">FAQ</Link>
               <Link href="/contact">Contact</Link>
             </div>
             <div className="flex flex-col">
               <p className="font-semibold">Légal</p>
               <Link href="/mentions-legales">Mentions légales</Link>
-              <Link href="/condition-utilisation">
+              <Link href="/conditions-utilisation">
                 Conditions d'Utilisation
               </Link>
               <Link href="/politique-confidentialite">

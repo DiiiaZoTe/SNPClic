@@ -15,7 +15,8 @@ export const LEGAL_CONTENT = [
       },
       {
         "subtitle": "Développement",
-        "subcontent": "Alexander Vencel"
+        "subcontent": "Alexander Vencel (GitHub)",
+        "url": "https://github.com/DiiiaZoTe"
       }
     ]
   },
