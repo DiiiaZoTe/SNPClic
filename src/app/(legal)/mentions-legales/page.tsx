@@ -8,6 +8,9 @@ import {
 import { ExternalLink } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 
+import LEGAL_CONTENT from "./content.json";
+import type { LegalContentType, LegalType } from "../type";
+
 const AUTHORS = [
   ["Directeur de publication", "Docteur Christophe Carrière"],
   ["Recherche", "Katarina Vencel"],
@@ -26,18 +29,18 @@ const LICENSE_INFORMATION = [
 ];
 
 export default function Page() {
+  const legalContent = LEGAL_CONTENT as LegalType;
+
   return (
     <>
       <h1 className="text-4xl font-bold tracking-tight text-center">
         <Balancer>Mentions légales</Balancer>
       </h1>
       <div className="w-full grid lg:grid-cols-2 gap-4 sm:gap-8">
-        <CustomCard title="Auteurs" content={AUTHORS} />
-        <CustomCard title="Information du site" content={SITE_INFORMATION} />
-        <CustomCard
-          title="Information de licence"
-          content={LICENSE_INFORMATION}
-        />
+        {legalContent.map(({ title, content }) => (
+          <CustomCard key={title} title={title} content={content} />
+        ))}
+
         <CustomCard title="Licence">
           <div className="bg-muted px-4 py-3 font-mono text-sm">
             <p>
@@ -75,7 +78,7 @@ const CustomCard = ({
 }: {
   title: string;
   description?: string;
-  content?: string[][];
+  content?: LegalContentType;
   children?: React.ReactNode;
 }) => {
   return (
@@ -85,21 +88,21 @@ const CustomCard = ({
         {description ? <CardDescription>{description}</CardDescription> : null}
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        {content?.map(([title, name, URL]) => (
-          <div key={title} className="flex flex-col gap-2">
-            <p className="font-semibold">{title}</p>
-            {URL ? (
+        {content?.map(({ subtitle, subcontent, url }) => (
+          <div key={subtitle} className="flex flex-col gap-2">
+            <p className="font-semibold">{subtitle}</p>
+            {url ? (
               <div className="flex flex-wrap gap-4 items-center">
                 <a
-                  href={URL}
+                  href={url}
                   className="text-primary underline underline-offset-4"
                 >
-                  {name}
+                  {subcontent}
                 </a>
                 <ExternalLink className="text-foreground/60 w-4 h-4" />
               </div>
             ) : (
-              <p>{name}</p>
+              <p>{subcontent}</p>
             )}
           </div>
         ))}
