@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
@@ -68,7 +69,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="flex flex-col flex-1">{children}</main>
+          <main className="container flex flex-col flex-1 py-10">
+            {children}
+          </main>
+          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>

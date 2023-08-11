@@ -30,21 +30,21 @@ export function ModeToggle() {
           className="cursor-pointer"
         >
           Jour
-          <Sun className="ml-auto w-4 text-muted-foreground" />
+          <Sun className="ml-auto w-4" />
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme("dark")}
           className="cursor-pointer"
         >
           Nuit
-          <Moon className="ml-auto w-4 text-muted-foreground" />
+          <Moon className="ml-auto w-4" />
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme("system")}
           className="cursor-pointer"
         >
           Système
-          <Laptop className="ml-auto w-4 text-muted-foreground" />
+          <Laptop className="ml-auto w-4" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

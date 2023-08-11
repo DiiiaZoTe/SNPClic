@@ -2,11 +2,7 @@ import { ModeToggle } from "./mode-toggle";
 
 import { NavLinks } from "@/components/navlinks/nav-links";
 import { Separator } from "@/components/ui/separator";
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-} from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -28,7 +24,7 @@ export const Navbar = () => {
             links={LINKS}
             className="flex gap-8 font-medium"
             activeLinkClass="text-primary cursor-default"
-            defaultLinkClass="text-foreground/60 hover:text-foreground/80"
+            defaultLinkClass="text-foreground/70 hover:text-foreground"
           />
           <ModeToggle />
         </div>
@@ -55,7 +51,7 @@ const MobileNavbar = () => {
           links={LINKS}
           className="flex flex-col gap-8 font-medium"
           activeLinkClass="text-primary cursor-default"
-          defaultLinkClass="text-foreground/60 hover:text-foreground/80"
+          defaultLinkClass="text-foreground/70 hover:text-foreground"
         />
         <ModeToggle />
       </SheetContent>

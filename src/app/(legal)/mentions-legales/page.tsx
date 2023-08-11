@@ -28,7 +28,9 @@ const LICENSE_INFORMATION = [
 export default function Page() {
   return (
     <>
-      <h1 className="text-4xl font-bold tracking-tight"><Balancer>Mentions légales</Balancer></h1>
+      <h1 className="text-4xl font-bold tracking-tight text-center">
+        <Balancer>Mentions légales</Balancer>
+      </h1>
       <div className="w-full grid lg:grid-cols-2 gap-4 sm:gap-8">
         <CustomCard title="Auteurs" content={AUTHORS} />
         <CustomCard title="Information du site" content={SITE_INFORMATION} />
@@ -37,7 +39,7 @@ export default function Page() {
           content={LICENSE_INFORMATION}
         />
         <CustomCard title="Licence">
-          <div className="rounded bg-muted px-4 py-3 font-mono text-sm">
+          <div className="bg-muted px-4 py-3 font-mono text-sm">
             <p>
               This website and its associated source code are licensed under the
               GNU Affero General Public License version 3 (AGPL-3.0). This means
@@ -77,14 +79,14 @@ const CustomCard = ({
   children?: React.ReactNode;
 }) => {
   return (
-    <Card className=" bg-background text-foreground">
+    <Card>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description ? <CardDescription>{description}</CardDescription> : null}
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {content?.map(([title, name, URL]) => (
-          <div className="flex flex-col gap-2">
+          <div key={title} className="flex flex-col gap-2">
             <p className="font-semibold">{title}</p>
             {URL ? (
               <div className="flex flex-wrap gap-4 items-center">

@@ -4,48 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 0 0% 99%;
+    --foreground: 0 0% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 142.1 83% 42.5%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 142.1 83% 42.5%;
+    --card-foreground: 0 0% 15%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 15%;
+    --primary: 142.1 83% 42.5%; /* Keeping your primary color */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 0 0% 23%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 30%;
+    --destructive: 0 100% 50%; /* Red for destructive */
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 95%;
+    --ring: 142.1 83% 42.5%; /* Keeping your primary color for ring */
     --radius: 0.3rem;
   }
 
   .dark {
-    --background: 20 14.3% 4.1%;
-    --foreground: 0 0% 95%;
-    --card: 24 9.8% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 142.1 70.6% 45.3%;
-    --primary-foreground: 144.9 80.4% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 12 6.5% 15.1%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142.4 71.8% 29.2%;
+    --background: 0 0% 5%; /* Even darker background */
+    --foreground: 0 0% 85%;
+    --card: 0 0% 7%; /* Even darker card background */
+    --card-foreground: 0 0% 75%;
+    --popover: 0 0% 8%; /* Even darker popover background */
+    --popover-foreground: 0 0% 75%;
+    --primary: 142.1 70.6% 45.3%; /* Keeping your primary color for dark mode */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 20%; /* Even darker secondary background */
+    --secondary-foreground: 0 0% 65%;
+    --muted: 0 0% 15%; /* Even darker muted background */
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 20%; /* Even darker accent background */
+    --accent-foreground: 0 0% 70%;
+    --destructive: 0 100% 35%; /* Even darker red for destructive in dark mode */
+    --destructive-foreground: 0 0% 95%;
+    --border: 0 0% 20%; /* Even darker border */
+    --input: 0 0% 15%; /* Even darker input background */
+    --ring: 142.1 70.6% 45.3%; /* Keeping your primary color for ring in dark mode */
   }
 }
 
@@ -87,7 +87,6 @@
   html.dark ::selection {
     background: hsl(142.1 76.2% 14%);
   }
-
 }
 
 @media (max-width: 640px) {

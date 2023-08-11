@@ -32,7 +32,7 @@ const PRIVACY_CONTENT = [
 export default function Page() {
   return (
     <>
-      <h1 className="text-4xl font-bold tracking-tight">
+      <h1 className="text-4xl font-bold tracking-tight text-center">
         <Balancer>Politique de Protection des Données Personnelles</Balancer>
       </h1>
       <div className="flex flex-col gap-8 max-w-xl">

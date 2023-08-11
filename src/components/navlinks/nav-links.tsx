@@ -39,6 +39,7 @@ export function NavLinks(props: NavLinkProps) {
                 ? activeLinkClass
                 : defaultLinkClass
             }
+            prefetch={true}
           >
             <Balancer>{name}</Balancer>
           </Link>
