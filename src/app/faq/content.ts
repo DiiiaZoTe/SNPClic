@@ -1,4 +1,6 @@
-[
+import { ContentType } from "./content-type";
+
+export const FAQ_CONTENT = [
   {
     "title": "Comment utiliser notre plateforme ?",
     "questions": [
@@ -63,4 +65,4 @@
       }
     ]
   }
-]
+] as ContentType;
