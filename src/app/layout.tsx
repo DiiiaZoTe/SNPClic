@@ -8,6 +8,8 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Toaster } from "@/components/ui/toaster";
 
+import BreakpointVisualizer from "@/lib/breakpoint-visualizer";
+
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
@@ -68,6 +70,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <BreakpointVisualizer
+            breakpoints={{
+              phone: 0,
+              sm: 640,
+              md: 768,
+              lg: 1024,
+              xl: 1200,
+              "2xl": 1400,
+            }}
+          />
           <Navbar />
           <main className="container flex flex-col flex-1 py-10">
             {children}
