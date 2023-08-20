@@ -1,6 +1,6 @@
 export const siteConfig = {
-  name: "Name here",
-  url: "url here",
+  name: "SNPClic",
+  url: "https://snpclic.fr",
   ogImage: "og link here",
   description:
     "Description here",

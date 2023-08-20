@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <h1 className="text-4xl font-bold tracking-tight text-center">
-        <Balancer>Conditions d'Utilisation</Balancer>
+        <Balancer>Conditions d&apos;Utilisation</Balancer>
       </h1>
       <div className="flex flex-col gap-8 max-w-xl">
         {TERMS_CONTENT.map(({ title, content }, index) => (

@@ -22,12 +22,15 @@ export default function Page() {
               <Balancer>{title}</Balancer>
             </h2>
             <Accordion type="single" collapsible>
-              {questions.map(({ question, answer }) => (
+              {questions.map(({ question, answer }, indexQuestion) => (
                 <AccordionItem value={question} key={question}>
                   <AccordionTrigger>{question}</AccordionTrigger>
                   <AccordionContent>
-                    {answer.split("\n").map((line) => (
-                      <p className="leading-7 text-accent-foreground">
+                    {answer.split("\n").map((line, index) => (
+                      <p
+                        key={`${indexQuestion}-${index}`}
+                        className="leading-7 text-accent-foreground"
+                      >
                         <Balancer>{line}</Balancer>
                       </p>
                     ))}
