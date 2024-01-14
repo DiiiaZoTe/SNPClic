@@ -1,4 +1,4 @@
-import { Answer, CompositeCondition, FormAnswers, LogicalOperator, QuestionCondition, QuestionConditionValue } from "../types";
+import { Answer, CompositeCondition, ConditionOperator, FormAnswers, LogicalOperator, QuestionCondition, QuestionConditionValue, SelectedNumberOperator } from "../types";
 
 
 /** Function to create a basic question condition */
@@ -36,22 +36,21 @@ export const evaluateCondition = (condition: QuestionCondition | CompositeCondit
     // since condition.value is optional for certain operators, we need to make sure it's not undefined for type checking
     if (condition.value === undefined) condition.value = [];
     switch (condition.operator) {
-      case "EQUALS":
-        return equalsEvaluation(answer, condition.value);
-      case "NOT_EQUALS":
-        return !equalsEvaluation(answer, condition.value);
-      case "IS_ALL_IN":
-        return isAllEvaluation(answer, condition.value);
-      case "NOT_IS_ALL_IN":
-        return !isAllEvaluation(answer, condition.value);
-      case "IS_ANY_IN":
-        return isAnyEvaluation(answer, condition.value);
-      case "NOT_IS_ANY_IN":
-        return !isAnyEvaluation(answer, condition.value)
-      case "IS_EMPTY":
-        return isEmptyEvaluation(answer);
-      case "NOT_IS_EMPTY":
-        return !isEmptyEvaluation(answer);
+      case "EQUALS": return equalsEvaluation(answer, condition.value);
+      case "NOT_EQUALS": return !equalsEvaluation(answer, condition.value);
+      case "IS_ALL_IN": return isAllEvaluation(answer, condition.value);
+      case "NOT_IS_ALL_IN": return !isAllEvaluation(answer, condition.value);
+      case "IS_ANY_IN": return isAnyEvaluation(answer, condition.value);
+      case "NOT_IS_ANY_IN": return !isAnyEvaluation(answer, condition.value)
+      case "IS_EMPTY": return isEmptyEvaluation(answer);
+      case "NOT_IS_EMPTY": return !isEmptyEvaluation(answer);
+      case "SELECTED_EQUALS":
+      case "SELECTED_NOT_EQUALS":
+      case "SELECTED_GREATER_THAN":
+      case "SELECTED_GREATER_THAN_OR_EQUALS":
+      case "SELECTED_LESS_THAN":
+      case "SELECTED_LESS_THAN_OR_EQUALS":
+        return selectedNumberEvaluation(answer, condition.value, condition.operator);
       default: // something else... we don't know what to do with it
         return false;
     }
@@ -107,8 +106,26 @@ const isEmptyEvaluation = (answer: Answer): boolean => {
   return answer === undefined || answer === null || answer === "";
 }
 
+const selectedNumberEvaluation = (answer: Answer, conditionValue: QuestionConditionValue, operator: SelectedNumberOperator) => {
+  if (Array.isArray(conditionValue)) return false; // condition value must be a single number
+  if (!Array.isArray(answer)) return false; // answer must be an array
+  // go through answer and remove all undefined, null, and empty strings
+  answer = answer.filter(val => val !== undefined && val !== null && val !== "");
+  const answerNumber = answer.length;
+  switch (operator) {
+    case "SELECTED_EQUALS": return answerNumber === conditionValue;
+    case "SELECTED_NOT_EQUALS": return answerNumber !== conditionValue;
+    case "SELECTED_GREATER_THAN": return answerNumber > conditionValue;
+    case "SELECTED_GREATER_THAN_OR_EQUALS": return answerNumber >= conditionValue;
+    case "SELECTED_LESS_THAN": return answerNumber < conditionValue;
+    case "SELECTED_LESS_THAN_OR_EQUALS": return answerNumber <= conditionValue;
+    default: return false;
+  }
+}
+
 /** Helper function to evaluate non array values */
 const helperIsNonArrayValue = (answer: Answer, conditionValue: QuestionConditionValue, includes = true): boolean => {
+  if (!Array.isArray(conditionValue)) return false;
   // conditionValue is empty then only an empty answer is valid
   if (conditionValue.length === 0)
     // @ts-ignore typescript doesn't like the every function

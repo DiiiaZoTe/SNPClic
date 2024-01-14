@@ -129,13 +129,26 @@ export type CompositeCondition = {
   conditions: Array<QuestionCondition | CompositeCondition>;
 };
 
+export type SelectedNumberOperator =
+  "SELECTED_EQUALS" |
+  "SELECTED_NOT_EQUALS" |
+  "SELECTED_LESS_THAN" |
+  "SELECTED_LESS_THAN_OR_EQUALS" |
+  "SELECTED_GREATER_THAN" |
+  "SELECTED_GREATER_THAN_OR_EQUALS";
+
 /** Defines the operators used in question conditions. */
-export type ConditionOperator = "EQUALS" | "NOT_EQUALS" | "IS_ALL_IN" | "IS_ANY_IN" | "NOT_IS_ALL_IN" | "NOT_IS_ANY_IN" | "IS_EMPTY" | "NOT_IS_EMPTY";
+export type ConditionOperator =
+  "EQUALS" | "NOT_EQUALS" |
+  "IS_ALL_IN" | "NOT_IS_ALL_IN" |
+  "IS_ANY_IN" | "NOT_IS_ANY_IN" |
+  "IS_EMPTY" | "NOT_IS_EMPTY" |
+  SelectedNumberOperator;
 
 /** Defines logical operators for combining conditions. */
 export type LogicalOperator = "AND" | "OR";
 
-export type QuestionConditionValue = Boolean[] | string[];
+export type QuestionConditionValue = Boolean[] | string[] | number;
 
 /** Represents a condition based on a question's answer. */
 export type QuestionCondition = {

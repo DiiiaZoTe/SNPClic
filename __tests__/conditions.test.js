@@ -565,6 +565,167 @@ describe('Form Conditions Evaluation Tests', () => {
     });
   });
 
+  // Tests for evaluateCondition IS_EMPTY
+  describe('evaluateCondition Tests IS_EMPTY', () => {
+    const mockAnswers = {
+      'booleanAnswer': true,
+      'stringArray': ['option1', 'option2'],
+      'stringArrayEmpty': [''],
+      'string': 'singleOption',
+      'stringEmpty': '',
+    };
+
+    // Boolean not applicable
+
+    // String[]
+    it('evaluates IS_EMPTY condition correctly be true for string[]', () => {
+      const condition1 = {
+        questionKey: 'stringArrayEmpty',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
+    });
+    it('evaluates IS_EMPTY condition correctly be false for string[]', () => {
+      const condition1 = {
+        questionKey: 'stringArray',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
+    });
+
+    // String
+    it('evaluates IS_EMPTY condition correctly be true for string', () => {
+      const condition1 = {
+        questionKey: 'stringEmpty',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
+    });
+
+    it('evaluates IS_EMPTY condition correctly be false for string', () => {
+      const condition1 = {
+        questionKey: 'string',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
+    });
+  });
+
+  // Tests for evaluateCondition SELECTED_*
+  describe('evaluateCondition Tests SELECTED_*', () => {
+    const mockAnswers = {
+      'booleanAnswer': true,
+      'stringArray': ['option1', 'option2'],
+      'stringArrayEmpty': [''],
+      'string': 'singleOption',
+      'stringEmpty': '',
+    };
+
+    // Boolean not applicable
+
+    // String[]
+    it('evaluates SELECTED_* condition correctly be true for string[]', () => {
+      const condition1 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_EQUALS',
+        value: 2
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
+      const condition2 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_NOT_EQUALS',
+        value: 3
+      };
+      expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
+      const condition3 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_LESS_THAN',
+        value: 3
+      };
+      expect(evaluateCondition(condition3, mockAnswers)).toBe(true);
+      const condition4_1 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_LESS_THAN_OR_EQUALS',
+        value: 3
+      };
+      expect(evaluateCondition(condition4_1, mockAnswers)).toBe(true);
+      const condition4_2 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_LESS_THAN_OR_EQUALS',
+        value: 2
+      };
+      expect(evaluateCondition(condition4_2, mockAnswers)).toBe(true);
+      const condition5 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_GREATER_THAN',
+        value: 1
+      };
+      expect(evaluateCondition(condition5, mockAnswers)).toBe(true);
+      const condition6_1 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_GREATER_THAN_OR_EQUALS',
+        value: 1
+      };
+      expect(evaluateCondition(condition6_1, mockAnswers)).toBe(true);
+      const condition6_2 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_GREATER_THAN_OR_EQUALS',
+        value: 2
+      };
+      expect(evaluateCondition(condition6_2, mockAnswers)).toBe(true);
+    });
+    it('evaluates SELECTED_* condition correctly be false for string[]', () => {
+      const condition1 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_EQUALS',
+        value: 3
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
+      const condition2 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_NOT_EQUALS',
+        value: 2
+      };
+      expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
+      const condition3 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_LESS_THAN',
+        value: 2
+      };
+      expect(evaluateCondition(condition3, mockAnswers)).toBe(false);
+      const condition4 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_LESS_THAN_OR_EQUALS',
+        value: 1
+      };
+      expect(evaluateCondition(condition4, mockAnswers)).toBe(false);
+      const condition5 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_GREATER_THAN',
+        value: 2
+      };
+      expect(evaluateCondition(condition5, mockAnswers)).toBe(false);
+      const condition6 = {
+        questionKey: 'stringArray',
+        operator: 'SELECTED_GREATER_THAN_OR_EQUALS',
+        value: 3
+      };
+      expect(evaluateCondition(condition6, mockAnswers)).toBe(false);
+    });
+
+    // String
+    it('evaluates SELECTED_* condition correctly be false for string', () => {
+      const condition1 = {
+        questionKey: 'string',
+        operator: 'SELECTED_EQUALS',
+        value: 1,
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
+    });
+  });
+
+
+
   // Tests for Composite AND
   describe('evaluateCondition Composite AND', () => {
     const mockAnswers = {
