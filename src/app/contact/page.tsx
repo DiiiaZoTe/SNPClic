@@ -41,7 +41,7 @@ const CustomCard = ({
   content: SubContentType;
 }) => {
   return (
-    <Card>
+    <Card className="bg-background rounded-xl border border-muted shadow-none">
       <CardHeader>
         <CardTitle>{name}</CardTitle>
         <CardDescription>{role}</CardDescription>

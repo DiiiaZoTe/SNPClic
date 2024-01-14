@@ -29,12 +29,11 @@ export const LEGAL_CONTENT = [
       },
       {
         "subtitle": "Lien du site",
-        "subcontent": "https://snpclic.fr"
+        "subcontent": "https://snpclic.fr - A acheter"
       },
       {
         "subtitle": "Hébergeur",
-        "subcontent": "Cloudflare",
-        "url": "https://cloudflare.com"
+        "subcontent": "Non determiné",
       }
     ]
   },

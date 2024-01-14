@@ -64,7 +64,7 @@ const CustomCard = ({
   children?: React.ReactNode;
 }) => {
   return (
-    <Card>
+    <Card className="rounded-xl bg-background border border-muted shadow-none">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description ? <CardDescription>{description}</CardDescription> : null}

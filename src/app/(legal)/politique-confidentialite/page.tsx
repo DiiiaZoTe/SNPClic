@@ -15,7 +15,7 @@ export default function Page() {
               <p className="scroll-m-20 text-2xl font-semibold tracking-tight">
                 {index + 1}.
               </p>
-              <div className="flex-1 w-[1px] bg-border" />
+              <div className="flex-1 w-[1px] border-l border-l-border" />
             </div>
 
             <div className="flex flex-col gap-4">

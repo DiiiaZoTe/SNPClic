@@ -9,10 +9,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ["Conditions d'Utilisation", "/conditions-utilisation"],
           ["Politique de Confidentialité", "/politique-confidentialite"],
         ]}
-        className="grid md:grid-cols-3 bg-card md:gap-8 font-medium flex-wrap items-center w-full border border-border rounded-[var(--radius)]"
-        listItemClass="h-full"
-        defaultLinkClass="text-foreground/70 hover:text-foreground h-full py-3 px-4 flex items-center md:justify-center"
-        activeLinkClass="text-primary py-3 px-4 border-b-2 h-full border-primary cursor-default flex items-center md:justify-center"
+        className="grid md:grid-cols-3 bg-card md:gap-8 font-medium flex-wrap items-center w-full border border-muted rounded-xl"
+        listItemClass="h-full w-full flex justify-center"
+        defaultLinkClass="text-foreground/70 hover:text-foreground h-full py-3 px-4 flex items-center justify-center"
+        activeLinkClass="text-primary py-3 px-4 border-b-2 h-full text-center border-primary cursor-default flex items-center justify-center"
       />
       {children}
     </div>

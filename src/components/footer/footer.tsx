@@ -2,7 +2,7 @@ import Logo from "@/components/logo";
 import Link from "next/link";
 
 import { githubConfig } from "@/config/site";
-import { link } from "fs";
+import { ThemeToggle } from "../theme-toggle";
 
 const LINKS = [
   {
@@ -40,7 +40,8 @@ const LINKS = [
 export const Footer = () => {
   return (
     <footer className="container">
-      <div className="py-10 border-t border-t-border flex flex-col gap-8">
+      <div className="py-10 flex flex-col gap-8">
+        {/* <Separator /> */}
         <div className="flex flex-col sm:flex-row gap-8">
           <div className="flex flex-col gap-2 items-center sm:items-start">
             <div className="flex gap-4">
@@ -49,11 +50,12 @@ export const Footer = () => {
                 SNP<span className="font-normal"> · Clic</span>
               </p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 items-center">
               <p className="text-sm">Open Source</p>
               <Link href={githubConfig.repo}>
                 <GitHubLogo className="w-4 h-4" />
               </Link>
+              <ThemeToggle />
             </div>
           </div>
           <div className="grid gap-8 sm:ml-auto sm:grid-flow-col-dense text-center sm:text-left">

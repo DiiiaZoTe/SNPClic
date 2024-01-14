@@ -10,20 +10,20 @@
     --card-foreground: 0 0% 15%;
     --popover: 0 0% 98%;
     --popover-foreground: 0 0% 15%;
-    --primary: 142 83% 42.5%; /* Keeping your primary color */
+    --primary: 142 83% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 90%;
+    --secondary: 0 0% 85%;
     --secondary-foreground: 0 0% 23%;
     --muted: 0 0% 95%;
     --muted-foreground: 0 0% 40%;
-    --accent: 0 0% 90%;
-    --accent-foreground: 0 0% 30%;
-    --destructive: 0 100% 50%; /* Red for destructive */
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 20%;
+    --destructive: 0 100% 45%; /* Red for destructive */
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 90%;
-    --input: 0 0% 95%;
-    --ring: 142 83% 42.5%; /* Keeping your primary color for ring */
-    --radius: 0.3rem;
+    --input: 0 0% 94%;
+    --ring: 142 83% 36%;
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -33,19 +33,19 @@
     --card-foreground: 0 0% 75%;
     --popover: 0 0% 8%; /* Even darker popover background */
     --popover-foreground: 0 0% 75%;
-    --primary: 142 70.6% 45.3%; /* Keeping your primary color for dark mode */
+    --primary: 142 70.6% 36%; /* Keeping your primary color for dark mode */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 20%; /* Even darker secondary background */
-    --secondary-foreground: 0 0% 65%;
+    --secondary: 0 0% 30%; /* Even darker secondary background */
+    --secondary-foreground: 0 0% 80%;
     --muted: 0 0% 15%; /* Even darker muted background */
     --muted-foreground: 0 0% 60%;
     --accent: 0 0% 20%; /* Even darker accent background */
     --accent-foreground: 0 0% 70%;
-    --destructive: 0 100% 35%; /* Even darker red for destructive in dark mode */
+    --destructive: 0 100% 40%; /* Even darker red for destructive in dark mode */
     --destructive-foreground: 0 0% 95%;
     --border: 0 0% 20%; /* Even darker border */
     --input: 0 0% 15%; /* Even darker input background */
-    --ring: 142 70.6% 45.3%; /* Keeping your primary color for ring in dark mode */
+    --ring: 142 70.6% 40%;
   }
 }
 
@@ -55,6 +55,11 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    scroll-margin: 2rem;
   }
 
   /* ----------- Scrollbar ----------- */

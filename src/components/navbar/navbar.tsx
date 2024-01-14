@@ -1,11 +1,9 @@
-import { ModeToggle } from "./mode-toggle";
-
 import NavLinks from "@/components/navlinks";
 import Logo from "@/components/logo";
-import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "../theme-toggle";
 
 const LINKS = [
   ["Acceuil", "/"],
@@ -16,7 +14,7 @@ const LINKS = [
 export const Navbar = () => {
   return (
     <header className="container">
-      <div className="flex py-4 items-center gap-8">
+      <div className="flex py-6 items-center gap-8">
         <div className="flex items-center gap-4">
           <h1 className="text-primary text-4xl font-bold tracking-tight">
             SNP<span className=" text-foreground"> · Clic</span>
@@ -28,15 +26,13 @@ export const Navbar = () => {
             links={LINKS}
             className="flex gap-8 font-medium"
             activeLinkClass="text-primary cursor-default"
-            defaultLinkClass="text-foreground/70 hover:text-foreground"
+            defaultLinkClass="text-foreground/70 hover:text-foreground hover:underline underline-offset-2"
           />
-          <ModeToggle />
         </div>
         <div className="sm:hidden ml-auto flex items-center">
           <MobileNavbar />
         </div>
       </div>
-      <Separator />
     </header>
   );
 };
@@ -57,10 +53,10 @@ const MobileNavbar = () => {
             links={LINKS}
             className="flex flex-col gap-8 font-medium"
             activeLinkClass="text-primary cursor-default"
-            defaultLinkClass="text-foreground/70 hover:text-foreground"
+            defaultLinkClass="text-foreground/70 hover:text-foreground hover:underline underline-offset-2"
           />
         </div>
-        <ModeToggle />
+        <ThemeToggle />
       </SheetContent>
     </Sheet>
   );

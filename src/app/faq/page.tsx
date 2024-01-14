@@ -18,7 +18,7 @@ export default function Page() {
       <div className="flex flex-col gap-10 max-w-xl">
         {FAQ_CONTENT.map(({ title, questions }) => (
           <div key={title} className="flex flex-col gap-2">
-            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight text-primary">
+            <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">
               <Balancer>{title}</Balancer>
             </h2>
             <Accordion type="single" collapsible>

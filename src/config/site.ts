@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "SNPClic",
-  url: "https://snpclic.fr",
+  url: process.env.NODE_ENV == 'production' ? "https://snpclic.fr" : "http://localhost:3000",
   ogImage: "og link here",
   description:
     "Description here",
