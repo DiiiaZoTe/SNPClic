@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  keywords: ["Add list of keywords here"],
+  keywords: ["Soin non programmé", "SNP"],
   authors: [
     {
       name: siteConfig.author,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     images: [
       {
-        url: siteConfig.ogImage,
+        url: siteConfig.url + siteConfig.ogImage,
         width: 1200,
         height: 630,
         alt: siteConfig.name,
