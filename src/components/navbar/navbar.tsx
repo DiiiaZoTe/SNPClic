@@ -1,14 +1,18 @@
+import Link from "next/link";
 import NavLinks from "@/components/navlinks";
 import Logo from "@/components/logo";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "../theme-toggle";
+import { githubConfig } from "@/config/site";
+import { GitHubLogo } from "../other/GithubLogo";
 
 const LINKS = [
   ["Acceuil", "/"],
   ["FAQ", "/faq"],
   ["Contact", "/contact"],
+  ["Questionnaire", "/questionnaire"],
 ];
 
 export const Navbar = () => {
@@ -56,7 +60,13 @@ const MobileNavbar = () => {
             defaultLinkClass="text-foreground/70 hover:text-foreground hover:underline underline-offset-2"
           />
         </div>
-        <ThemeToggle />
+        <div className="flex gap-4 items-center">
+          <p className="text-sm">Open Source</p>
+          <Link href={githubConfig.repo}>
+            <GitHubLogo className="w-4 h-4" />
+          </Link>
+          <ThemeToggle />
+        </div>
       </SheetContent>
     </Sheet>
   );
