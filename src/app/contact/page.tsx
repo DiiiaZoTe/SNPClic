@@ -11,6 +11,11 @@ import { CONTACT_CONTENT } from "./content";
 import { SubContentType } from "./content-type";
 import Link from "next/link";
 
+export const metadata = {
+  title: "Contact",
+  description: "Page de contact SNPClic",
+};
+
 export default function Page() {
   return (
     <div className="flex flex-col gap-10 w-full items-center">

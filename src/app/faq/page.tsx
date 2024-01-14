@@ -9,6 +9,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+export const metadata = {
+  title: "FAQ",
+  description: "Foire aux questions SNPClic",
+};
+
 export default function Page() {
   return (
     <div className="flex flex-col gap-10 w-full items-center">

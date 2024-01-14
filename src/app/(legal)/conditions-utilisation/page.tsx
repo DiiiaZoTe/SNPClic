@@ -2,6 +2,11 @@ import { Balancer } from "react-wrap-balancer";
 
 import { TERMS_CONTENT } from "./content";
 
+export const metadata = {
+  title: "Conditions d'Utilisation",
+  description: "Conditions d'Utilisation SNPClic",
+};
+
 export default function Page() {
   return (
     <>

@@ -2,6 +2,11 @@ import Balancer from "react-wrap-balancer";
 
 import { PRIVACY_CONTENT } from "./content";
 
+export const metadata = {
+  title: "Politique de Confidentialité",
+  description: "Politique de Confidentialité SNPClic",
+};
+
 export default function Page() {
   return (
     <>

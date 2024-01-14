@@ -11,6 +11,11 @@ import Balancer from "react-wrap-balancer";
 import { LEGAL_CONTENT } from "./content";
 import type { LegalContentType } from "../type";
 
+export const metadata = {
+  title: "Mentions légales",
+  description: "Mentions légales SNPClic",
+};
+
 export default function Page() {;
 
   return (

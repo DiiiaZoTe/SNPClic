@@ -2,6 +2,11 @@ import { FORM_DATA } from "./content";
 import { MultiStepForm } from "./_components/multiStepForm";
 import { Provider } from "jotai";
 
+export const metadata = {
+  title: "Questionnaire",
+  description: "Questionnaire de demande de soin non programmé"
+}
+
 export default function Page() {
 
   return (
