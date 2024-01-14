@@ -3,7 +3,7 @@ import { ContentType } from "./content-type";
 export const CONTACT_CONTENT = [
   {
     name: "Katarina Vencel",
-    role: "e.g. Interne de médecine générale...",
+    role: "Doctorante",
     content: [
       "Contacter par email à l'adresse suivante:",
       {
