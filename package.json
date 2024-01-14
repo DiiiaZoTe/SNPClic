@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "prepare": "husky install"
   },
   "dependencies": {
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "@hookform/resolvers": "^3.3.2",
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-accordion": "^1.1.2",
@@ -34,6 +37,7 @@
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.13",
     "framer-motion": "^10.16.5",
+    "husky": "^8.0.3",
     "jotai": "^2.6.1",
     "lucide-react": "^0.263.1",
     "next": "^14.0.2",
