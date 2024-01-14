@@ -123,25 +123,6 @@ export type StepDirection = "backward" | "forward";
 
 //! Condition logic types
 
-// /** Represents a condition based on a question's answer. */
-// export type QuestionCondition = {
-//   questionKey: string;
-//   operator: ConditionOperator;
-//   value: Answer;
-// };
-
-// /** Represents a composite condition, combining multiple conditions. */
-// export type CompositeCondition = {
-//   type: LogicalOperator;
-//   conditions: Array<QuestionCondition | CompositeCondition>;
-// };
-
-// /** Defines the operators used in question conditions. */
-// export type ConditionOperator = "EQUALS" | "NOT_EQUALS" | "CONTAINS_ALL" | "CONTAINS_ANY" | "NOT_CONTAINS_ALL" | "NOT_CONTAINS_ANY";
-
-// /** Defines logical operators for combining conditions. */
-// export type LogicalOperator = "AND" | "OR";
-
 /** Represents a composite condition, combining multiple conditions. */
 export type CompositeCondition = {
   type: LogicalOperator;
@@ -149,7 +130,7 @@ export type CompositeCondition = {
 };
 
 /** Defines the operators used in question conditions. */
-export type ConditionOperator = "EQUALS" | "NOT_EQUALS" | "IS_ALL_IN" | "IS_ANY_IN" | "NOT_IS_ALL_IN" | "NOT_IS_ANY_IN";
+export type ConditionOperator = "EQUALS" | "NOT_EQUALS" | "IS_ALL_IN" | "IS_ANY_IN" | "NOT_IS_ALL_IN" | "NOT_IS_ANY_IN" | "IS_EMPTY" | "NOT_IS_EMPTY";
 
 /** Defines logical operators for combining conditions. */
 export type LogicalOperator = "AND" | "OR";
@@ -160,5 +141,5 @@ export type QuestionConditionValue = Boolean[] | string[];
 export type QuestionCondition = {
   questionKey: string;
   operator: ConditionOperator;
-  value: QuestionConditionValue;
+  value?: QuestionConditionValue;
 };

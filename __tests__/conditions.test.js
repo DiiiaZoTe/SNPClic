@@ -519,6 +519,52 @@ describe('Form Conditions Evaluation Tests', () => {
     });
   });
 
+  // Tests for evaluateCondition IS_EMPTY
+  describe('evaluateCondition Tests IS_EMPTY', () => {
+    const mockAnswers = {
+      'booleanAnswer': true,
+      'stringArray': ['option1', 'option2'],
+      'stringArrayEmpty': [''],
+      'string': 'singleOption',
+      'stringEmpty': '',
+    };
+
+    // Boolean not applicable
+
+    // String[]
+    it('evaluates IS_EMPTY condition correctly be true for string[]', () => {
+      const condition1 = {
+        questionKey: 'stringArrayEmpty',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
+    });
+    it('evaluates IS_EMPTY condition correctly be false for string[]', () => {
+      const condition1 = {
+        questionKey: 'stringArray',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
+    });
+
+    // String
+    it('evaluates IS_EMPTY condition correctly be true for string', () => {
+      const condition1 = {
+        questionKey: 'stringEmpty',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
+    });
+
+    it('evaluates IS_EMPTY condition correctly be false for string', () => {
+      const condition1 = {
+        questionKey: 'string',
+        operator: 'IS_EMPTY',
+      };
+      expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
+    });
+  });
+
   // Tests for Composite AND
   describe('evaluateCondition Composite AND', () => {
     const mockAnswers = {

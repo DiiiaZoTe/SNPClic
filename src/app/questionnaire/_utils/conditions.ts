@@ -33,6 +33,8 @@ export const evaluateCondition = (condition: QuestionCondition | CompositeCondit
     const answer = answers[condition.questionKey];
     // The answer can't be undefined, because we have a default value for each question
     if (answer === undefined) return false;
+    // since condition.value is optional for certain operators, we need to make sure it's not undefined for type checking
+    if (condition.value === undefined) condition.value = [];
     switch (condition.operator) {
       case "EQUALS":
         return equalsEvaluation(answer, condition.value);
@@ -46,6 +48,10 @@ export const evaluateCondition = (condition: QuestionCondition | CompositeCondit
         return isAnyEvaluation(answer, condition.value);
       case "NOT_IS_ANY_IN":
         return !isAnyEvaluation(answer, condition.value)
+      case "IS_EMPTY":
+        return isEmptyEvaluation(answer);
+      case "NOT_IS_EMPTY":
+        return !isEmptyEvaluation(answer);
       default: // something else... we don't know what to do with it
         return false;
     }
@@ -92,6 +98,13 @@ const isAnyEvaluation = (answer: Answer, conditionValue: QuestionConditionValue)
     // @ts-ignore typescript doesn't like the every function
     return conditionValue.every(val => val === undefined || val === null || val === "");
   return answer.some(val => conditionValue.includes(val as any));
+}
+
+/** Evaluate empty */
+const isEmptyEvaluation = (answer: Answer): boolean => {
+  if (Array.isArray(answer))
+    return answer.length === 0 || answer.every(val => val === undefined || val === null || val === "");
+  return answer === undefined || answer === null || answer === "";
 }
 
 /** Helper function to evaluate non array values */
