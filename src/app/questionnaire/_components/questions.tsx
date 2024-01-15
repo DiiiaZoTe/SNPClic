@@ -22,15 +22,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 import { Body } from "./body";
 import { Badge } from "@/components/ui/badge";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 
 type UseFormType = UseFormReturn<
   {
@@ -67,7 +67,8 @@ export const FieldWrapper = ({
             <div className="flex flex-col gap-2">
               <div
                 className={
-                  labelClassName ?? "font-medium text-base flex flex-row gap-2 items-center"
+                  labelClassName ??
+                  "font-medium text-base flex flex-row gap-2 items-center"
                 }
               >
                 {label ? (
@@ -79,16 +80,16 @@ export const FieldWrapper = ({
                       <span className="text-red-500">*</span>
                     ) : null}
                     {question.popupInfo ? (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="link" className="p-0">
                             <Info className="w-4 h-4 stroke-primary" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{question.popupInfo}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <p>{question.popupInfo}</p>
+                        </PopoverContent>
+                      </Popover>
                     ) : null}
                   </>
                 )}
