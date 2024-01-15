@@ -17,7 +17,7 @@ import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
 
 import { Badge } from "@/components/ui/badge";
 
-export const CompletionComponent = () => {
+export const RecapAnswers = () => {
   const useMSF = useMultiStepFormContext();
   return (
     <div className="p-0 flex flex-col gap-4 w-full h-full max-w-[calc(100svw-4rem)] sm:max-w-xl animate-[in_0.5s_ease-in-out] ">
@@ -31,6 +31,8 @@ export const CompletionComponent = () => {
       </div>
       <div className="grow overflow-y-auto scrollbar flex flex-col gap-8 pr-2 pb-2">
         {useMSF.data.form.map((stepData, i) => {
+          // only show the steps before or equal to the current step
+          if (i > useMSF.stepper.currentStep - 1) return null;
           return (
             <div key={i} className="flex flex-col gap-2">
               <div className="font-semibold text-foreground">
@@ -188,9 +190,7 @@ const QuestionAnswerMultiChoice = ({
               optionAnswerClassName
             )}
           >
-            <span className={cn("text-sm", optionClassName)}>
-              {label}
-            </span>
+            <span className={cn("text-sm", optionClassName)}>{label}</span>
             <div
               className={cn(
                 "flex justify-center items-center text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",

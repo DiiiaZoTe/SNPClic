@@ -103,11 +103,26 @@ export type Question<T extends QuestionType> =
 
 //! Step/Form types
 
+export type StepCanStopFlowContent = {
+  title: string;
+  content: string;
+  stopFlowButtonLabel?: string;
+  warningStopFlowButton?: string;
+  continueFlowButtonLabel?: string;
+  warningContinueFlowButton?: string;
+}
+
+export type StepCanStopFlow = {
+  condition: QuestionCondition | CompositeCondition;
+  content: StepCanStopFlowContent;
+}
+
 /** Represents a single step in a form, including its questions. */
 export type Step = {
   name: string;
   description?: string;
   questions: Array<Question<QuestionType>>;
+  stopFlowCondition?: StepCanStopFlow[];
 };
 
 /** Represents the entire form as a sequence of steps. */
@@ -129,6 +144,9 @@ export type CompositeCondition = {
   conditions: Array<QuestionCondition | CompositeCondition>;
 };
 
+/** Defines logical operators for combining conditions. */
+export type LogicalOperator = "AND" | "OR";
+
 export type SelectedNumberOperator =
   "SELECTED_EQUALS" |
   "SELECTED_NOT_EQUALS" |
@@ -144,9 +162,6 @@ export type ConditionOperator =
   "IS_ANY_IN" | "NOT_IS_ANY_IN" |
   "IS_EMPTY" | "NOT_IS_EMPTY" |
   SelectedNumberOperator;
-
-/** Defines logical operators for combining conditions. */
-export type LogicalOperator = "AND" | "OR";
 
 export type QuestionConditionValue = Boolean[] | string[] | number;
 

@@ -10,22 +10,23 @@ export const FORM_DATA: Form = [
         key: "1",
         text: "Prendre l'identité du patient.",
         defaultAnswer: false,
-        isRequired: false
+        isRequired: false,
       },
       {
         type: "boolean",
         key: "2",
         text: "Le patient est-il connu du cabinet ?",
         defaultAnswer: false,
-        isRequired: false
+        isRequired: false,
       },
       {
         type: "boolean",
         key: "3",
         text: "Avez-vous complétez la fiche patient ?",
         defaultAnswer: false,
-        popupInfo: "Nom, prénom, téléphone, adresse mail, adresse avec étage et code de la porte si nécessaire",
-        isRequired: false
+        popupInfo:
+          "Nom, prénom, téléphone, adresse mail, adresse avec étage et code de la porte si nécessaire",
+        isRequired: false,
       },
       {
         type: "boolean",
@@ -33,7 +34,7 @@ export const FORM_DATA: Form = [
         text: "Y-a-t-il une alerte sur la fiche patient ?",
         description: "Ex. Patient fragile,...",
         defaultAnswer: false,
-        isRequired: false
+        isRequired: false,
       },
     ],
   },
@@ -45,14 +46,14 @@ export const FORM_DATA: Form = [
         key: "6",
         text: "Rendez-vous non urgent, proposer un RDV avec le médecin traitant.",
         defaultAnswer: false,
-        isRequired: false
+        isRequired: false,
       },
       {
         type: "boolean",
         key: "7",
         text: "Rendez-vous en urgence souhaité, demander le motif de consultation",
         defaultAnswer: false,
-        isRequired: false
+        isRequired: false,
       },
     ],
   },
@@ -87,13 +88,12 @@ export const FORM_DATA: Form = [
           Crotch: "Genitals, Bladder, Rectum",
           "Leg Left": "Muscle, Broken bones",
           "Leg Right": "Muscle, Broken bones",
-        }
-        ,
+        },
         displayCondition: {
           questionKey: "8",
           operator: "EQUALS",
           value: ["2"],
-        }
+        },
       },
     ],
   },
@@ -107,13 +107,66 @@ export const FORM_DATA: Form = [
         defaultAnswer: [],
         isRequired: false,
         options: [
-          { value: "1", label: "Trouve-t-il que les symptômes durent plus longtemps qu'habituellement ?" },
+          {
+            value: "1",
+            label:
+              "Trouve-t-il que les symptômes durent plus longtemps qu'habituellement ?",
+          },
           { value: "2", label: "Trouve-t-il les symptômes trop grave ?" },
-          { value: "3", label: "S'agit-il de symptômes inhabituels/inconnus ?" },
+          {
+            value: "3",
+            label: "S'agit-il de symptômes inhabituels/inconnus ?",
+          },
           { value: "4", label: "Est-il préoccupé par les symptômes ?" },
-          { value: "5", label: "A-t-il pris quelque chose pour se soigner et si oui, cela a-t-il eu un effet ?" },
+          {
+            value: "5",
+            label:
+              "A-t-il pris quelque chose pour se soigner et si oui, cela a-t-il eu un effet ?",
+          },
           { value: "6", label: "En a-t-il parler avec le pharmacien ?" },
-        ]
+        ],
+      },
+    ],
+    stopFlowCondition: [
+      {
+        condition: {
+          questionKey: "10",
+          operator: "SELECTED_EQUALS",
+          value: 0,
+        },
+        content: {
+          title: "Aucune ressource interne sélectionnée.",
+          content: `
+            <div>
+              Nous vous conseillons de différer le rendez-vous du patient.
+            </div>
+          `,
+          stopFlowButtonLabel: "Différer le rendez-vous",
+          warningStopFlowButton:
+            "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
+          continueFlowButtonLabel: "Continuer sans différer",
+          warningContinueFlowButton: "Le patient ne souhaite pas différer.",
+        },
+      },
+      {
+        condition: {
+          questionKey: "10",
+          operator: "SELECTED_EQUALS",
+          value: 1,
+        },
+        content: {
+          title: "Une seule ressource interne sélectionnée.",
+          content: `
+            <div>
+              Il faut essayer de proposer au patient de différer son rendez-vous.
+            </div>
+          `,
+          stopFlowButtonLabel: "Différer le rendez-vous",
+          warningStopFlowButton:
+            "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
+          continueFlowButtonLabel: "Continuer sans différer",
+          warningContinueFlowButton: "Le patient ne souhaite pas différer.",
+        },
       },
     ],
   },
@@ -128,16 +181,16 @@ export const FORM_DATA: Form = [
         isRequired: false,
         options: [
           {
-            value: "1", // this can be the id of the option from db
+            value: "1",
             label: "Vérifier la disponibilité d'un rendez-vous en urgence.",
           },
           {
-            value: "2", // this can be the id of the option from db
+            value: "2",
             label:
               "Si pas de disponibilité d'un rendez-vous en urgence, laissez un message.",
           },
           {
-            value: "3", // this can be the id of the option from db
+            value: "3",
             label:
               "Vérifier les connaissances du patient (téleconsultation, maison médicale de garde, 15).",
           },

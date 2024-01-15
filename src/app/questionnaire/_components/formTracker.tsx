@@ -40,18 +40,20 @@ export const FormTracker = ({
     >
       {Array.from(Array(useMSF.stepper.numberOfSteps).keys()).map((index) => {
         const thisStep = index + 1;
+        const active = thisStep === currentStep;
+        const isVisited = useMSF.stepper.is.visited(thisStep);
+        const isValid = useMSF.stepper.is.valid(thisStep);
+        const canClickThisStep =
+          canClick(thisStep, isVisited) || (useMSF.submission.isFormSubmitted && isVisited);
         return (
           <DotWithCircle
             key={thisStep}
-            active={thisStep === currentStep}
-            isVisited={useMSF.stepper.is.visited(thisStep)}
-            isValid={useMSF.stepper.is.valid(thisStep)}
+            active={active}
+            isVisited={isVisited}
+            isValid={isValid}
             stepNumber={thisStep}
             onClickFn={goToStep}
-            canClick={
-              canClick(thisStep, useMSF.stepper.is.visited(thisStep)) ||
-              useMSF.submission.isFormSubmitted
-            }
+            canClick={canClickThisStep}
           />
         );
       })}
@@ -75,12 +77,14 @@ const DotWithCircle = ({
   onClickFn?: (step: number) => void;
 }) => {
   const isFormSubmitted = useMultiStepFormContext().submission.isFormSubmitted;
+
+  console.log(stepNumber, active, isVisited, isValid, canClick)
   return (
     <div className="relative">
       <Button
         className={cn(
           "w-5 h-5 rounded-full block transition-all p-0 m-0 hover:bg-foreground focus ",
-          isFormSubmitted
+          isFormSubmitted && isVisited && isValid
             ? "bg-primary"
             : active
             ? "bg-primary/30"
@@ -103,7 +107,8 @@ const DotWithCircle = ({
         {!active && isVisited && !isValid && (
           <XIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none" />
         )}
-        {(!active && isVisited && isValid) || isFormSubmitted ? (
+        {(!active && isVisited && isValid) ||
+        (isFormSubmitted && isVisited && isValid) ? (
           <CheckIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none" />
         ) : null}
         {active && !isFormSubmitted && (
@@ -132,5 +137,3 @@ const DotWithCircle = ({
     </div>
   );
 };
-
-const MotionCheckIcon = motion(CheckIcon);
