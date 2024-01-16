@@ -199,6 +199,9 @@ export const useMultiStepForm = (data: Form) => {
   /** continue after trying stopping flow */
   const continueAfterStopFlow = () => {
     if (stopFlowGoingToStep === undefined) return;
+    // since this only goes forward, we check if a step after the
+    // current up to the one we are going to can stop the flow
+    if(checkStepsCanStopFlow(currentStep + 1, stopFlowGoingToStep)) return;
     normalSetCurrentStep(stopFlowGoingToStep, "forward");
   }
 
