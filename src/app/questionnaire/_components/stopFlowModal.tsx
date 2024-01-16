@@ -18,50 +18,46 @@ import { Button } from "@/components/ui/button";
 export const StopFlowModal = ({
   title,
   content,
-  stopFlowButtonLabel,
-  warningStopFlowButton,
-  continueFlowButtonLabel,
-  warningContinueFlowButton,
+  stopFlowButtons,
+  continueFlowButton,
 }: StepCanStopFlowContent) => {
   const useMSF = useMultiStepFormContext();
   return (
     <AlertDialog open>
-      <AlertDialogContent className="max-w-3xl p-4 sm:p-6">
+      <AlertDialogContent className="max-w-xl p-6 sm:p-8 w-full gap-6 sm:gap-8 overflow-auto max-h-[100dvh]">
         <AlertDialogHeader>
-          <AlertDialogTitle>{`Etape ${useMSF.stepper.currentStep}: ${title}`}</AlertDialogTitle>
+          <AlertDialogTitle className="text-left">{`Etape ${useMSF.stepper.currentStep}: ${title}`}</AlertDialogTitle>
         </AlertDialogHeader>
         <div dangerouslySetInnerHTML={{ __html: content }} />
-        <div className="w-full flex flex-col sm:flex-row gap-4 items-center justify-between mt-4">
-          {stopFlowButtonLabel ? (
-            <div className="flex flex-row gap-4 w-full sm:w-fit sm:max-w-[50%]">
+        <div className="w-full flex flex-col gap-6 sm:gap-8">
+          {stopFlowButtons?.map(({ label, warning, reason }) => (
+            <div key={label} className="flex flex-row gap-4 w-full">
               <Button
-                className="w-full sm:w-fit group"
+                className="w-full group"
                 onClick={() => {
-                  useMSF.stepper.move.goToRecap(true);
+                  useMSF.stepper.move.goToRecap(true, reason);
                 }}
               >
-                {stopFlowButtonLabel}
+                {label}
                 <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
               </Button>
-              {warningStopFlowButton && (
-                <WarningInfo info={warningStopFlowButton} />
-              )}
+              {warning && <WarningInfo info={warning} />}
             </div>
-          ) : null}
-          {continueFlowButtonLabel ? (
-            <div className="flex flex-row gap-4 w-full sm:w-fit sm:max-w-[50%] ml-auto">
+          ))}
+          {continueFlowButton ? (
+            <div className="flex flex-row gap-4 w-full">
               <Button
+                className="w-full group"
                 variant="black"
-                className="w-full sm:w-fit group"
                 onClick={() => {
                   useMSF.stepper.move.continueAfterStopFlow();
                 }}
               >
-                {continueFlowButtonLabel}
+                {continueFlowButton.label}
                 <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
               </Button>
-              {warningContinueFlowButton && (
-                <WarningInfo info={warningContinueFlowButton} />
+              {continueFlowButton.warning && (
+                <WarningInfo info={continueFlowButton.warning} />
               )}
             </div>
           ) : null}

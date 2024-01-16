@@ -70,12 +70,19 @@ export const FORM_DATA: Form = [
               Proposer un rendez-vous avec le médecin, puis selectionner si le rendez-vous a été donné ou non.
             </div>
           `,
-          stopFlowButtonLabel: "Rendez-vous donné",
-          warningStopFlowButton:
-            "Le patient a accepté de prendre un rendez-vous avec le médecin.",
-          continueFlowButtonLabel: "Continuer",
-          warningContinueFlowButton:
-            "Le patient ne souhaite pas prendre de rendez-vous avec le médecin.",
+          stopFlowButtons: [
+            {
+              label: "Rendez-vous donné",
+              warning:
+                "Le patient a accepté de prendre un rendez-vous avec le médecin.",
+              reason: "Rendez-vous non urgent donné",
+            },
+          ],
+          continueFlowButton: {
+            label: "Continuer",
+            warning:
+              "Le patient n'a pas accepté de prendre un rendez-vous avec le médecin.",
+          },
         },
       },
     ],
@@ -116,6 +123,38 @@ export const FORM_DATA: Form = [
           questionKey: "8",
           operator: "EQUALS",
           value: ["2"],
+        },
+      },
+    ],
+    stopFlowCondition: [
+      {
+        condition: {
+          questionKey: "8",
+          operator: "IS_ANY_IN",
+          value: ["1", "3"],
+        },
+        content: {
+          title: "Rendez-vous en urgence nécessaire.",
+          content: `
+            <div>
+              Trouver un rendez-vous en urgence pour le patient.<br />
+              Si pas de disponibilité, laisser un mot au médecin.
+            </div>
+          `,
+          stopFlowButtons: [
+            {
+              label: "Rendez-vous en urgence donné",
+              warning:
+                "Un rendez-vous en urgence a été donné au patient avec le médecin.",
+              reason: "Rendez-vous en urgence donné",
+            },
+            {
+              label: "Mot laissé au médecin",
+              warning:
+                "Un mot a été laissé au médecin pour qu'il rappelle le patient.",
+              reason: "Mot laissé au médecin, pas de rendez-vous en urgence donné",
+            },
+          ],
         },
       },
     ],
@@ -164,11 +203,18 @@ export const FORM_DATA: Form = [
               Nous vous conseillons de différer le rendez-vous du patient.
             </div>
           `,
-          stopFlowButtonLabel: "Différer le rendez-vous",
-          warningStopFlowButton:
-            "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
-          continueFlowButtonLabel: "Continuer sans différer",
-          warningContinueFlowButton: "Le patient ne souhaite pas différer.",
+          stopFlowButtons: [
+            {
+              label: "Différer le rendez-vous",
+              warning:
+                "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
+              reason: "Aucune ressource interne sélectionnée",
+            },
+          ],
+          continueFlowButton: {
+            label: "Continuer sans différer",
+            warning: "Le patient ne souhaite pas différer.",
+          },
         },
       },
       {
@@ -184,11 +230,18 @@ export const FORM_DATA: Form = [
               Il faut essayer de proposer au patient de différer son rendez-vous.
             </div>
           `,
-          stopFlowButtonLabel: "Différer le rendez-vous",
-          warningStopFlowButton:
-            "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
-          continueFlowButtonLabel: "Continuer sans différer",
-          warningContinueFlowButton: "Le patient ne souhaite pas différer.",
+          stopFlowButtons: [
+            {
+              label: "Différer le rendez-vous",
+              warning:
+                "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
+              reason: "Une seule ressource interne sélectionnée",
+            },
+          ],
+          continueFlowButton: {
+            label: "Continuer sans différer",
+            warning: "Le patient ne souhaite pas différer.",
+          },
         },
       },
     ],

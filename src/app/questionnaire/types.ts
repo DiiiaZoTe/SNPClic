@@ -106,10 +106,15 @@ export type Question<T extends QuestionType> =
 export type StepCanStopFlowContent = {
   title: string;
   content: string;
-  stopFlowButtonLabel?: string;
-  warningStopFlowButton?: string;
-  continueFlowButtonLabel?: string;
-  warningContinueFlowButton?: string;
+  stopFlowButtons?: {
+    label: string;
+    warning: string;
+    reason: string;
+  }[];
+  continueFlowButton?: {
+    label: string;
+    warning?: string;
+  };
 }
 
 export type StepCanStopFlow = {

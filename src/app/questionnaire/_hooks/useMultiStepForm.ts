@@ -30,6 +30,7 @@ export const useMultiStepForm = (data: Form) => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isStepStoppingFlow, setIsStepStoppingFlow] = useState(false);
   const [contentStepStoppingFlow, setContentStepStoppingFlow] = useState<StepCanStopFlowContent | undefined>(undefined);
+  const [formStoppedReason, setFormStoppedReason] = useState<string | undefined>(undefined);
 
   /** currentStepData */
   const currentStepData = data[currentStep - 1];
@@ -178,13 +179,12 @@ export const useMultiStepForm = (data: Form) => {
   /** go to recap step 
    * @param bypassFutureInvalidSteps skips validation of steps passed the current
    */
-  const goToRecap = async (bypassFutureInvalidSteps = false) => {
+  const goToRecap = async (bypassFutureInvalidSteps = false, stopFlowReason?: string) => {
     // was last step valid?
     let currentValidSteps = await validateCurrentStep();
     if (bypassFutureInvalidSteps) {
       currentValidSteps = currentValidSteps.slice(0, currentStep);
     }
-    console.log(currentValidSteps)
     // get the first non valid step and go to it
     const firstInvalidStep = currentValidSteps.findIndex((valid) => !valid);
     if (firstInvalidStep !== -1) {
@@ -192,6 +192,7 @@ export const useMultiStepForm = (data: Form) => {
       return;
     }
     // otherwise, submit the form
+    if (stopFlowReason) setFormStoppedReason(stopFlowReason);
     setIsFormSubmitted(true);
   }
 
@@ -206,6 +207,7 @@ export const useMultiStepForm = (data: Form) => {
     setIsStepStoppingFlow(false);
     setContentStepStoppingFlow(undefined);
     setStopFlowGoingToStep(undefined);
+    setFormStoppedReason(undefined);
   }, []);
 
   /** user submitted the form */
@@ -283,6 +285,8 @@ export const useMultiStepForm = (data: Form) => {
         contentStepStoppingFlow,
         setContentStepStoppingFlow,
         cancelStepStoppingFlow,
+        formStoppedReason,
+        setFormStoppedReason,
       }
     }
   };
