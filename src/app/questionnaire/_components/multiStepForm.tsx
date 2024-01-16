@@ -193,8 +193,7 @@ import {
 import { StopFlowModal } from "./stopFlowModal";
 
 const todo = [
-  "question type button with action",
-  "change body parts and content",
+  "verify everything is working as expected",
   "submission flow",
   "backend database",
   "no need to create the form builder for now, maybe last",
@@ -208,10 +207,9 @@ const TodoList = () => {
         <Button variant="outline">To do?</Button>
       </PopoverTrigger>
       <PopoverContent>
-        <ul className="flex flex-col gap-2">
+        <ul className="flex flex-col gap-2 pl-4 list-disc">
           {todo.map((item, index) => (
             <li key={index}>
-              {"> "}
               {item}
             </li>
           ))}
