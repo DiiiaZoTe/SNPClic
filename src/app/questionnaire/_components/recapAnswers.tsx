@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 export const RecapAnswers = () => {
   const useMSF = useMultiStepFormContext();
   return (
-    <div className="p-0 flex flex-col gap-4 w-full h-full max-w-[calc(100svw-4rem)] sm:max-w-xl animate-[in_0.5s_ease-in-out] ">
+    <div className="p-0 flex flex-col gap-4 w-full h-full max-w-xl animate-[in_0.5s_ease-in-out] ">
       <div className="shrink-0 flex flex-col gap-4">
         <p className="text-xl font-bold leading-none tracking-tight">
           Vérification
@@ -29,7 +29,7 @@ export const RecapAnswers = () => {
           Vérifier la validité de vos réponses.
         </p>
       </div>
-      <div className="grow overflow-y-auto scrollbar flex flex-col gap-8 pr-2 pb-2">
+      <div className="grow overflow-y-auto flex flex-col gap-8">
         {useMSF.data.form.map((stepData, i) => {
           // only show the steps before or equal to the current step
           if (i > useMSF.stepper.currentStep - 1) return null;
