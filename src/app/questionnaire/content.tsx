@@ -127,7 +127,7 @@ export const FORM_DATA: Form = [
             "Convulsions",
           ],
           Abdomen: [
-            "douleur pelvienne brutale, violente et inhabituelle",
+            "Douleur pelvienne brutale, violente et inhabituelle",
             "Douleur abdominale brutale et violente avec fièvre",
             "Douleur testiculaire",
           ],
