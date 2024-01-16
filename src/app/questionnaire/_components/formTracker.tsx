@@ -101,8 +101,9 @@ const DotWithCircle = ({
           onClickFn ? onClickFn(stepNumber) : null;
         }}
         disabled={!canClick}
-      />
-      <span className="sr-only">Step {stepNumber}</span>
+      >
+        <span className="sr-only">Step {stepNumber}</span>
+      </Button>
       <AnimatePresence>
         {!active && isVisited && !isValid && (
           <XIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none" />
