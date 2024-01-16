@@ -41,19 +41,42 @@ export const FORM_DATA: Form = [
   {
     name: "Délai de consultation souhaité",
     questions: [
-      {
-        type: "boolean",
-        key: "6",
-        text: "Rendez-vous non urgent, proposer un RDV avec le médecin traitant.",
-        defaultAnswer: false,
-        isRequired: false,
-      },
+      // {
+      //   type: "boolean",
+      //   key: "6",
+      //   text: "Rendez-vous non urgent, proposer un RDV avec le médecin traitant.",
+      //   defaultAnswer: false,
+      //   isRequired: false,
+      // },
       {
         type: "boolean",
         key: "7",
         text: "Rendez-vous en urgence souhaité, demander le motif de consultation",
         defaultAnswer: false,
         isRequired: false,
+      },
+    ],
+    stopFlowCondition: [
+      {
+        condition: {
+          questionKey: "7",
+          operator: "EQUALS",
+          value: [false],
+        },
+        content: {
+          title: "Rendez-vous non urgent",
+          content: `
+            <div>
+              Proposer un rendez-vous avec le médecin, puis selectionner si le rendez-vous a été donné ou non.
+            </div>
+          `,
+          stopFlowButtonLabel: "Rendez-vous donné",
+          warningStopFlowButton:
+            "Le patient a accepté de prendre un rendez-vous avec le médecin.",
+          continueFlowButtonLabel: "Continuer",
+          warningContinueFlowButton:
+            "Le patient ne souhaite pas prendre de rendez-vous avec le médecin.",
+        },
       },
     ],
   },

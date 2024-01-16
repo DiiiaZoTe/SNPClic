@@ -193,8 +193,7 @@ import {
 import { StopFlowModal } from "./stopFlowModal";
 
 const todo = [
-  "question type button with action, can set a value for that question and performs an action",
-  "may need to make the recap only for the visited questions, shouldn't be too hard to do",
+  "question type button with action",
   "change body parts and content",
   "submission flow",
   "backend database",

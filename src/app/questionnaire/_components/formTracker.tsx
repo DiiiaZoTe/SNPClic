@@ -77,8 +77,6 @@ const DotWithCircle = ({
   onClickFn?: (step: number) => void;
 }) => {
   const isFormSubmitted = useMultiStepFormContext().submission.isFormSubmitted;
-
-  console.log(stepNumber, active, isVisited, isValid, canClick)
   return (
     <div className="relative">
       <Button
