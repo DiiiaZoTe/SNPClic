@@ -133,15 +133,17 @@ export const Body = ({
         </PopoverTrigger>
         <PopoverContent sideOffset={16} side="top" avoidCollisions={false}>
           {popoverContent ? (
-            <ul className="flex flex-col gap-2 list-disc pl-4">
-              {popoverContent.map((item, index) => (
-                <li key={index} className="text-xs">
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div className="flex flex-col gap-2">
+              <p className="font-medium">{popoverContent.title}</p>
+              <ul className="flex flex-col gap-2 list-disc pl-4">
+                {popoverContent.content.map((item, index) => (
+                  <li key={index} className="text-sm">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : null}
-          {/* <p className="text-xs">{popoverContent}</p> */}
         </PopoverContent>
       </Popover>
     </div>
@@ -161,7 +163,7 @@ const useSelectedPath = ({
   const [hoveredPath, setHoveredPath] = useState<PathId | undefined>();
   const [isHovered, setIsHovered] = useState(false);
   const hoverTimeout = useRef<NodeJS.Timeout>();
-  const [popoverContent, setPopoverContent] = useState<string[]>();
+  const [popoverContent, setPopoverContent] = useState<{title: string, content: string[]}>();
 
   const selectPath = (path?: PathId) => {
     if (path === selectedPath) {
@@ -187,7 +189,7 @@ const useSelectedPath = ({
     if (hoveredPath) {
       hoverTimeout.current = setTimeout(() => {
         setIsHovered(true);
-        setPopoverContent(content[hoveredPath]); // Update content when hovered
+        setPopoverContent({title: hoveredPath, content: content[hoveredPath]}); // Update content when hovered
       }, DEBOUNCE_HOVER);
     } else {
       if (isHovered) {

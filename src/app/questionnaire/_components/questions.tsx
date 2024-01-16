@@ -96,7 +96,7 @@ export const FieldWrapper = ({
                 )}
               </div>
               {question.description ? (
-                <span className="text-xs text-foreground/60">
+                <span className="text-sm text-foreground/60">
                   {question.description}
                 </span>
               ) : null}
