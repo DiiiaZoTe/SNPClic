@@ -41,16 +41,9 @@ export const FORM_DATA: Form = [
   {
     name: "Délai de consultation souhaité",
     questions: [
-      // {
-      //   type: "boolean",
-      //   key: "6",
-      //   text: "Rendez-vous non urgent, proposer un RDV avec le médecin traitant.",
-      //   defaultAnswer: false,
-      //   isRequired: false,
-      // },
       {
         type: "boolean",
-        key: "7",
+        key: "6",
         text: "Rendez-vous en urgence souhaité, demander le motif de consultation",
         defaultAnswer: false,
         isRequired: false,
@@ -59,7 +52,7 @@ export const FORM_DATA: Form = [
     stopFlowCondition: [
       {
         condition: {
-          questionKey: "7",
+          questionKey: "6",
           operator: "EQUALS",
           value: [false],
         },
@@ -92,7 +85,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "select",
-        key: "8",
+        key: "7",
         text: "Quel âge a le patient ?",
         placeholder: "Sélectionner une tranche d'âge",
         defaultAnswer: "",
@@ -102,25 +95,55 @@ export const FORM_DATA: Form = [
           { value: "2", label: "Entre 6 mois et 80 ans" },
           { value: "3", label: "Plus de 80 ans" },
         ],
-        dependents: ["9"],
+        dependents: ["8"],
       },
       {
         type: "body",
-        key: "9",
+        key: "8",
         text: "Quels sont les motifs de consultation ?",
+        description:
+          "Sélectionner la zone du corps si des symptômes mentionnés sont présents.",
         defaultAnswer: "",
-        isRequired: true,
+        isRequired: false,
         options: {
-          Torso: "Heart, lungs, stomach, liver, intestines, kidneys, bladder",
-          "Arm Left": "Muscle, Broken bones",
-          "Arm Right": "Muscle, Broken bones",
-          Head: "Eyes, Ears, Nose, Mouth, Teeth",
-          Crotch: "Genitals, Bladder, Rectum",
-          "Leg Left": "Muscle, Broken bones",
-          "Leg Right": "Muscle, Broken bones",
+          Torse: [
+            "Crise d’asthme et/ou difficulté respiratoire",
+            "Douleur thoracique",
+          ],
+          "Bras Gauche": [
+            "Douleur aiguë d’une articulation avec fièvre",
+            "Trouble sensitif et/ou moteur",
+            "Douleur aiguë de membre",
+          ],
+          "Bras Droit": [
+            "Douleur aiguë d’une articulation avec fièvre",
+            "Trouble sensitif et/ou moteur",
+            "Douleur aiguë de membre",
+          ],
+          Tête: [
+            "Trouble sensitif et/ou moteur",
+            "Céphalée inhabituelle et brutale",
+            "Fièvre avec mauvaise tolérance: convulsion, somnolence, hydratation impossible",
+            "Convulsions",
+          ],
+          Abdomen: [
+            "douleur pelvienne brutale, violente et inhabituelle",
+            "Douleur abdominale brutale et violente avec fièvre",
+            "Douleur testiculaire",
+          ],
+          "Jambe Gauche": [
+            "Douleur aiguë d’une articulation avec fièvre",
+            "Trouble sensitif et/ou moteur",
+            "Douleur aiguë de membre",
+          ],
+          "Jambe Droite": [
+            "Douleur aiguë d’une articulation avec fièvre",
+            "Trouble sensitif et/ou moteur",
+            "Douleur aiguë de membre",
+          ],
         },
         displayCondition: {
-          questionKey: "8",
+          questionKey: "7",
           operator: "EQUALS",
           value: ["2"],
         },
@@ -129,7 +152,7 @@ export const FORM_DATA: Form = [
     stopFlowCondition: [
       {
         condition: {
-          questionKey: "8",
+          questionKey: "7",
           operator: "IS_ANY_IN",
           value: ["1", "3"],
         },
@@ -152,9 +175,50 @@ export const FORM_DATA: Form = [
               label: "Mot laissé au médecin",
               warning:
                 "Un mot a été laissé au médecin pour qu'il rappelle le patient.",
-              reason: "Mot laissé au médecin, pas de rendez-vous en urgence donné",
+              reason:
+                "Mot laissé au médecin, pas de rendez-vous en urgence donné",
             },
           ],
+          continueFlowButton: {
+            label: "Continuer",
+            warning:
+              "Continuer vers les resouces internes et externes du patient.",
+          },
+        },
+      },
+      {
+        condition: {
+          questionKey: "8",
+          operator: "NOT_IS_EMPTY",
+        },
+        content: {
+          title: "Rendez-vous en urgence nécessaire.",
+          content: `
+            <div>
+              Trouver un rendez-vous en urgence pour le patient.<br />
+              Si pas de disponibilité, laisser un mot au médecin.
+            </div>
+          `,
+          stopFlowButtons: [
+            {
+              label: "Rendez-vous en urgence donné",
+              warning:
+                "Un rendez-vous en urgence a été donné au patient avec le médecin.",
+              reason: "Rendez-vous en urgence donné",
+            },
+            {
+              label: "Mot laissé au médecin",
+              warning:
+                "Un mot a été laissé au médecin pour qu'il rappelle le patient.",
+              reason:
+                "Mot laissé au médecin, pas de rendez-vous en urgence donné",
+            },
+          ],
+          continueFlowButton: {
+            label: "Continuer",
+            warning:
+              "Continuer vers les resouces internes et externes du patient.",
+          },
         },
       },
     ],
@@ -164,7 +228,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "multiChoice",
-        key: "10",
+        key: "9",
         text: "Selectionner les ressources internes du patient:",
         defaultAnswer: [],
         isRequired: false,
@@ -192,7 +256,7 @@ export const FORM_DATA: Form = [
     stopFlowCondition: [
       {
         condition: {
-          questionKey: "10",
+          questionKey: "9",
           operator: "SELECTED_EQUALS",
           value: 0,
         },
@@ -219,7 +283,7 @@ export const FORM_DATA: Form = [
       },
       {
         condition: {
-          questionKey: "10",
+          questionKey: "9",
           operator: "SELECTED_EQUALS",
           value: 1,
         },
@@ -251,7 +315,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "multiChoice",
-        key: "11",
+        key: "10",
         text: "Le patient ne pense pas pouvoir différer sa consultation:",
         defaultAnswer: [],
         isRequired: false,

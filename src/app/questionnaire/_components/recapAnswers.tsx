@@ -291,14 +291,21 @@ const QuestionAnswerBody = ({
   className?: string;
   wrapperClassName?: string;
 }) => {
-  //check the answer is in the options and get the label
-  let bodyAnswer = NO_ANSWER;
-  if (answer) {
-    bodyAnswer = question.options[answer as keyof typeof question.options];
-  }
   return (
     <QuestionAnswerWrapper question={question} className={wrapperClassName}>
-      <span className={cn("text-sm", className)}>{bodyAnswer}</span>
+      {answer ? (
+        <ul className="flex flex-col gap-2 list-disc pl-4">
+          {question.options[answer as keyof typeof question.options].map(
+            (item, index) => (
+              <li key={index} className={cn("text-sm", className)}>
+                {item}
+              </li>
+            )
+          )}
+        </ul>
+      ) : (
+        <span className={cn("text-sm", className)}>{NO_ANSWER}</span>
+      )}
     </QuestionAnswerWrapper>
   );
 };

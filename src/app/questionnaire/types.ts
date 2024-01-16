@@ -32,7 +32,7 @@ export type QuestionTypeToAnswerMap = {
 
 /** Represents an option in a question. */
 export type QuestionOption = { value: string; label: string };
-export type QuestionBodyOption = Record<PathId, string>;
+export type QuestionBodyOption = Record<PathId, string[]>;
 
 /** Enumerates the different types of questions that can be used in a form. */
 export type QuestionType = "boolean" | "multiSelect" | "multiChoice" | "select" | "body";
