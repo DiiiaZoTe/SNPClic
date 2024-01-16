@@ -64,6 +64,7 @@ const MobileNavbar = () => {
           <p className="text-sm">Open Source</p>
           <Link href={githubConfig.repo}>
             <GitHubLogo className="w-4 h-4" />
+            <span className="sr-only">GitHub</span>
           </Link>
           <ThemeToggle />
         </div>
