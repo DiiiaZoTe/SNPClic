@@ -84,6 +84,7 @@ export const FieldWrapper = ({
                         <PopoverTrigger asChild>
                           <Button variant="link" className="p-0">
                             <Info className="w-4 h-4 stroke-primary" />
+                            <span className="sr-only">Info</span>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent>

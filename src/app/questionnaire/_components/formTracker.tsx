@@ -44,7 +44,8 @@ export const FormTracker = ({
         const isVisited = useMSF.stepper.is.visited(thisStep);
         const isValid = useMSF.stepper.is.valid(thisStep);
         const canClickThisStep =
-          canClick(thisStep, isVisited) || (useMSF.submission.isFormSubmitted && isVisited);
+          canClick(thisStep, isVisited) ||
+          (useMSF.submission.isFormSubmitted && isVisited);
         return (
           <DotWithCircle
             key={thisStep}
@@ -101,6 +102,7 @@ const DotWithCircle = ({
         }}
         disabled={!canClick}
       />
+      <span className="sr-only">Step {stepNumber}</span>
       <AnimatePresence>
         {!active && isVisited && !isValid && (
           <XIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none" />
