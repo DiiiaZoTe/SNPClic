@@ -135,7 +135,7 @@ export const Body = ({
           {popoverContent ? (
             <div className="flex flex-col gap-2">
               <p className="font-medium">{popoverContent.title}</p>
-              <ul className="flex flex-col gap-2 list-disc pl-4">
+              <ul className="flex flex-col gap-2 list-disc list-inside">
                 {popoverContent.content.map((item, index) => (
                   <li key={index} className="text-sm">
                     {item}

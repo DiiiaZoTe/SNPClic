@@ -294,7 +294,7 @@ const QuestionAnswerBody = ({
   return (
     <QuestionAnswerWrapper question={question} className={wrapperClassName}>
       {answer ? (
-        <ul className="flex flex-col gap-2 list-disc pl-4">
+        <ul className="flex flex-col gap-2 list-disc list-inside">
           {question.options[answer as keyof typeof question.options].map(
             (item, index) => (
               <li key={index} className={cn("text-sm", className)}>
