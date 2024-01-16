@@ -4,7 +4,7 @@ import { useRef } from "react";
 import * as MSF from "../types";
 import { cn } from "@/lib/utils";
 
-import { ArrowBigLeftIcon } from "lucide-react";
+import { ArrowBigLeftIcon, ChevronRight } from "lucide-react";
 import { scrollToViewIfNeeded, stepFormVariants } from "../_utils/utils";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -157,12 +157,13 @@ const MultiStepFormComponent = ({
                         <Button
                           type="submit"
                           variant="secondary"
-                          className="w-fit ml-auto"
+                          className="w-fit ml-auto group"
                           onClick={() => {
                             scrollToViewIfNeeded(containerRef);
                           }}
                         >
                           Continuer
+                          <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
                         </Button>
                       )}
                     </div>
