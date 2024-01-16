@@ -102,7 +102,7 @@ export const FORM_DATA: Form = [
         key: "8",
         text: "Quels sont les motifs de consultation ?",
         description:
-          "Sélectionner la zone du corps si des symptômes mentionnés sont présents.",
+          "Sélectionner la zone du corps si des symptômes mentionnés sont présents. Il s'agit d'une urgence nécessitant une prise en charge par le 15.",
         defaultAnswer: "",
         isRequired: false,
         options: {
@@ -171,18 +171,11 @@ export const FORM_DATA: Form = [
                 "Un rendez-vous en urgence a été donné au patient avec le médecin.",
               reason: "Rendez-vous en urgence donné",
             },
-            {
-              label: "Mot laissé au médecin",
-              warning:
-                "Un mot a été laissé au médecin pour qu'il rappelle le patient.",
-              reason:
-                "Mot laissé au médecin, pas de rendez-vous en urgence donné",
-            },
           ],
           continueFlowButton: {
-            label: "Continuer",
+            label: "Mot laissé au médecin",
             warning:
-              "Continuer vers les resouces internes et externes du patient.",
+              "Un mot a été laissé au médecin pour qu'il rappelle le patient, continuer vers les ressources du patient.",
           },
         },
       },
@@ -192,33 +185,21 @@ export const FORM_DATA: Form = [
           operator: "NOT_IS_EMPTY",
         },
         content: {
-          title: "Rendez-vous en urgence nécessaire.",
+          title: "Prise en charge en urgence.",
           content: `
             <div>
-              Trouver un rendez-vous en urgence pour le patient.<br />
-              Si pas de disponibilité, laisser un mot au médecin.
+              Le patient doit appeler le 15 pour une prise en charge en urgence rapide.<br />
+              Informer le médecin de la situation du patient.
             </div>
           `,
           stopFlowButtons: [
             {
-              label: "Rendez-vous en urgence donné",
+              label: "Médecin informé et patient redirigé",
               warning:
-                "Un rendez-vous en urgence a été donné au patient avec le médecin.",
-              reason: "Rendez-vous en urgence donné",
-            },
-            {
-              label: "Mot laissé au médecin",
-              warning:
-                "Un mot a été laissé au médecin pour qu'il rappelle le patient.",
-              reason:
-                "Mot laissé au médecin, pas de rendez-vous en urgence donné",
+                "Le patient a été redirigé vers le 15 et le médecin a été informé.",
+              reason: "Situation nécessitant une prise en charge par le 15.",
             },
           ],
-          continueFlowButton: {
-            label: "Continuer",
-            warning:
-              "Continuer vers les resouces internes et externes du patient.",
-          },
         },
       },
     ],
