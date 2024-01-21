@@ -59,7 +59,6 @@ export const useMultiStepForm = (data: Form) => {
   //* form logic
   /** resets a question's answer */
   const resetAnswer = useCallback((questionKey: string) => {
-    // console.log("resetting", questionKey);
     form.setValue(questionKey, defaultValues[questionKey]);
   }, [form, defaultValues]);
 

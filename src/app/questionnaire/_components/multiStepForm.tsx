@@ -58,10 +58,6 @@ const MultiStepFormComponent = ({
         <Button
           onClick={() => {
             scrollToViewIfNeeded(containerRef);
-            console.log(
-              "previous button clicked, is valid for the step was: ",
-              useMSF.form.formState.isValid
-            );
             useMSF.stepper.move.previous();
           }}
           variant="outline"
@@ -120,7 +116,7 @@ const MultiStepFormComponent = ({
                               animate={{ opacity: 1 }}
                               key={question.key}
                               className={cn(
-                                "border border-muted bg-muted/10 rounded-sm p-4",
+                                "border border-muted bg-muted/5 rounded-sm p-4",
                                 isHidden ? "hidden" : ""
                               )}
                             >

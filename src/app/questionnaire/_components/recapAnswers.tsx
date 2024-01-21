@@ -123,7 +123,7 @@ const QuestionAnswerWrapper = ({
   return (
     <div
       className={cn(
-        "flex flex-col gap-1 bg-muted/10 px-4 py-3 border border-muted rounded-sm",
+        "flex flex-col gap-1 bg-muted/5 px-4 py-3 border border-muted rounded-sm",
         className
       )}
     >
