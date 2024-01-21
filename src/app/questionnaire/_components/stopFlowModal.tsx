@@ -79,7 +79,7 @@ export const StopFlowModal = ({
 
 const WarningInfo = ({ info }: { info: string }) => {
   return (
-    <Popover>
+    <Popover modal>
       <PopoverTrigger asChild>
         <Button variant="link" className="p-0">
           <Info className="w-4 h-4 stroke-foreground" />
