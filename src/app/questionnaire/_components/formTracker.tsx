@@ -113,26 +113,7 @@ const DotWithCircle = ({
           <CheckIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none" />
         ) : null}
         {active && !isFormSubmitted && (
-          <motion.span
-            className="absolute top-0 left-0 block w-5 h-5 pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: 1,
-              rotate: 360,
-              transition: {
-                duration: 1,
-                rotate: {
-                  duration: 1.5,
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  ease: [0.79, 0.19, 0.27, 0.87],
-                },
-                ease: "linear",
-              },
-            }}
-          >
-            <span className="absolute w-[6px] h-[6px] top-0 left-1/2 -translate-x-1/2 rounded-full bg-primary" />
-          </motion.span>
+          <span className="absolute w-2 h-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
         )}
       </AnimatePresence>
     </div>
