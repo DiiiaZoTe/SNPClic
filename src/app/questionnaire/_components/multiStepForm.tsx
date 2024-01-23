@@ -24,6 +24,7 @@ import {
   MultiChoiceQuestion,
   MultiSelectQuestion,
   SelectQuestion,
+  TerminatorButtonQuestion,
 } from "./questions";
 import { RecapAnswers } from "./recapAnswers";
 
@@ -135,6 +136,9 @@ const MultiStepFormComponent = ({
                               {question.type === "body" && (
                                 <BodyQuestion question={question} />
                               )}
+                              {question.type === "terminatorButton" && (
+                                <TerminatorButtonQuestion question={question} />
+                              )}
                             </motion.div>
                           );
                         }
@@ -147,7 +151,7 @@ const MultiStepFormComponent = ({
                           variant="default"
                           className="w-fit ml-auto"
                         >
-                          Terminer
+                          {useMSF.data.currentStep.continueLabel ?? "Terminer"}
                         </Button>
                       ) : (
                         <Button
@@ -158,7 +162,7 @@ const MultiStepFormComponent = ({
                             scrollToViewIfNeeded(containerRef);
                           }}
                         >
-                          Continuer
+                          {useMSF.data.currentStep.continueLabel ?? "Continuer"}
                           <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
                         </Button>
                       )}
@@ -168,10 +172,10 @@ const MultiStepFormComponent = ({
               </motion.div>
             </AnimatePresence>
           </div>
-          {useMSF.submission.stopFlow.isStepStoppingFlow &&
-          useMSF.submission.stopFlow.contentStepStoppingFlow ? (
+          {useMSF.submission.stopFlow.isStoppingFlow &&
+          useMSF.submission.stopFlow.contentStoppingFlow ? (
             <StopFlowModal
-              {...useMSF.submission.stopFlow.contentStepStoppingFlow}
+              {...useMSF.submission.stopFlow.contentStoppingFlow}
             />
           ) : null}
         </>
@@ -190,6 +194,9 @@ import {
 import { StopFlowModal } from "./stopFlowModal";
 
 const todo = [
+  "add question type bouton",
+  "add ability to skip steps form the popup continue button, need to also take care of going back the steps",
+  "recap to pdf",
   "verify everything is working as expected",
   "submission flow",
   "backend database",
@@ -206,9 +213,7 @@ const TodoList = () => {
       <PopoverContent>
         <ul className="flex flex-col gap-2 pl-4 list-disc">
           {todo.map((item, index) => (
-            <li key={index}>
-              {item}
-            </li>
+            <li key={index}>{item}</li>
           ))}
         </ul>
       </PopoverContent>

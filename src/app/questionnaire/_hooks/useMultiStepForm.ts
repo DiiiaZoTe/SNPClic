@@ -1,14 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FormAnswers, Form, StepDirection, Answer, StepCanStopFlowContent } from "../types";
+import { FormAnswers, Form, StepDirection, CanStopFlowContent, QuestionInfoCondition, Question } from "../types";
 import { flattenFormData, getFormDefaultValues, getStepAnswers, getStepZodSchema } from "../_utils/utils";
 import { evaluateCondition } from "../_utils/conditions";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { getDefaultStore, useAtom } from "jotai";
+import { getDefaultStore } from "jotai";
 import { formAnswersAtom } from "../_hooks/atom";
 
 export type UseMSF = ReturnType<typeof useMultiStepForm>;
@@ -28,12 +28,17 @@ export const useMultiStepForm = (data: Form) => {
 
   //* logic that is specific to the multiple step form below
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [isStepStoppingFlow, setIsStepStoppingFlow] = useState(false);
-  const [contentStepStoppingFlow, setContentStepStoppingFlow] = useState<StepCanStopFlowContent | undefined>(undefined);
-  const [formStoppedReason, setFormStoppedReason] = useState<string | undefined>(undefined);
+  const [isStoppingFlow, setIsStoppingFlow] = useState(false);
+  const [contentStoppingFlow, setContentStoppingFlow] = useState<CanStopFlowContent | undefined>(undefined);
+  // the reason the form was stopped since contentStoppingFlow could have multiple reason options
+  const [formStoppedReason, setFormStoppedReason] = useState<{
+    reason: string;
+    questionKey?: string;
+  } | undefined>(undefined);
 
   /** currentStepData */
   const currentStepData = data[currentStep - 1];
+  const flattenForm = useMemo(() => flattenFormData(data), [data]);
 
   //* The form state and initializers
   /** zod schema of the current step */
@@ -62,12 +67,20 @@ export const useMultiStepForm = (data: Form) => {
     form.setValue(questionKey, defaultValues[questionKey]);
   }, [form, defaultValues]);
 
+  const checkQuestionInfo = (infoConditions?: QuestionInfoCondition) => {
+    if (!infoConditions) return undefined;
+    for (const infoCondition of infoConditions) {
+      const infoConditionEvaluated = evaluateCondition(infoCondition.condition, form.getValues());
+      if (!infoConditionEvaluated) continue;
+      return infoCondition.info;
+    }
+  }
+
   const [hiddenQuestions, setHiddenQuestions] = useState<string[]>([]);
   // inital run to hide questions
   useEffect(() => {
-    const questions = flattenFormData(data);
     const toHide = <string[]>[];
-    questions.forEach((question) => {
+    flattenForm.forEach((question) => {
       if (!question.displayCondition) return;
       const displayEvaluated = evaluateCondition(question.displayCondition, getDefaultStore().get(formAnswersAtom));
       if (!displayEvaluated) {
@@ -75,7 +88,7 @@ export const useMultiStepForm = (data: Form) => {
       }
     });
     setHiddenQuestions(toHide);
-  }, [data, defaultValues, currentStep]);
+  }, [flattenForm, defaultValues, currentStep]);
 
   useEffect(() => {
     const watching = form.watch((values, { name: questionKey, type: eventType }) => {
@@ -120,6 +133,27 @@ export const useMultiStepForm = (data: Form) => {
     return currentValidSteps;
   }, [form, currentStepData, currentStep]);
 
+  /** validate up to current step and sets steps passed current to not valid */
+  const validateUpToCurrentStep = useCallback(async () => {
+    const { errors } = await form.control._executeSchema([
+      ...flattenForm.map((question) => question.key)
+    ]);
+    const wasStepValid = Object.keys(errors).length === 0;
+    let currentValidSteps: boolean[] = [];
+    setValidSteps((steps) => {
+      currentValidSteps = Array.from({ length: steps.length }, (_, i) => {
+        if (i < currentStep - 1) return steps[i];
+        else if (i === currentStep - 1) return wasStepValid;
+        return false;
+      });
+      return currentValidSteps;
+    });
+    setVisitedSteps((visited) => {
+      return Array.from({ length: visited.length }, (_, index) => index <= currentStep - 1);
+    });
+    return currentValidSteps;
+  }, [form, flattenForm, currentStep]);
+
   //* The step helpers
   /**
    * Internal use only, use this to set the current step
@@ -140,7 +174,7 @@ export const useMultiStepForm = (data: Form) => {
    * Internal use only, use this to set the current step without any validation etc...
    */
   const normalSetCurrentStep = (step: number, direction: StepDirection) => {
-    cancelStepStoppingFlow();
+    cancelStoppingFlow();
     setDirection(direction);
     setCurrentStep(step);
     setVisitedSteps((visited) => {
@@ -178,39 +212,57 @@ export const useMultiStepForm = (data: Form) => {
   /** go to recap step 
    * @param bypassFutureInvalidSteps skips validation of steps passed the current
    */
-  const goToRecap = async (bypassFutureInvalidSteps = false, stopFlowReason?: string) => {
+  const goToRecap = async (bypassFutureInvalidSteps = false, stopFlowReason?: { reason: string, questionKey?: string }) => {
     // was last step valid?
-    let currentValidSteps = await validateCurrentStep();
-    if (bypassFutureInvalidSteps) {
-      currentValidSteps = currentValidSteps.slice(0, currentStep);
-    }
+    const currentValidSteps = bypassFutureInvalidSteps
+      ? (await validateUpToCurrentStep()).slice(0, currentStep)
+      : await validateCurrentStep();
     // get the first non valid step and go to it
     const firstInvalidStep = currentValidSteps.findIndex((valid) => !valid);
     if (firstInvalidStep !== -1) {
       goTo(firstInvalidStep + 1);
       return;
     }
-    // otherwise, submit the form
-    if (stopFlowReason) setFormStoppedReason(stopFlowReason);
+    // submit the form if we are not stopping the flow
+    if (!stopFlowReason) {
+      setIsFormSubmitted(true);
+      return;
+    }
+
+    // set stopping flow reason
+    setFormStoppedReason(stopFlowReason);
     setIsFormSubmitted(true);
-  }
+    if (!!!stopFlowReason.questionKey) return;
+    // below if button stopped flow
+    // make sure we set the terminator button question key to true
+    form.setValue(stopFlowReason.questionKey, true);
+    // here we should reset all the answer after the question
+    const indexQuestionKey = flattenForm.findIndex((question) => question.key === stopFlowReason.questionKey);
+    const questionsToReset = flattenForm.slice(indexQuestionKey + 1);
+    questionsToReset.forEach((question) => {
+      resetAnswer(question.key);
+    });
+    console.log(questionsToReset);
+  };
 
   /** continue after trying stopping flow */
   const continueAfterStopFlow = () => {
     if (stopFlowGoingToStep === undefined) return;
     // since this only goes forward, we check if a step after the
     // current up to the one we are going to can stop the flow
-    if(checkStepsCanStopFlow(currentStep + 1, stopFlowGoingToStep)) return;
+    if (checkStepsCanStopFlow(currentStep + 1, stopFlowGoingToStep)) return;
     normalSetCurrentStep(stopFlowGoingToStep, "forward");
   }
 
   /** cancel the step stopping flow */
-  const cancelStepStoppingFlow = useCallback(() => {
-    setIsStepStoppingFlow(false);
-    setContentStepStoppingFlow(undefined);
+  const cancelStoppingFlow = useCallback(() => {
+    setIsStoppingFlow(false);
+    setContentStoppingFlow(undefined);
     setStopFlowGoingToStep(undefined);
+    if (formStoppedReason?.questionKey)
+      form.setValue(formStoppedReason.questionKey!, false);
     setFormStoppedReason(undefined);
-  }, []);
+  }, [formStoppedReason, form]);
 
   /** user submitted the form */
   const onSubmitCallback = async () => {
@@ -221,6 +273,21 @@ export const useMultiStepForm = (data: Form) => {
     goToRecap()
   };
 
+  const buttonCanStopFlow = async (question: Question<"terminatorButton">) => {
+    // go through the flatten form and reset all the answers that have a higher index than the questionKey one
+    // const questionIndex = flattenForm.findIndex((question) => question.key === questionKey);
+    // if (questionIndex === -1) return;
+    // const questionsToReset = flattenForm.slice(questionIndex + 1);
+    // questionsToReset.forEach((question) => {
+    //   resetAnswer(question.key);
+    // });
+
+    if (!question) return;
+    setIsStoppingFlow(true);
+    setContentStoppingFlow({ ...question.stopFlowContent, questionKey: question.key });
+    setDirection("forward");
+  }
+
   /** check if current step can stop flow and sets modal content*/
   const checkStepsCanStopFlow = (fromStep: number, toStep: number) => {
     setStopFlowGoingToStep(toStep);
@@ -229,8 +296,8 @@ export const useMultiStepForm = (data: Form) => {
       for (const condition of stepToEvaluate.stopFlowCondition || []) {
         const conditionEvaluated = evaluateCondition(condition.condition, form.getValues());
         if (conditionEvaluated) {
-          setIsStepStoppingFlow(true);
-          setContentStepStoppingFlow(condition.content);
+          setIsStoppingFlow(true);
+          setContentStoppingFlow(condition.content);
           setDirection("forward");
           setCurrentStep(i);
           return true;
@@ -270,6 +337,7 @@ export const useMultiStepForm = (data: Form) => {
       hidden: hiddenQuestions,
       isHidden: (questionKey: string) => hiddenQuestions.includes(questionKey),
       resetAnswer,
+      checkQuestionInfo,
     },
     answers: {
       form: () => form.getValues(),
@@ -282,13 +350,14 @@ export const useMultiStepForm = (data: Form) => {
       setIsFormSubmitted,
       onSubmitCallback,
       stopFlow: {
-        isStepStoppingFlow,
-        setIsStepStoppingFlow,
-        contentStepStoppingFlow,
-        setContentStepStoppingFlow,
-        cancelStepStoppingFlow,
+        isStoppingFlow,
+        setIsStoppingFlow,
+        contentStoppingFlow,
+        setContentStoppingFlow,
+        cancelStoppingFlow,
         formStoppedReason,
         setFormStoppedReason,
+        buttonCanStopFlow,
       }
     }
   };

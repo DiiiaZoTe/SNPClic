@@ -1,20 +1,19 @@
 //! Answer types
 
+import { ButtonVariantsType } from "@/components/ui/button";
 import { PathId } from "./_components/body";
 
 /** Represents the answer to a boolean question. */
 export type BooleanAnswer = boolean;
 
 /** Represents the answer to a multiSelect or multiChoice question. */
-export type MultiAnswer = string[];
+export type MultiStringAnswer = string[];
 
 /** Represents the answer to a select question. */
-export type SelectAnswer = string;
-
-export type BodyAnswer = string;
+export type StringAnswer = string;
 
 /** Union type for all answer types. */
-export type Answer = BooleanAnswer | MultiAnswer | SelectAnswer | BodyAnswer | undefined;
+export type Answer = BooleanAnswer | MultiStringAnswer | StringAnswer | undefined;
 
 /** Represents the answer to a question. The record key corresponds to the question key. */
 export type FormAnswers = Record<string, Answer>;
@@ -24,10 +23,11 @@ export type FormAnswers = Record<string, Answer>;
 /** Maps each question type to its corresponding answer type. */
 export type QuestionTypeToAnswerMap = {
   boolean: BooleanAnswer;
-  multiSelect: MultiAnswer;
-  multiChoice: MultiAnswer;
-  select: SelectAnswer;
-  body: BodyAnswer;
+  multiSelect: MultiStringAnswer;
+  multiChoice: MultiStringAnswer;
+  select: StringAnswer;
+  body: StringAnswer;
+  terminatorButton: BooleanAnswer;
 };
 
 /** Represents an option in a question. */
@@ -35,7 +35,12 @@ export type QuestionOption = { value: string; label: string };
 export type QuestionBodyOption = Record<PathId, string[]>;
 
 /** Enumerates the different types of questions that can be used in a form. */
-export type QuestionType = "boolean" | "multiSelect" | "multiChoice" | "select" | "body";
+export type QuestionType = "boolean" | "multiSelect" | "multiChoice" | "select" | "body" | "terminatorButton";
+
+export type QuestionInfoCondition = {
+  info: string;
+  condition: QuestionCondition | CompositeCondition;
+}[];
 
 /** Base structure for a question.  Generic T extends QuestionType for specific question type enforcement. */
 export type BaseQuestion<T extends QuestionType> = {
@@ -47,6 +52,7 @@ export type BaseQuestion<T extends QuestionType> = {
   popupInfo?: string;
   displayCondition?: QuestionCondition | CompositeCondition;
   dependents?: string[];
+  infoCondition?: QuestionInfoCondition;
 };
 
 /**
@@ -61,7 +67,7 @@ type BooleanQuestion = BaseQuestion<'boolean'> & {
  */
 type MultiChoiceQuestion = BaseQuestion<'multiChoice'> & {
   options: QuestionOption[];
-  defaultAnswer: MultiAnswer;
+  defaultAnswer: MultiStringAnswer;
 };
 
 /**
@@ -70,7 +76,7 @@ type MultiChoiceQuestion = BaseQuestion<'multiChoice'> & {
 type MultiSelectQuestion = BaseQuestion<'multiSelect'> & {
   options: QuestionOption[];
   placeholder: string;
-  defaultAnswer: MultiAnswer;
+  defaultAnswer: MultiStringAnswer;
 };
 
 /**
@@ -79,7 +85,7 @@ type MultiSelectQuestion = BaseQuestion<'multiSelect'> & {
 type SelectQuestion = BaseQuestion<'select'> & {
   options: QuestionOption[];
   placeholder: string;
-  defaultAnswer: SelectAnswer;
+  defaultAnswer: StringAnswer;
 };
 
 /**
@@ -87,7 +93,17 @@ type SelectQuestion = BaseQuestion<'select'> & {
  */
 type BodyQuestion = BaseQuestion<'body'> & {
   options: QuestionBodyOption;
-  defaultAnswer: BodyAnswer;
+  defaultAnswer: StringAnswer;
+};
+
+/**
+ * Specific structure for a terminator button question.
+ */
+type TerminatorButtonQuestion = BaseQuestion<'terminatorButton'> & {
+  buttonLabel?: string;
+  defaultAnswer: BooleanAnswer;
+  variant: ButtonVariantsType;
+  stopFlowContent: CanStopFlowContent;
 };
 
 /**
@@ -99,27 +115,36 @@ export type Question<T extends QuestionType> =
   T extends 'multiSelect' ? MultiSelectQuestion :
   T extends 'select' ? SelectQuestion :
   T extends 'body' ? BodyQuestion :
+  T extends 'terminatorButton' ? TerminatorButtonQuestion :
   never;
 
 //! Step/Form types
 
-export type StepCanStopFlowContent = {
+export type CanStopFlowContent = {
   title: string;
+  questionKey?: string;
   content: string;
   stopFlowButtons?: {
     label: string;
+    preText?: string;
+    postText?: string;
     warning: string;
     reason: string;
   }[];
   continueFlowButton?: {
     label: string;
+    preText?: string;
+    postText?: string;
     warning?: string;
+  };
+  cancelFlowButton?: {
+    label: string;
   };
 }
 
 export type StepCanStopFlow = {
   condition: QuestionCondition | CompositeCondition;
-  content: StepCanStopFlowContent;
+  content: CanStopFlowContent;
 }
 
 /** Represents a single step in a form, including its questions. */
@@ -127,6 +152,7 @@ export type Step = {
   name: string;
   description?: string;
   questions: Array<Question<QuestionType>>;
+  continueLabel?: string;
   stopFlowCondition?: StepCanStopFlow[];
 };
 

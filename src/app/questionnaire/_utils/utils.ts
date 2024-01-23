@@ -15,6 +15,7 @@ export const getStepZodSchema = (step: Step) => {
   step.questions.forEach((question) => {
     switch (question.type) {
       case "boolean":
+      case "terminatorButton":
         // always required for boolean but we have a default value
         schema[question.key] = z
           .boolean()
@@ -44,7 +45,7 @@ export const getStepZodSchema = (step: Step) => {
     const fullValues = getDefaultStore().get(formAnswersAtom);
     step.questions.forEach((question) => {
       // check if the question is required
-      let isRequired = question.isRequired; 
+      let isRequired = question.isRequired;
       // if the question is required and has a display condition, check if the condition is met
       if (isRequired && question.displayCondition) {
         isRequired = evaluateCondition(question.displayCondition, fullValues);
@@ -101,7 +102,6 @@ export const getStepZodSchema = (step: Step) => {
 export const flattenFormData = (data: Form) => {
   return data.flatMap((step) => step.questions);
 }
-
 /** Get the default values for the form */
 export const getFormDefaultValues = (data: Form): FormAnswers => {
   return data.reduce((acc, step) => {

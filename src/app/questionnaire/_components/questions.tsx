@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Info } from "lucide-react";
+import { ChevronRight, Info } from "lucide-react";
 import { Body } from "./body";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -31,6 +31,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 type UseFormType = UseFormReturn<
   {
@@ -48,6 +49,7 @@ export const FieldWrapper = ({
   itemClassName,
   labelClassName,
   formMessage = true,
+  infoMessage = true,
 }: {
   question: Question<QuestionType>;
   label?: string;
@@ -56,15 +58,22 @@ export const FieldWrapper = ({
   itemClassName?: string;
   labelClassName?: string;
   formMessage?: boolean;
+  infoMessage?: boolean;
 }) => {
+  const useMSF = useMultiStepFormContext();
+  let infoMessageContent: string | undefined = undefined;
+  if (infoMessage)
+    infoMessageContent = useMSF.questions.checkQuestionInfo(
+      question.infoCondition
+    );
   return (
     <FormField
       name={question.key}
       control={form.control}
       render={({ field }) => (
-        <FormItem className="flex flex-col gap-2">
-          <FormLabel className={itemClassName ?? "flex flex-col gap-2"}>
-            <div className="flex flex-col gap-2">
+        <FormItem id={`${question.key}_item`} className="flex flex-col gap-2">
+          <div className={itemClassName ?? "flex flex-col gap-2"}>
+            <FormLabel className="flex flex-col gap-2">
               <div
                 className={
                   labelClassName ??
@@ -75,7 +84,7 @@ export const FieldWrapper = ({
                   label
                 ) : (
                   <>
-                    <span>{question.text}</span>
+                    <span dangerouslySetInnerHTML={{ __html: question.text }} />
                     {question.isRequired ? (
                       <span className="text-red-500">*</span>
                     ) : null}
@@ -96,13 +105,25 @@ export const FieldWrapper = ({
                 )}
               </div>
               {question.description ? (
-                <span className="text-sm text-foreground/60">
-                  {question.description}
-                </span>
+                <span
+                  className="text-sm text-foreground/60"
+                  dangerouslySetInnerHTML={{ __html: question.description }}
+                />
               ) : null}
-            </div>
+            </FormLabel>
             <FormControl>{render(field)}</FormControl>
-          </FormLabel>
+          </div>
+          {infoMessage && infoMessageContent ? (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="text-sm"
+              dangerouslySetInnerHTML={{
+                __html: infoMessageContent,
+              }}
+            />
+          ) : null}
           {formMessage ? <FormMessage /> : null}
         </FormItem>
       )}
@@ -155,6 +176,7 @@ export const MultiChoiceQuestion = ({
               itemClassName="flex flex-row items-center gap-4 space-y-0 bg-background border-muted border rounded-sm px-4 py-3"
               labelClassName="font-normal leading-5"
               formMessage={false}
+              infoMessage={false}
               render={(field) => (
                 <Checkbox
                   className="ml-auto"
@@ -277,18 +299,49 @@ export const BodyQuestion = ({ question }: { question: Question<"body"> }) => {
                 <p>Contenu:</p>
                 <div className="flex w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
                   <ul className="list-disc list-inside">
-                  {content.map((item, index) => (
-                    <li key={index} className="text-sm">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                    {content.map((item, index) => (
+                      <li key={index} className="text-sm">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             ) : null}
           </div>
         );
       }}
+    />
+  );
+};
+
+export const TerminatorButtonQuestion = ({
+  question,
+}: {
+  question: Question<"terminatorButton">;
+}) => {
+  const useMSF = useMultiStepFormContext();
+
+  return (
+    <FieldWrapper
+      question={question}
+      form={useMSF.form}
+      itemClassName="flex flex-row gap-2 justify-between items-center"
+      render={() => (
+        <Button
+          type="button"
+          className="flex flex-row w-fit gap-2 justify-start self-end min-w-0 max-w-[50%] group"
+          variant={question.variant ?? "default"}
+          onClick={() => {
+            useMSF.submission.stopFlow.buttonCanStopFlow(question);
+          }}
+        >
+          {question.buttonLabel ? (
+            <span className="truncate min-w-0">{question.buttonLabel}</span>
+          ) : null}
+          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-all" />
+        </Button>
+      )}
     />
   );
 };

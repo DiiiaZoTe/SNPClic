@@ -8,9 +8,8 @@ import { cn } from "@/lib/utils";
 import {
   QuestionType,
   Question,
-  BodyAnswer,
-  SelectAnswer,
-  MultiAnswer,
+  StringAnswer,
+  MultiStringAnswer,
   BooleanAnswer,
 } from "../types";
 import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
@@ -57,7 +56,7 @@ export const RecapAnswers = () => {
                       <QuestionAnswerMultiChoice
                         key={index}
                         question={question}
-                        answer={answer as MultiAnswer}
+                        answer={answer as MultiStringAnswer}
                       />
                     );
                   }
@@ -66,7 +65,7 @@ export const RecapAnswers = () => {
                       <QuestionAnswerMultiSelect
                         key={index}
                         question={question}
-                        answer={answer as MultiAnswer}
+                        answer={answer as MultiStringAnswer}
                       />
                     );
                   }
@@ -75,7 +74,7 @@ export const RecapAnswers = () => {
                       <QuestionAnswerSelect
                         key={index}
                         question={question}
-                        answer={answer as SelectAnswer}
+                        answer={answer as StringAnswer}
                       />
                     );
                   }
@@ -84,7 +83,16 @@ export const RecapAnswers = () => {
                       <QuestionAnswerBody
                         key={index}
                         question={question}
-                        answer={answer as BodyAnswer}
+                        answer={answer as StringAnswer}
+                      />
+                    );
+                  }
+                  if (question.type === "terminatorButton") {
+                    return (
+                      <QuestionAnswerTerminatorButton
+                        key={index}
+                        answer={answer as BooleanAnswer}
+                        question={question}
                       />
                     );
                   }
@@ -100,7 +108,7 @@ export const RecapAnswers = () => {
               Raison de l&apos;arrêt du formulaire
             </p>
             <p className="text-sm text-muted-foreground">
-              {useMSF.submission.stopFlow.formStoppedReason}
+              {useMSF.submission.stopFlow.formStoppedReason.reason}
             </p>
           </div>
         ) : null}
@@ -176,7 +184,7 @@ const QuestionAnswerMultiChoice = ({
   optionAnswerClassName,
 }: {
   question: Question<"multiChoice">;
-  answer: MultiAnswer;
+  answer: MultiStringAnswer;
   className?: string;
   wrapperClassName?: string;
   optionClassName?: string;
@@ -228,7 +236,7 @@ const QuestionAnswerMultiSelect = ({
   wrapperClassName,
 }: {
   question: Question<"multiSelect">;
-  answer: MultiAnswer;
+  answer: MultiStringAnswer;
   className?: string;
   wrapperClassName?: string;
 }) => {
@@ -263,7 +271,7 @@ const QuestionAnswerSelect = ({
   wrapperClassName,
 }: {
   question: Question<"select">;
-  answer: SelectAnswer;
+  answer: StringAnswer;
   className?: string;
   wrapperClassName?: string;
 }) => {
@@ -287,7 +295,7 @@ const QuestionAnswerBody = ({
   wrapperClassName,
 }: {
   question: Question<"body">;
-  answer: BodyAnswer;
+  answer: StringAnswer;
   className?: string;
   wrapperClassName?: string;
 }) => {
@@ -306,6 +314,40 @@ const QuestionAnswerBody = ({
       ) : (
         <span className={cn("text-sm", className)}>{NO_ANSWER}</span>
       )}
+    </QuestionAnswerWrapper>
+  );
+};
+
+const QuestionAnswerTerminatorButton = ({
+  question,
+  answer,
+  className,
+}: {
+  question: Question<"terminatorButton">;
+  answer: BooleanAnswer;
+  className?: string;
+}) => {
+  return (
+    <QuestionAnswerWrapper
+      question={question}
+      className={cn(
+        "flex flex-row items-center justify-between gap-4",
+        className
+      )}
+    >
+      <div
+        className={cn(
+          "flex justify-center items-center text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",
+          answer ? " bg-green-500" : "bg-destructive",
+          className
+        )}
+      >
+        {answer ? (
+          <Check className="w-4 h-4 stroke-2" />
+        ) : (
+          <X className="w-4 h-4 stroke-2" />
+        )}
+      </div>
     </QuestionAnswerWrapper>
   );
 };

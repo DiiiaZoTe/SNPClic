@@ -1,4 +1,4 @@
-import { Answer, CompositeCondition, ConditionOperator, FormAnswers, LogicalOperator, QuestionCondition, QuestionConditionValue, SelectedNumberOperator } from "../types";
+import { Answer, CompositeCondition, FormAnswers, LogicalOperator, QuestionCondition, QuestionConditionValue, SelectedNumberOperator } from "../types";
 
 
 /** Function to create a basic question condition */

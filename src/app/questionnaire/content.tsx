@@ -22,7 +22,7 @@ export const FORM_DATA: Form = [
       {
         type: "boolean",
         key: "3",
-        text: "Avez-vous complétez la fiche patient ?",
+        text: "Avez-vous complété la fiche patient ?",
         defaultAnswer: false,
         popupInfo:
           "Nom, prénom, téléphone, adresse mail, adresse avec étage et code de la porte si nécessaire",
@@ -35,32 +35,40 @@ export const FORM_DATA: Form = [
         description: "Ex. Patient fragile,...",
         defaultAnswer: false,
         isRequired: false,
+        infoCondition: [
+          {
+            info: `
+              <div>
+                Dans ce cas, suivre les consignes de l’alerte. <br/>
+                Exemple : donner un rendez-vous uniquement avec le médecin traitant, même pour les urgences.
+              </div>
+            `,
+            condition: {
+              questionKey: "4",
+              operator: "EQUALS",
+              value: [true],
+            },
+          },
+        ],
       },
     ],
   },
   {
-    name: "Délai de consultation souhaité",
+    name: "Délai de consultation souhaité par le patient",
     questions: [
       {
-        type: "boolean",
-        key: "6",
-        text: "Rendez-vous en urgence souhaité, demander le motif de consultation",
+        type: "terminatorButton",
+        key: "5",
+        text: "Rendez-vous non urgent ?",
         defaultAnswer: false,
         isRequired: false,
-      },
-    ],
-    stopFlowCondition: [
-      {
-        condition: {
-          questionKey: "6",
-          operator: "EQUALS",
-          value: [false],
-        },
-        content: {
+        variant: "default",
+        buttonLabel: "Non urgent",
+        stopFlowContent: {
           title: "Rendez-vous non urgent",
           content: `
             <div>
-              Proposer un rendez-vous avec le médecin, puis selectionner si le rendez-vous a été donné ou non.
+              Proposer un rendez-vous avec le médecin traitant, puis selectionner si le rendez-vous a été donné ou non.
             </div>
           `,
           stopFlowButtons: [
@@ -73,12 +81,14 @@ export const FORM_DATA: Form = [
           ],
           continueFlowButton: {
             label: "Continuer",
+            postText: "Aucun créneau du médecin traitant ne convient au patient.",
             warning:
               "Le patient n'a pas accepté de prendre un rendez-vous avec le médecin.",
           },
         },
       },
     ],
+    continueLabel: "Rendez-vous urgent, continuer",
   },
   {
     name: "Motif de consultation",
@@ -100,9 +110,14 @@ export const FORM_DATA: Form = [
       {
         type: "body",
         key: "8",
-        text: "Quels sont les motifs de consultation ?",
-        description:
-          "Sélectionner la zone du corps si des symptômes mentionnés sont présents. Il s'agit d'une urgence nécessitant une prise en charge par le 15.",
+        text: "Aide à l’orientation vers le 15 pour les urgences vitales ?",
+        description: `
+          <p>
+            Demander le motif de consultation puis sélectionner la zone du corps concernée.<br />
+            Si le patient présente l’un de ces symptômes, il s'agit d'une urgence nécessitant une prise en charge par le 15.<br />
+            Demander au patient de contacter le 15, et s’assurer dans une quinzaine de minutes de la réponse apporté par le 15 en recontactant le patient. 
+          </p>
+        `,
         defaultAnswer: "",
         isRequired: false,
         options: {
@@ -159,10 +174,7 @@ export const FORM_DATA: Form = [
         content: {
           title: "Rendez-vous en urgence nécessaire.",
           content: `
-            <div>
-              Trouver un rendez-vous en urgence pour le patient.<br />
-              Si pas de disponibilité, laisser un mot au médecin.
-            </div>
+              Trouver un rendez-vous en urgence avec le médecin traitant.
           `,
           stopFlowButtons: [
             {
@@ -174,6 +186,8 @@ export const FORM_DATA: Form = [
           ],
           continueFlowButton: {
             label: "Mot laissé au médecin",
+            postText:
+              "Aucun rdv d’urgence disponible dans le planning du médecin traitant.",
             warning:
               "Un mot a été laissé au médecin pour qu'il rappelle le patient, continuer vers les ressources du patient.",
           },
@@ -205,32 +219,54 @@ export const FORM_DATA: Form = [
     ],
   },
   {
-    name: "Evaluation des ressources internes du patient",
+    name: "Difficultés rencontrées et ressources internes",
     questions: [
       {
         type: "multiChoice",
         key: "9",
-        text: "Selectionner les ressources internes du patient:",
+        text: "Demander en quoi ce motif semble urgent au patient.",
         defaultAnswer: [],
         isRequired: false,
         options: [
           {
             value: "1",
-            label:
-              "Trouve-t-il que les symptômes durent plus longtemps qu'habituellement ?",
+            label: "Trouve-t-il que cela dure trop longtemps ? ",
           },
-          { value: "2", label: "Trouve-t-il les symptômes trop grave ?" },
+          { value: "2", label: "Trouve-t-il les symptômes trop graves ?" },
           {
             value: "3",
             label: "S'agit-il de symptômes inhabituels/inconnus ?",
           },
-          { value: "4", label: "Est-il préoccupé par les symptômes ?" },
+          {
+            value: "4",
+            label:
+              "Cela engendre-t-il une situation stressante, qui semble ingérable ?",
+          },
           {
             value: "5",
             label:
               "A-t-il pris quelque chose pour se soigner et si oui, cela a-t-il eu un effet ?",
           },
           { value: "6", label: "En a-t-il parler avec le pharmacien ?" },
+        ],
+      },
+      {
+        type: "multiChoice",
+        key: "10",
+        text: "Demander au patient ce qu’il a essayé de faire pour améliorer ses symptômes.",
+        defaultAnswer: [],
+        isRequired: false,
+        options: [
+          {
+            value: "1",
+            label:
+              "A-t-il suivi les conseils hygiéno-diététiques habituels (DRP, hydratation…) ?",
+          },
+          { value: "2", label: "A-t-il pris quelque chose pour se soigner ? " },
+          {
+            value: "3",
+            label: "En a-t-il parlé avec le pharmacien ? ",
+          },
         ],
       },
     ],
@@ -242,7 +278,7 @@ export const FORM_DATA: Form = [
           value: 0,
         },
         content: {
-          title: "Aucune ressource interne sélectionnée.",
+          title: "Aucune difficulté rencontrée.",
           content: `
             <div>
               Nous vous conseillons de différer le rendez-vous du patient.
@@ -269,10 +305,10 @@ export const FORM_DATA: Form = [
           value: 1,
         },
         content: {
-          title: "Une seule ressource interne sélectionnée.",
+          title: "Une seule difficulté rencontrée.",
           content: `
             <div>
-              Il faut essayer de proposer au patient de différer son rendez-vous.
+              On peut proposer au patient de différer son rendez-vous, si cela lui semble possible.
             </div>
           `,
           stopFlowButtons: [
@@ -296,7 +332,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "multiChoice",
-        key: "10",
+        key: "11",
         text: "Le patient ne pense pas pouvoir différer sa consultation:",
         defaultAnswer: [],
         isRequired: false,
