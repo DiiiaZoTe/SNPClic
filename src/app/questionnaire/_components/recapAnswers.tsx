@@ -102,13 +102,13 @@ export const RecapAnswers = () => {
             </div>
           );
         })}
-        {useMSF.submission.stopFlow.formStoppedReason ? (
+        {useMSF.controlFlow.stopped.formStoppedReason ? (
           <div className="shrink-0 flex flex-col gap-4">
             <p className="text-xl font-bold leading-none tracking-tight">
               Raison de l&apos;arrêt du formulaire
             </p>
             <p className="text-sm text-muted-foreground">
-              {useMSF.submission.stopFlow.formStoppedReason.reason}
+              {useMSF.controlFlow.stopped.formStoppedReason.reason}
             </p>
           </div>
         ) : null}

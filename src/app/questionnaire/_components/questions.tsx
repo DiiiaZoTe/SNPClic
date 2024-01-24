@@ -63,8 +63,9 @@ export const FieldWrapper = ({
   const useMSF = useMultiStepFormContext();
   let infoMessageContent: string | undefined = undefined;
   if (infoMessage)
-    infoMessageContent = useMSF.questions.checkQuestionInfo(
-      question.infoCondition
+    infoMessageContent = useMSF.questions.checkQuestionInfoCondition(
+      useMSF.answers.form(),
+      question.infoCondition,
     );
   return (
     <FormField
@@ -333,7 +334,7 @@ export const TerminatorButtonQuestion = ({
           className="flex flex-row w-fit gap-2 justify-start self-end min-w-0 max-w-[50%] group"
           variant={question.variant ?? "default"}
           onClick={() => {
-            useMSF.submission.stopFlow.buttonCanStopFlow(question);
+            useMSF.controlFlow.try.buttonTryStopFlow(question);
           }}
         >
           {question.buttonLabel ? (

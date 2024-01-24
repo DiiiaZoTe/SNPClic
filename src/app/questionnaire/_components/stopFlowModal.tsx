@@ -41,7 +41,7 @@ export const StopFlowModal = ({
                   <Button
                     className="w-full group"
                     onClick={() => {
-                      useMSF.stepper.move.goToRecap(true, {
+                      useMSF.stepper.goTo.recap(true, {
                         reason,
                         questionKey,
                       });
@@ -70,7 +70,7 @@ export const StopFlowModal = ({
                   className="w-full group"
                   variant="secondary"
                   onClick={() => {
-                    useMSF.stepper.move.continueAfterStopFlow();
+                    useMSF.controlFlow.stopping.continueModalStopFlow();
                   }}
                 >
                   {continueFlowButton.label}
@@ -92,7 +92,7 @@ export const StopFlowModal = ({
         <AlertDialogCancel
           className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
           onClick={() => {
-            useMSF.submission.stopFlow.cancelStoppingFlow();
+            useMSF.controlFlow.stopping.cancelStopFlow();
           }}
         >
           <X className="h-6 w-6 p-1" />

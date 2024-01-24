@@ -59,7 +59,7 @@ const MultiStepFormComponent = ({
         <Button
           onClick={() => {
             scrollToViewIfNeeded(containerRef);
-            useMSF.stepper.move.previous();
+            useMSF.stepper.goTo.previous();
           }}
           variant="outline"
           className={cn(
@@ -106,7 +106,7 @@ const MultiStepFormComponent = ({
                     </div>
                     <div className="flex flex-col w-full gap-4">
                       {useMSF.data.currentStep.questions.map(
-                        (question, index) => {
+                        (question, _index) => {
                           const isHidden = useMSF.questions.isHidden(
                             question.key
                           );
@@ -172,11 +172,9 @@ const MultiStepFormComponent = ({
               </motion.div>
             </AnimatePresence>
           </div>
-          {useMSF.submission.stopFlow.isStoppingFlow &&
-          useMSF.submission.stopFlow.contentStoppingFlow ? (
-            <StopFlowModal
-              {...useMSF.submission.stopFlow.contentStoppingFlow}
-            />
+          {useMSF.controlFlow.stopping.isStopping &&
+          useMSF.controlFlow.stopping.content ? (
+            <StopFlowModal {...useMSF.controlFlow.stopping.content} />
           ) : null}
         </>
       ) : (
