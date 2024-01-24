@@ -5,13 +5,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Cancel as AlertDialogCancel } from "@radix-ui/react-alert-dialog";
-import { CanStopFlowContent } from "../types";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ChevronRight, Info, X } from "lucide-react";
+  CanStopFlowContent,
+  CancelFlowButton,
+  ContinueFlowButton,
+  StopFlowButton,
+} from "../types";
+import { ChevronRight, X } from "lucide-react";
 import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +21,7 @@ export const StopFlowModal = ({
   questionKey,
   stopFlowButtons,
   continueFlowButton,
+  cancelFlowButton,
 }: CanStopFlowContent) => {
   const useMSF = useMultiStepFormContext();
   return (
@@ -31,61 +32,36 @@ export const StopFlowModal = ({
         </AlertDialogHeader>
         <div dangerouslySetInnerHTML={{ __html: content }} />
         <div className="w-full flex flex-col gap-6 sm:gap-8">
-          {stopFlowButtons?.map(
-            ({ label, preText, postText, warning, reason }) => (
-              <div key={label} className="flex flex-col gap-2 w-full">
-                {preText ? (
-                  <p className="text-sm text-foreground">{preText}</p>
-                ) : null}
-                <div className="flex flex-row gap-4 w-full">
-                  <Button
-                    className="w-full group"
-                    onClick={() => {
-                      useMSF.stepper.goTo.recap(true, {
-                        reason,
-                        questionKey,
-                      });
-                    }}
-                  >
-                    {label}
-                    <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
-                  </Button>
-                  {warning && <WarningInfo info={warning} />}
-                </div>
-                {postText ? (
-                  <p className="text-sm text-foreground">{postText}</p>
-                ) : null}
-              </div>
-            )
-          )}
+          {stopFlowButtons?.map((content) => (
+            <ButtonWithWarning
+              key={content.label}
+              content={content}
+              type="stop"
+              onClick={() => {
+                useMSF.stepper.goTo.recap(true, {
+                  reason: content.reason,
+                  questionKey,
+                });
+              }}
+            />
+          ))}
+          {cancelFlowButton ? (
+            <ButtonWithWarning
+              key={cancelFlowButton.label}
+              content={cancelFlowButton}
+              type="cancel"
+              onClick={() => useMSF.controlFlow.stopping.cancelStopFlow()}
+            />
+          ) : null}
           {continueFlowButton ? (
-            <div className="flex flex-col gap-1 w-full">
-              {continueFlowButton.preText ? (
-                <p className="text-sm text-foreground">
-                  {continueFlowButton.preText}
-                </p>
-              ) : null}
-              <div className="flex flex-row gap-4 w-full">
-                <Button
-                  className="w-full group"
-                  variant="secondary"
-                  onClick={() => {
-                    useMSF.controlFlow.stopping.continueModalStopFlow();
-                  }}
-                >
-                  {continueFlowButton.label}
-                  <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
-                </Button>
-                {continueFlowButton.warning && (
-                  <WarningInfo info={continueFlowButton.warning} />
-                )}
-              </div>
-              {continueFlowButton.postText ? (
-                <p className="text-sm text-foreground">
-                  {continueFlowButton.postText}
-                </p>
-              ) : null}
-            </div>
+            <ButtonWithWarning
+              key={continueFlowButton.label}
+              content={continueFlowButton}
+              type="continue"
+              onClick={() =>
+                useMSF.controlFlow.stopping.continueModalStopFlow()
+              }
+            />
           ) : null}
         </div>
 
@@ -102,18 +78,42 @@ export const StopFlowModal = ({
     </AlertDialog>
   );
 };
-
-const WarningInfo = ({ info }: { info: string }) => {
-  return (
-    <Popover modal>
-      <PopoverTrigger asChild>
-        <Button variant="link" className="p-0">
-          <Info className="w-4 h-4 stroke-foreground" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <p>{info}</p>
-      </PopoverContent>
-    </Popover>
-  );
-};
+const ButtonWithWarning = ({
+  content,
+  type,
+  onClick,
+}: {
+  content: ContinueFlowButton | StopFlowButton | CancelFlowButton;
+  type: "continue" | "stop" | "cancel";
+  onClick: () => void;
+}) => (
+  <div className="flex flex-col gap-2 w-full">
+    {content.preText ? (
+      <p className="text-sm text-muted-foreground">{content.preText}</p>
+    ) : null}
+    <div className="flex flex-row gap-4 w-full">
+      <Button
+        className="w-full group"
+        variant={
+          content.variant
+            ? content.variant
+            : type === "continue"
+            ? "secondary"
+            : type === "cancel"
+            ? "black"
+            : "default"
+        }
+        onClick={() => {
+          onClick();
+        }}
+      >
+        {content.label}
+        <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
+      </Button>
+      {/* {content.warning && <WarningInfo info={content.warning} />} */}
+    </div>
+    {content.postText ? (
+      <p className="text-sm text-muted-foreground">{content.postText}</p>
+    ) : null}
+  </div>
+);

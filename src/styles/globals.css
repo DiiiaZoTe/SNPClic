@@ -92,6 +92,11 @@
   html.dark ::selection {
     background: hsl(142 76% 14%);
   }
+
+  .bulletList {
+    @apply list-disc list-inside pl-4;
+  }
+
 }
 
 @media (max-width: 640px) {

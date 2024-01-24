@@ -74,16 +74,15 @@ export const FORM_DATA: Form = [
           stopFlowButtons: [
             {
               label: "Rendez-vous donné",
-              warning:
-                "Le patient a accepté de prendre un rendez-vous avec le médecin.",
-              reason: "Rendez-vous non urgent donné",
+              preText:
+                "Cliquez ici si le patient a accepté de prendre un rendez-vous avec le médecin traitant.",
+              reason: "Rendez-vous non urgent donné.",
             },
           ],
           continueFlowButton: {
             label: "Continuer",
-            postText: "Aucun créneau du médecin traitant ne convient au patient.",
-            warning:
-              "Le patient n'a pas accepté de prendre un rendez-vous avec le médecin.",
+            preText:
+              "Si aucun créneau du médecin traitant ne convient au patient, continuer vers les ressources externes du patient (étape 5).",
           },
         },
       },
@@ -95,7 +94,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "select",
-        key: "7",
+        key: "6",
         text: "Quel âge a le patient ?",
         placeholder: "Sélectionner une tranche d'âge",
         defaultAnswer: "",
@@ -105,11 +104,11 @@ export const FORM_DATA: Form = [
           { value: "2", label: "Entre 6 mois et 80 ans" },
           { value: "3", label: "Plus de 80 ans" },
         ],
-        dependents: ["8"],
+        dependents: ["7"],
       },
       {
         type: "body",
-        key: "8",
+        key: "7",
         text: "Aide à l’orientation vers le 15 pour les urgences vitales ?",
         description: `
           <p>
@@ -158,7 +157,7 @@ export const FORM_DATA: Form = [
           ],
         },
         displayCondition: {
-          questionKey: "7",
+          questionKey: "6",
           operator: "EQUALS",
           value: ["2"],
         },
@@ -167,7 +166,7 @@ export const FORM_DATA: Form = [
     stopFlowCondition: [
       {
         condition: {
-          questionKey: "7",
+          questionKey: "6",
           operator: "IS_ANY_IN",
           value: ["1", "3"],
         },
@@ -179,23 +178,21 @@ export const FORM_DATA: Form = [
           stopFlowButtons: [
             {
               label: "Rendez-vous en urgence donné",
-              warning:
-                "Un rendez-vous en urgence a été donné au patient avec le médecin.",
-              reason: "Rendez-vous en urgence donné",
+              preText:
+                "Cliquez ici si un rendez-vous en urgence a été donné au patient avec le médecin traitant.",
+              reason: "Rendez-vous en urgence donné.",
             },
           ],
           continueFlowButton: {
             label: "Mot laissé au médecin",
-            postText:
-              "Aucun rdv d’urgence disponible dans le planning du médecin traitant.",
-            warning:
-              "Un mot a été laissé au médecin pour qu'il rappelle le patient, continuer vers les ressources du patient.",
+            preText:
+              "Si aucun rdv d’urgence disponible dans le planning du médecin traitant, laisser un mot au médecin pour qu’il rappelle le patient. Continuer vers les ressources externes du patient (étape 5).",
           },
         },
       },
       {
         condition: {
-          questionKey: "8",
+          questionKey: "7",
           operator: "NOT_IS_EMPTY",
         },
         content: {
@@ -209,7 +206,7 @@ export const FORM_DATA: Form = [
           stopFlowButtons: [
             {
               label: "Médecin informé et patient redirigé",
-              warning:
+              preText:
                 "Le patient a été redirigé vers le 15 et le médecin a été informé.",
               reason: "Situation nécessitant une prise en charge par le 15.",
             },
@@ -223,7 +220,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "multiChoice",
-        key: "9",
+        key: "8",
         text: "Demander en quoi ce motif semble urgent au patient.",
         defaultAnswer: [],
         isRequired: false,
@@ -252,7 +249,7 @@ export const FORM_DATA: Form = [
       },
       {
         type: "multiChoice",
-        key: "10",
+        key: "9",
         text: "Demander au patient ce qu’il a essayé de faire pour améliorer ses symptômes.",
         defaultAnswer: [],
         isRequired: false,
@@ -273,7 +270,7 @@ export const FORM_DATA: Form = [
     stopFlowCondition: [
       {
         condition: {
-          questionKey: "9",
+          questionKey: "8",
           operator: "SELECTED_EQUALS",
           value: 0,
         },
@@ -287,20 +284,21 @@ export const FORM_DATA: Form = [
           stopFlowButtons: [
             {
               label: "Différer le rendez-vous",
-              warning:
+              preText:
                 "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
-              reason: "Aucune ressource interne sélectionnée",
+              reason: "Aucune ressource interne sélectionnée.",
             },
           ],
           continueFlowButton: {
             label: "Continuer sans différer",
-            warning: "Le patient ne souhaite pas différer.",
+            preText:
+              "Si le patient ne souhaite pas différer, continuer vers les ressources externes du patient.",
           },
         },
       },
       {
         condition: {
-          questionKey: "9",
+          questionKey: "8",
           operator: "SELECTED_EQUALS",
           value: 1,
         },
@@ -314,14 +312,15 @@ export const FORM_DATA: Form = [
           stopFlowButtons: [
             {
               label: "Différer le rendez-vous",
-              warning:
+              preText:
                 "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
-              reason: "Une seule ressource interne sélectionnée",
+              reason: "Une seule ressource interne sélectionnée.",
             },
           ],
           continueFlowButton: {
             label: "Continuer sans différer",
-            warning: "Le patient ne souhaite pas différer.",
+            preText:
+              "Si le patient ne souhaite pas différer, continuer vers les ressources externes du patient.",
           },
         },
       },
@@ -331,25 +330,77 @@ export const FORM_DATA: Form = [
     name: "Evaluer les ressources externes du patient",
     questions: [
       {
-        type: "multiChoice",
-        key: "11",
-        text: "Le patient ne pense pas pouvoir différer sa consultation:",
-        defaultAnswer: [],
+        type: "terminatorButton",
+        key: "10",
+        text: "Un rendez-vous a été donné avec un autre médecin du cabinet.",
+        defaultAnswer: false,
         isRequired: false,
-        options: [
-          {
-            value: "1",
-            label: "Vérifier la disponibilité d'un rendez-vous en urgence.",
+        variant: "default",
+        buttonLabel: "Rendez-vous donné",
+        stopFlowContent: {
+          title: "Rendez-vous donné avec un autre médecin du cabinet.",
+          content: `
+            <div>
+              Veuillez valider votre sélection.
+            </div>
+          `,
+          stopFlowButtons: [
+            {
+              label: "Rendez-vous donné",
+              preText:
+                "Cliquez ici si le patient a accepté de prendre un rendez-vous avec le médecin.",
+              reason: "Rendez-vous donné avec un autre médecin du cabinet.",
+            },
+          ],
+          cancelFlowButton: {
+            label: "Annuler",
           },
+        },
+      },
+      {
+        type: "boolean",
+        key: "11",
+        text: "Vérifier les connaissances du patient sur le parcours de soins via le 15:",
+        description: `
+          <ul class="bulletList">
+            <li>Service d’accès aux soins (SAS) en journée</li>
+            <li>Garde fixe lors de la permanence de soin (maison médicale de garde)</li>
+            <li>Garde mobile lors de la permanence de soins (SOS médecins…) </li>
+          </ul>
+        `,
+        defaultAnswer: false,
+        isRequired: false,
+      },
+      {
+        type: "boolean",
+        key: "12",
+        text: "Le patient n’est pas capable de reformuler son orientation dans le parcours de soins ou refuse de contacter le 15 ?",
+        defaultAnswer: false,
+        isRequired: false,
+        infoCondition: [
           {
-            value: "2",
-            label:
-              "Si pas de disponibilité d'un rendez-vous en urgence, laissez un message.",
-          },
-          {
-            value: "3",
-            label:
-              "Vérifier les connaissances du patient (téleconsultation, maison médicale de garde, 15).",
+            info: `
+              <p>
+                Laisser un message au médecin traitant, tout en informant le patient qu’il ne sera pas forcément recontacté.<br /> 
+                Insister sur l’intérêt de joindre le médecin régulateur du 15.<br />
+                Éventuellement envoyer la consigne par mail ou SMS au patient. 
+              </p>
+            `,
+            condition: {
+              type: "OR",
+              conditions: [
+                {
+                  questionKey: "12",
+                  operator: "EQUALS",
+                  value: [true],
+                },
+                {
+                  questionKey: "6",
+                  operator: "IS_ANY_IN",
+                  value: ["1", "3"],
+                },
+              ],
+            },
           },
         ],
       },

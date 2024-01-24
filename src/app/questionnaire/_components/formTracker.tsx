@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useCallback } from "react";
 import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
@@ -18,7 +18,7 @@ export const FormTracker = ({
   const useMSF = useMultiStepFormContext();
   const currentStep = useMSF.stepper.currentStep;
   const goToStep = (step: number) => {
-    useMSF.stepper.move.goTo(step);
+    useMSF.stepper.goTo.step(step);
   };
 
   const canClick = useCallback(

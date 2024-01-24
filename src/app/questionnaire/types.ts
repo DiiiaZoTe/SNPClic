@@ -120,28 +120,36 @@ export type Question<T extends QuestionType> =
 
 //! Step/Form types
 
+/** Represents a button of a step stop flow. */
+type StopFlowButtonBase = {
+  label: string;
+  preText?: string;
+  postText?: string;
+  variant?: ButtonVariantsType;
+};
+
+/** Represents the stop button of a step stop flow. */
+export type StopFlowButton = StopFlowButtonBase & {
+  reason: string;
+};
+
+/** Represents the continue button of a step stop flow. */
+export type ContinueFlowButton = StopFlowButtonBase;
+
+/** Represents the cancel button of a step stop flow. */
+export type CancelFlowButton = StopFlowButtonBase;
+
+/** Represents the stop content of a step. */
 export type CanStopFlowContent = {
   title: string;
   questionKey?: string;
   content: string;
-  stopFlowButtons?: {
-    label: string;
-    preText?: string;
-    postText?: string;
-    warning: string;
-    reason: string;
-  }[];
-  continueFlowButton?: {
-    label: string;
-    preText?: string;
-    postText?: string;
-    warning?: string;
-  };
-  cancelFlowButton?: {
-    label: string;
-  };
+  stopFlowButtons?: StopFlowButton[];
+  continueFlowButton?: ContinueFlowButton;
+  cancelFlowButton?: CancelFlowButton;
 }
 
+/** Represents the stop condition + content of a step. */
 export type StepCanStopFlow = {
   condition: QuestionCondition | CompositeCondition;
   content: CanStopFlowContent;

@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 type UseFormType = UseFormReturn<
   {
@@ -297,7 +298,6 @@ export const BodyQuestion = ({ question }: { question: Question<"body"> }) => {
                     {field.value}
                   </Badge>
                 </div>
-                <p>Contenu:</p>
                 <div className="flex w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1">
                   <ul className="list-disc list-inside">
                     {content.map((item, index) => (
@@ -322,16 +322,23 @@ export const TerminatorButtonQuestion = ({
   question: Question<"terminatorButton">;
 }) => {
   const useMSF = useMultiStepFormContext();
+  const isLabelBig = question?.buttonLabel !== undefined && question?.buttonLabel.length > 10;
 
   return (
     <FieldWrapper
       question={question}
       form={useMSF.form}
-      itemClassName="flex flex-row gap-2 justify-between items-center"
+      itemClassName={cn(
+        "flex flex-row gap-4 justify-between items-center",
+        isLabelBig ? "flex-col" : "flex-row"
+      )}
       render={() => (
         <Button
           type="button"
-          className="flex flex-row w-fit gap-2 justify-start self-end min-w-0 max-w-[50%] group"
+          className={cn(
+            "flex flex-row w-full gap-2 justify-center self-end min-w-0 group",
+            !isLabelBig ? " max-w-fit" : null
+          )}
           variant={question.variant ?? "default"}
           onClick={() => {
             useMSF.controlFlow.try.buttonTryStopFlow(question);

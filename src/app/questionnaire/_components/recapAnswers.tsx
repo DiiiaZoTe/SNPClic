@@ -22,7 +22,7 @@ export const RecapAnswers = () => {
     <div className="p-0 flex flex-col gap-4 w-full h-full max-w-xl animate-[in_0.5s_ease-in-out] ">
       <div className="shrink-0 flex flex-col gap-4">
         <p className="text-xl font-bold leading-none tracking-tight">
-          Vérification
+          Récapitulatif
         </p>
         <p className="text-sm text-muted-foreground">
           Vérifier la validité de vos réponses.
