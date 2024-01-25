@@ -239,12 +239,6 @@ export const FORM_DATA: Form = [
             label:
               "Cela engendre-t-il une situation stressante, qui semble ingérable ?",
           },
-          {
-            value: "5",
-            label:
-              "A-t-il pris quelque chose pour se soigner et si oui, cela a-t-il eu un effet ?",
-          },
-          { value: "6", label: "En a-t-il parler avec le pharmacien ?" },
         ],
       },
       {

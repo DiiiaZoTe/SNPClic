@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, use } from "react";
 
 import { Check, X } from "lucide-react";
 
@@ -15,11 +15,17 @@ import {
 import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
 
 import { Badge } from "@/components/ui/badge";
-
 export const RecapAnswers = () => {
   const useMSF = useMultiStepFormContext();
+
+  const indexOfStopQuestion = useMSF.data.flattenForm.findIndex(
+    (question) =>
+      useMSF.controlFlow.stopped.formStoppedReason?.questionKey &&
+      question.key === useMSF.controlFlow.stopped.formStoppedReason.questionKey
+  );
+
   return (
-    <div className="p-0 flex flex-col gap-4 w-full h-full max-w-xl animate-[in_0.5s_ease-in-out] ">
+    <div className="p-0 flex flex-col gap-8 w-full h-full max-w-xl animate-[in_0.5s_ease-in-out] ">
       <div className="shrink-0 flex flex-col gap-4">
         <p className="text-xl font-bold leading-none tracking-tight">
           Récapitulatif
@@ -38,9 +44,14 @@ export const RecapAnswers = () => {
                 {i + 1}. {useMSF.data.form[i].name}
               </div>
               <div className="flex flex-col gap-2">
-                {/* get the questions and the answers in text format*/}
+                {/* get the question and the answer in text format*/}
                 {stepData.questions.map((question, index) => {
-                  // const answer = stepAnswer[question.key];
+                  if (indexOfStopQuestion !== -1) {
+                    const thisQuestionIndex = useMSF.data.flattenForm.findIndex(
+                      (q) => q.key === question.key
+                    );
+                    if (thisQuestionIndex > indexOfStopQuestion) return null;
+                  }
                   const answer = useMSF.answers.question(question.key);
                   if (question.type === "boolean") {
                     return (
@@ -105,11 +116,11 @@ export const RecapAnswers = () => {
         {useMSF.controlFlow.stopped.formStoppedReason ? (
           <div className="shrink-0 flex flex-col gap-4">
             <p className="text-xl font-bold leading-none tracking-tight">
-              Raison de l&apos;arrêt du formulaire
+              Raison de l&apos;arrêt du questionnaire
             </p>
-            <p className="text-sm text-muted-foreground">
+            <Badge variant="secondary" className="w-fit rounded-sm text-base font-medium">
               {useMSF.controlFlow.stopped.formStoppedReason.reason}
-            </p>
+            </Badge>
           </div>
         ) : null}
       </div>
