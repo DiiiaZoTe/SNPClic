@@ -192,8 +192,7 @@ import {
 import { StopFlowModal } from "./stopFlowModal";
 
 const todo = [
-  "add ability to skip steps form the popup continue button, need to also take care of going back the steps",
-  "recap to pdf",
+  "recap to pdf + freeform name and notes",
   "verify everything is working as expected",
   "submission flow",
   "backend database",
