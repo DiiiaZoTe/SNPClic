@@ -2,6 +2,9 @@ import { Form } from "./types";
 
 //note to use a uid for the keys (more likely the id from the db)
 export const FORM_DATA: Form = [
+  //******************************************************
+  //*                      STEP 1
+  //******************************************************
   {
     name: "Identification du patient",
     questions: [
@@ -53,6 +56,9 @@ export const FORM_DATA: Form = [
       },
     ],
   },
+  //******************************************************
+  //*                      STEP 2
+  //******************************************************
   {
     name: "Délai de consultation souhaité par le patient",
     questions: [
@@ -84,11 +90,15 @@ export const FORM_DATA: Form = [
             preText:
               "Si aucun créneau du médecin traitant ne convient au patient, continuer vers les ressources externes du patient (étape 5).",
           },
+          continueToStep: 5,
         },
       },
     ],
     continueLabel: "Rendez-vous urgent, continuer",
   },
+  //******************************************************
+  //*                      STEP 3
+  //******************************************************
   {
     name: "Motif de consultation",
     questions: [
@@ -188,6 +198,7 @@ export const FORM_DATA: Form = [
             preText:
               "Si aucun rdv d’urgence disponible dans le planning du médecin traitant, laisser un mot au médecin pour qu’il rappelle le patient. Continuer vers les ressources externes du patient (étape 5).",
           },
+          continueToStep: 5,
         },
       },
       {
@@ -215,6 +226,9 @@ export const FORM_DATA: Form = [
       },
     ],
   },
+  //******************************************************
+  //*                      STEP 4
+  //******************************************************
   {
     name: "Difficultés rencontrées et ressources internes",
     questions: [
@@ -288,6 +302,7 @@ export const FORM_DATA: Form = [
             preText:
               "Si le patient ne souhaite pas différer, continuer vers les ressources externes du patient.",
           },
+          continueToStep: 5,
         },
       },
       {
@@ -316,10 +331,14 @@ export const FORM_DATA: Form = [
             preText:
               "Si le patient ne souhaite pas différer, continuer vers les ressources externes du patient.",
           },
+          continueToStep: 5,
         },
       },
     ],
   },
+  //******************************************************
+  //*                      STEP 5
+  //******************************************************
   {
     name: "Evaluer les ressources externes du patient",
     questions: [

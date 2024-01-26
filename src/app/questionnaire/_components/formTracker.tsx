@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AnimatePresence } from "framer-motion";
-import { CheckIcon, XIcon } from "lucide-react";
+import { CheckIcon, ChevronsRight, XIcon } from "lucide-react";
 import { useCallback } from "react";
 import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
 
@@ -42,15 +42,18 @@ export const FormTracker = ({
         const thisStep = index + 1;
         const active = thisStep === currentStep;
         const isVisited = useMSF.stepper.is.visited(thisStep);
+        const isSkipped = useMSF.stepper.is.skipped(thisStep);
         const isValid = useMSF.stepper.is.valid(thisStep);
         const canClickThisStep =
           canClick(thisStep, isVisited) ||
           (useMSF.submission.isFormSubmitted && isVisited);
+
         return (
           <DotWithCircle
             key={thisStep}
             active={active}
             isVisited={isVisited}
+            isSkipped={isSkipped}
             isValid={isValid}
             stepNumber={thisStep}
             onClickFn={goToStep}
@@ -66,6 +69,7 @@ const DotWithCircle = ({
   stepNumber,
   active = false,
   isVisited = false,
+  isSkipped = false,
   isValid = false,
   canClick,
   onClickFn,
@@ -73,6 +77,7 @@ const DotWithCircle = ({
   stepNumber: number;
   active: boolean;
   isVisited: boolean;
+  isSkipped: boolean;
   isValid: boolean;
   canClick: boolean;
   onClickFn?: (step: number) => void;
@@ -87,10 +92,12 @@ const DotWithCircle = ({
             ? "bg-primary"
             : active
             ? "bg-primary/30"
+            : isSkipped
+            ? "bg-destructive/30"
             : !isVisited
             ? "bg-accent"
             : !isValid
-            ? "bg-destructive/30"
+            ? "bg-destructive/80"
             : isVisited && isValid
             ? "bg-primary"
             : "bg-accent",
@@ -106,14 +113,29 @@ const DotWithCircle = ({
       </Button>
       <AnimatePresence>
         {!active && isVisited && !isValid && (
-          <XIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none" />
+          <XIcon
+            key="invalid"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none"
+          />
         )}
         {(!active && isVisited && isValid) ||
         (isFormSubmitted && isVisited && isValid) ? (
-          <CheckIcon className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none" />
+          <CheckIcon
+            key="valid"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[4px] text-background pointer-events-none"
+          />
         ) : null}
+        {isSkipped && (
+          <ChevronsRight
+            key="skipped"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 stroke-[3px] text-background pointer-events-none"
+          />
+        )}
         {active && !isFormSubmitted && (
-          <span className="absolute w-2 h-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
+          <span
+            key="base active"
+            className="absolute w-2 h-2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary"
+          />
         )}
       </AnimatePresence>
     </div>

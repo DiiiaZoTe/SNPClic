@@ -1,9 +1,7 @@
 "use client";
 
-import { ReactNode, use } from "react";
-
-import { Check, X } from "lucide-react";
-
+import { ReactNode } from "react";
+import { Check, ChevronsRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   QuestionType,
@@ -11,10 +9,15 @@ import {
   StringAnswer,
   MultiStringAnswer,
   BooleanAnswer,
+  Answer,
 } from "../types";
 import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
-
 import { Badge } from "@/components/ui/badge";
+
+import { motion } from "framer-motion";
+
+const NO_ANSWER = "Aucune réponse";
+
 export const RecapAnswers = () => {
   const useMSF = useMultiStepFormContext();
 
@@ -25,92 +28,70 @@ export const RecapAnswers = () => {
   );
 
   return (
-    <div className="p-0 flex flex-col gap-8 w-full h-full max-w-xl animate-[in_0.5s_ease-in-out] ">
-      <div className="shrink-0 flex flex-col gap-4">
+    <div className="p-0 flex flex-col gap-8 w-full h-full max-w-xl">
+      <motion.div
+        initial={{ opacity: 0, y: -10, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        className="shrink-0 flex flex-col gap-4"
+      >
         <p className="text-xl font-bold leading-none tracking-tight">
           Récapitulatif
         </p>
         <p className="text-sm text-muted-foreground">
           Vérifier la validité de vos réponses.
         </p>
-      </div>
+      </motion.div>
       <div className="grow overflow-y-auto flex flex-col gap-8">
         {useMSF.data.form.map((stepData, i) => {
           // only show the steps before or equal to the current step
-          if (i > useMSF.stepper.currentStep - 1) return null;
+          // if (useMSF.stepper.is.skipped(i + 1)) return null;
           return (
-            <div key={i} className="flex flex-col gap-2">
-              <div className="font-semibold text-foreground">
-                {i + 1}. {useMSF.data.form[i].name}
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.1 * (i + 1), duration: 0.2 }}
+              key={i}
+              className="flex flex-col gap-2"
+            >
+              <div className="flex flex-col justify-center items-between gap-4 xs:flex-row xs:justify-between xs:items-center font-semibold text-foreground">
+                <span>
+                  {i + 1}. {useMSF.data.form[i].name}
+                </span>
+                {useMSF.stepper.is.skipped(i + 1) ? (
+                  <div className="w-fit rounded-sm flex justify-center items-center gap-1 text-xs bg-secondary/40 px-2 py-1">
+                    Etape sautée
+                    <ChevronsRight className="w-4 h-4 stroke-2" />
+                  </div>
+                ) : null}
               </div>
-              <div className="flex flex-col gap-2">
-                {/* get the question and the answer in text format*/}
-                {stepData.questions.map((question, index) => {
-                  if (indexOfStopQuestion !== -1) {
-                    const thisQuestionIndex = useMSF.data.flattenForm.findIndex(
-                      (q) => q.key === question.key
-                    );
-                    if (thisQuestionIndex > indexOfStopQuestion) return null;
+              {!useMSF.stepper.is.skipped(i + 1) ? (
+                <div className="flex flex-col gap-2">
+                  {
+                    // get the question and the answer in text format
+                    stepData.questions.map((question, index) => {
+                      if (indexOfStopQuestion !== -1) {
+                        const thisQuestionIndex =
+                          useMSF.data.flattenForm.findIndex(
+                            (q) => q.key === question.key
+                          );
+                        if (thisQuestionIndex > indexOfStopQuestion)
+                          return (
+                            <QuestionSkipped key={index} question={question} />
+                          );
+                      }
+                      const answer = useMSF.answers.question(question.key);
+                      return (
+                        <QuestionAnswer
+                          key={index}
+                          question={question}
+                          answer={answer}
+                        />
+                      );
+                    })
                   }
-                  const answer = useMSF.answers.question(question.key);
-                  if (question.type === "boolean") {
-                    return (
-                      <QuestionAnswerBoolean
-                        key={index}
-                        question={question}
-                        answer={answer as BooleanAnswer}
-                      />
-                    );
-                  }
-                  if (question.type === "multiChoice") {
-                    return (
-                      <QuestionAnswerMultiChoice
-                        key={index}
-                        question={question}
-                        answer={answer as MultiStringAnswer}
-                      />
-                    );
-                  }
-                  if (question.type === "multiSelect") {
-                    return (
-                      <QuestionAnswerMultiSelect
-                        key={index}
-                        question={question}
-                        answer={answer as MultiStringAnswer}
-                      />
-                    );
-                  }
-                  if (question.type === "select") {
-                    return (
-                      <QuestionAnswerSelect
-                        key={index}
-                        question={question}
-                        answer={answer as StringAnswer}
-                      />
-                    );
-                  }
-                  if (question.type === "body") {
-                    return (
-                      <QuestionAnswerBody
-                        key={index}
-                        question={question}
-                        answer={answer as StringAnswer}
-                      />
-                    );
-                  }
-                  if (question.type === "terminatorButton") {
-                    return (
-                      <QuestionAnswerTerminatorButton
-                        key={index}
-                        answer={answer as BooleanAnswer}
-                        question={question}
-                      />
-                    );
-                  }
-                  return null;
-                })}
-              </div>
-            </div>
+                </div>
+              ) : null}
+            </motion.div>
           );
         })}
         {useMSF.controlFlow.stopped.formStoppedReason ? (
@@ -118,9 +99,9 @@ export const RecapAnswers = () => {
             <p className="text-xl font-bold leading-none tracking-tight">
               Raison de l&apos;arrêt du questionnaire
             </p>
-            <Badge variant="secondary" className="w-fit rounded-sm text-base font-medium">
+            <div className="w-fit rounded-sm text-base font-medium bg-secondary/40 px-4 py-3">
               {useMSF.controlFlow.stopped.formStoppedReason.reason}
-            </Badge>
+            </div>
           </div>
         ) : null}
       </div>
@@ -128,7 +109,60 @@ export const RecapAnswers = () => {
   );
 };
 
-const NO_ANSWER = "Aucune réponse";
+const QuestionAnswer = ({
+  question,
+  answer,
+}: {
+  question: Question<QuestionType>;
+  answer: Answer;
+}) => {
+  if (question.type === "boolean") {
+    return (
+      <QuestionAnswerBoolean
+        question={question}
+        answer={answer as BooleanAnswer}
+      />
+    );
+  }
+  if (question.type === "multiChoice") {
+    return (
+      <QuestionAnswerMultiChoice
+        question={question}
+        answer={answer as MultiStringAnswer}
+      />
+    );
+  }
+  if (question.type === "multiSelect") {
+    return (
+      <QuestionAnswerMultiSelect
+        question={question}
+        answer={answer as MultiStringAnswer}
+      />
+    );
+  }
+  if (question.type === "select") {
+    return (
+      <QuestionAnswerSelect
+        question={question}
+        answer={answer as StringAnswer}
+      />
+    );
+  }
+  if (question.type === "body") {
+    return (
+      <QuestionAnswerBody question={question} answer={answer as StringAnswer} />
+    );
+  }
+  if (question.type === "terminatorButton") {
+    return (
+      <QuestionAnswerTerminatorButton
+        question={question}
+        answer={answer as BooleanAnswer}
+      />
+    );
+  }
+  return null;
+};
 
 const QuestionAnswerWrapper = ({
   question,
@@ -149,6 +183,33 @@ const QuestionAnswerWrapper = ({
       <div className="font-medium text-foreground">{question.text}</div>
       {children}
     </div>
+  );
+};
+
+const QuestionSkipped = ({
+  question,
+  className,
+}: {
+  question: Question<QuestionType>;
+  className?: string;
+}) => {
+  return (
+    <QuestionAnswerWrapper
+      question={question}
+      className={cn(
+        "flex flex-row items-center justify-between gap-4",
+        className
+      )}
+    >
+      <div
+        className={cn(
+          "flex justify-center items-center bg-yellow-500 text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",
+          className
+        )}
+      >
+        <ChevronsRight className="w-4 h-4 stroke-2" />
+      </div>
+    </QuestionAnswerWrapper>
   );
 };
 

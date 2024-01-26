@@ -192,7 +192,6 @@ import {
 import { StopFlowModal } from "./stopFlowModal";
 
 const todo = [
-  "add question type bouton",
   "add ability to skip steps form the popup continue button, need to also take care of going back the steps",
   "recap to pdf",
   "verify everything is working as expected",

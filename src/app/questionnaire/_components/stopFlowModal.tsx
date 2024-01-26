@@ -22,6 +22,7 @@ export const StopFlowModal = ({
   stopFlowButtons,
   continueFlowButton,
   cancelFlowButton,
+  continueToStep,
 }: CanStopFlowContent) => {
   const useMSF = useMultiStepFormContext();
   return (
@@ -38,7 +39,7 @@ export const StopFlowModal = ({
               content={content}
               type="stop"
               onClick={() => {
-                useMSF.stepper.goTo.recap(true, {
+                useMSF.controlFlow.stopped.goToRecap({
                   reason: content.reason,
                   questionKey,
                 });
@@ -59,7 +60,9 @@ export const StopFlowModal = ({
               content={continueFlowButton}
               type="continue"
               onClick={() =>
-                useMSF.controlFlow.stopping.continueModalStopFlow()
+                useMSF.controlFlow.stopping.continueModalStopFlow(
+                  continueToStep
+                )
               }
             />
           ) : null}

@@ -120,6 +120,20 @@ export type Question<T extends QuestionType> =
 
 //! Step/Form types
 
+/** Represents a single step in a form, including its questions. */
+export type Step = {
+  name: string;
+  description?: string;
+  questions: Array<Question<QuestionType>>;
+  continueLabel?: string;
+  stopFlowCondition?: StepCanStopFlow[];
+};
+
+/** Represents the entire form as a sequence of steps. */
+export type Form = Step[];
+
+//! Control flow types
+
 /** Represents a button of a step stop flow. */
 type StopFlowButtonBase = {
   label: string;
@@ -147,6 +161,7 @@ export type CanStopFlowContent = {
   stopFlowButtons?: StopFlowButton[];
   continueFlowButton?: ContinueFlowButton;
   cancelFlowButton?: CancelFlowButton;
+  continueToStep?: number;
 }
 
 /** Represents the stop condition + content of a step. */
@@ -155,17 +170,7 @@ export type StepCanStopFlow = {
   content: CanStopFlowContent;
 }
 
-/** Represents a single step in a form, including its questions. */
-export type Step = {
-  name: string;
-  description?: string;
-  questions: Array<Question<QuestionType>>;
-  continueLabel?: string;
-  stopFlowCondition?: StepCanStopFlow[];
-};
-
-/** Represents the entire form as a sequence of steps. */
-export type Form = Step[];
+export type StopFlowReason = { reason: string, questionKey?: string } | undefined;
 
 //! Utility types
 
@@ -174,6 +179,8 @@ export type AnswerForQuestion<Q extends Question<QuestionType>> = Q extends Ques
 
 /** Utility type to define the direction of a step change. */
 export type StepDirection = "backward" | "forward";
+
+export type StepVisited = "visited" | "notVisited" | "skipped";
 
 //! Condition logic types
 
