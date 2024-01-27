@@ -29,11 +29,7 @@ import {
 import { StopFlowModal } from "./stopFlowModal";
 import { RecapAnswers } from "./recapAnswers";
 
-export const MultiStepForm = ({
-  stepsData,
-}: {
-  stepsData: MSF.Form;
-}) => {
+export const MultiStepForm = ({ stepsData }: { stepsData: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -146,17 +142,24 @@ const MultiStepFormComponent = () => {
                         <Button
                           type="submit"
                           variant="default"
-                          className="w-fit ml-auto"
+                          className="w-fit max-w-full ml-auto"
                         >
-                          {useMSF.data.currentStep.continueLabel ?? "Terminer"}
+                          <span className="truncate min-w-0">
+                            {useMSF.data.currentStep.continueLabel ??
+                              "Terminer"}
+                          </span>
+                          <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
                         </Button>
                       ) : (
                         <Button
                           type="submit"
                           variant="secondary"
-                          className="w-fit ml-auto group"
+                          className="w-fit max-w-full ml-auto group"
                         >
-                          {useMSF.data.currentStep.continueLabel ?? "Continuer"}
+                          <span className="truncate min-w-0">
+                            {useMSF.data.currentStep.continueLabel ??
+                              "Continuer"}
+                          </span>
                           <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
                         </Button>
                       )}
