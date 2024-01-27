@@ -1,4 +1,5 @@
 import { ContentType } from "./content-type";
+import { githubConfig } from "@/config/site";
 
 export const CONTACT_CONTENT = [
   {
@@ -24,7 +25,7 @@ export const CONTACT_CONTENT = [
       "Pour tout problème technique, ouvrir une issue sur le repo GitHub du projet:",
       {
         value: "Repo GitHub",
-        url: "#",
+        url: githubConfig.repo,
       },
     ],
   },

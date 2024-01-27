@@ -29,7 +29,7 @@ export const LEGAL_CONTENT = [
       },
       {
         "subtitle": "Lien du site",
-        "subcontent": "https://snpclic.fr - A acheter"
+        "subcontent": "https://snpclic.fr"
       },
       {
         "subtitle": "Hébergeur",
