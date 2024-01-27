@@ -26,6 +26,7 @@ import {
   SelectQuestion,
   TerminatorButtonQuestion,
 } from "./questions";
+import { StopFlowModal } from "./stopFlowModal";
 import { RecapAnswers } from "./recapAnswers";
 
 export const MultiStepForm = ({
@@ -172,10 +173,7 @@ const MultiStepFormComponent = ({
               </motion.div>
             </AnimatePresence>
           </div>
-          {useMSF.controlFlow.stopping.isStopping &&
-          useMSF.controlFlow.stopping.content ? (
-            <StopFlowModal {...useMSF.controlFlow.stopping.content} />
-          ) : null}
+          <StopFlowModal />
         </>
       ) : (
         <RecapAnswers />
@@ -189,7 +187,6 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { StopFlowModal } from "./stopFlowModal";
 
 const todo = [
   "recap to pdf + freeform name and notes",

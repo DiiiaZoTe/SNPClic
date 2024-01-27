@@ -370,7 +370,8 @@ export const useMultiStepForm = (data: Form) => {
   }
 
   /** cancel the step stopping flow */
-  const cancelStopFlow = () => {
+  const cancelStopFlow = (from?: string) => {
+    console.log("cancel stop flow", from)
     // when we just canceled the stop flow, reset all steps passed current
     // this will only happen the first time we cancel the stop flow
     if (formStoppedReason) {
