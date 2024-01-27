@@ -323,6 +323,7 @@ export const TerminatorButtonQuestion = ({
 }) => {
   const useMSF = useMultiStepFormContext();
   const isLabelBig = question?.buttonLabel !== undefined && question?.buttonLabel.length > 10;
+  const isLabelEmpty = question?.buttonLabel === undefined || question?.buttonLabel.length === 0;
 
   return (
     <FieldWrapper
@@ -330,14 +331,22 @@ export const TerminatorButtonQuestion = ({
       form={useMSF.form}
       itemClassName={cn(
         "flex flex-row gap-4 justify-between items-center",
-        isLabelBig ? "flex-col" : "flex-row"
+        isLabelEmpty
+          ? "flex-row"
+          : !isLabelBig
+          ? "flex-col sm:flex-row"
+          : "flex-col"
       )}
       render={() => (
         <Button
           type="button"
           className={cn(
             "flex flex-row w-full gap-2 justify-center self-end min-w-0 group",
-            !isLabelBig ? " max-w-fit" : null
+            isLabelEmpty
+              ? "max-w-fit"
+              : !isLabelBig
+              ? "sm:max-w-fit"
+              : ""
           )}
           variant={question.variant ?? "default"}
           onClick={() => {
