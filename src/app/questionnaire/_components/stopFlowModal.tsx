@@ -159,7 +159,7 @@ const StopFlowSheet = ({
   return (
     <Sheet
       open={open}
-      onOpenChange={() => useMSF.controlFlow.stopping.cancelStopFlow("Sheet")}
+      onOpenChange={() => useMSF.controlFlow.stopping.cancelStopFlow()}
     >
       <SheetContent
         className="flex flex-col gap-6 p-6 sm:p-8 w-full  pt-12"

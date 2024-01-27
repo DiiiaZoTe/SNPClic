@@ -5,7 +5,7 @@ import * as MSF from "../types";
 import { cn } from "@/lib/utils";
 
 import { ArrowBigLeftIcon, ChevronRight } from "lucide-react";
-import { scrollToViewIfNeeded, stepFormVariants } from "../_utils/utils";
+import { stepFormVariants } from "../_utils/utils";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -31,27 +31,24 @@ import { RecapAnswers } from "./recapAnswers";
 
 export const MultiStepForm = ({
   stepsData,
-  className,
 }: {
   stepsData: MSF.Form;
-  className?: string;
 }) => {
   const topFormRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={className} ref={topFormRef}>
-      <MultiStepFormProvider stepsData={stepsData}>
-        <MultiStepFormComponent containerRef={topFormRef} />
+    <div
+      className="self-center w-full flex flex-col gap-8 items-center min-h-[calc(100dvh-6rem)]"
+      ref={topFormRef}
+    >
+      <MultiStepFormProvider stepsData={stepsData} containerRef={topFormRef}>
+        <MultiStepFormComponent />
       </MultiStepFormProvider>
     </div>
   );
 };
 
-const MultiStepFormComponent = ({
-  containerRef,
-}: {
-  containerRef?: React.RefObject<HTMLDivElement>;
-}) => {
+const MultiStepFormComponent = () => {
   const useMSF = useMultiStepFormContext();
   return (
     <>
@@ -59,7 +56,6 @@ const MultiStepFormComponent = ({
       <div className="w-full max-w-xl flex justify-between items-center">
         <Button
           onClick={() => {
-            scrollToViewIfNeeded(containerRef);
             useMSF.stepper.goTo.previous();
           }}
           variant="outline"
@@ -159,9 +155,6 @@ const MultiStepFormComponent = ({
                           type="submit"
                           variant="secondary"
                           className="w-fit ml-auto group"
-                          onClick={() => {
-                            scrollToViewIfNeeded(containerRef);
-                          }}
                         >
                           {useMSF.data.currentStep.continueLabel ?? "Continuer"}
                           <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />

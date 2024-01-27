@@ -1,20 +1,21 @@
 // useMultiStepForm.ts
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
 import { FormAnswers, Form, StepDirection, CanStopFlowContent, QuestionInfoCondition, Question, Step, StopFlowReason } from "../types";
 import { evaluateCondition } from "../_utils/conditions";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { getDefaultStore } from "jotai";
 import { formAnswersAtom } from "./atom";
 import { getStepZodSchema } from "./schemas";
+import { scrollToViewIfNeeded } from "../_utils/utils";
 
 export type UseMSF = ReturnType<typeof useMultiStepForm>;
 
-export const useMultiStepForm = (data: Form) => {
+export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElement>) => {
   /** number of steps in the form */
   const numberOfSteps = data.length;
 
@@ -175,6 +176,7 @@ export const useMultiStepForm = (data: Form) => {
     cancelStopFlow();
     setDirection(direction);
     setCurrentStep(toStep);
+    scrollToViewIfNeeded(containerRef);
     if (isFormSubmitted) setIsFormSubmitted(false);
   }
 
@@ -319,6 +321,7 @@ export const useMultiStepForm = (data: Form) => {
       return newValids;
     });
     setIsFormSubmitted(true);
+    scrollToViewIfNeeded(containerRef);
   };
 
 
@@ -370,8 +373,7 @@ export const useMultiStepForm = (data: Form) => {
   }
 
   /** cancel the step stopping flow */
-  const cancelStopFlow = (from?: string) => {
-    console.log("cancel stop flow", from)
+  const cancelStopFlow = () => {
     // when we just canceled the stop flow, reset all steps passed current
     // this will only happen the first time we cancel the stop flow
     if (formStoppedReason) {
@@ -443,6 +445,7 @@ export const useMultiStepForm = (data: Form) => {
     setVisitedSteps(newVisited);
     setSkippedSteps(newSkipped);
     setIsFormSubmitted(true);
+    scrollToViewIfNeeded(containerRef);
     setFormStoppedReason(stopFlowReason);
     // reset answers of all skipped steps
     newSkipped.forEach((skipped, index) => {
@@ -480,6 +483,7 @@ export const useMultiStepForm = (data: Form) => {
       validSteps,
       visitedSteps,
       skippedSteps,
+      scrollToView: () => scrollToViewIfNeeded(containerRef),
       goTo: {
         next: goToNextStep,
         previous: goToPreviousStep,

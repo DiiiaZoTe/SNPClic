@@ -14,7 +14,6 @@ export default function Page() {
       <Provider>
         <MultiStepForm
           stepsData={FORM_DATA}
-          className="self-center w-full flex flex-col gap-8 items-center min-h-[calc(100svh-10rem)]"
         />
       </Provider>
     </div>

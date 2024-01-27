@@ -1,5 +1,5 @@
 // multiStepFormContext.tsx
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, RefObject } from "react";
 // import { useMultiStepForm, UseMSF } from "./useMultiStepForm";
 import { useMultiStepForm, UseMSF } from "./useMultiStepForm";
 import { Form } from "../types";
@@ -21,8 +21,9 @@ export const useMultiStepFormContext = () => {
 export const MultiStepFormProvider: React.FC<{
   children: ReactNode;
   stepsData: Form;
-}> = ({ children, stepsData }) => {
-  const multiStepFormState = useMultiStepForm(stepsData);
+  containerRef: RefObject<HTMLDivElement>;
+}> = ({ children, stepsData, containerRef }) => {
+  const multiStepFormState = useMultiStepForm(stepsData, containerRef);
   return (
     <MultiStepFormContext.Provider value={multiStepFormState}>
       {children}
