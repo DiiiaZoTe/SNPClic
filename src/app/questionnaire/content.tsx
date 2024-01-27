@@ -194,7 +194,7 @@ export const FORM_DATA: Form = [
             },
           ],
           continueFlowButton: {
-            label: "Mot laissé au médecin",
+            label: "Mot laissé au médecin, continuer",
             preText:
               "Si aucun rdv d’urgence disponible dans le planning du médecin traitant, laisser un mot au médecin pour qu’il rappelle le patient. Continuer vers les ressources externes du patient (étape 5).",
           },

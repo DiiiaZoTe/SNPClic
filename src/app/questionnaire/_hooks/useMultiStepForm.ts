@@ -256,16 +256,6 @@ export const useMultiStepForm = (data: Form) => {
     // if the current step is not valid, don't go to next step
     const isCurrentValid = await validateStepAnswers(currentStep);
 
-    // // get the first visited step before the current one that is not skipped
-    // const visitedSubset = visitedSteps.slice(0, currentStep - 1);
-    // let lastVisitedStep = currentStep - 1;
-    // for (let i = visitedSubset.length - 1; i >= 0; i--) {
-    //   if (visitedSubset[i] && !skippedSteps[i]) {
-    //     lastVisitedStep = i + 1;
-    //     break;
-    //   }
-    // }
-
     // get the first step before the current one that is skipped
     const skippedSubset = skippedSteps.slice(0, currentStep - 1);
     let goToStep = currentStep - 1;
@@ -353,6 +343,7 @@ export const useMultiStepForm = (data: Form) => {
   const continueModalStopFlow = async (toStep?: number) => {
     if (currentStep === numberOfSteps) goToRecap();
     const goToStep = toStep ?? currentStep + 1;
+    if (goToStep < currentStep) return;
 
     const isCurrentValid = await validateStepAnswers(currentStep);
     if (!isCurrentValid) return;
@@ -431,11 +422,8 @@ export const useMultiStepForm = (data: Form) => {
 
     // go to first invalid step, only checking up to the current step
     let validStepsWithCurrent = getValidSteps();
-    console.log("validStepsWithCurrent 1", validStepsWithCurrent)
     validStepsWithCurrent = validStepsWithCurrent.slice(0, currentStep);
-    console.log("validStepsWithCurrent 2", validStepsWithCurrent)
     validStepsWithCurrent[currentStep - 1] = isCurrentValid;
-    console.log("validStepsWithCurrent 3", validStepsWithCurrent)
     const firstInvalidStep = validStepsWithCurrent.findIndex((valid) => !valid);
     if (firstInvalidStep !== -1) return goToStep(firstInvalidStep + 1);
 
@@ -472,34 +460,6 @@ export const useMultiStepForm = (data: Form) => {
       resetAnswer(question.key);
     });
   };
-
-  //******************************************************
-  //*                 testing purposes only
-  //******************************************************
-
-  useEffect(() => {
-    console.log({
-      currentStep,
-      validSteps,
-      visitedSteps,
-      skippedSteps,
-      isFormSubmitted,
-      isStoppingFlow,
-      contentStoppingFlow,
-      formStoppedReason,
-      values: form.getValues(),
-    });
-  }, [
-    currentStep,
-    validSteps,
-    visitedSteps,
-    skippedSteps,
-    isFormSubmitted,
-    isStoppingFlow,
-    contentStoppingFlow,
-    formStoppedReason,
-    form,
-  ]);
 
   //******************************************************
   //*                 The return object
@@ -604,6 +564,7 @@ const checkDependentsDisplayCondition = (formAnswers: FormAnswers, dependents: Q
 export const flattenFormData = (data: Form) => {
   return data.flatMap((step) => step.questions);
 }
+
 /** Get the default values for the form */
 export const getFormDefaultValues = (data: Form): FormAnswers => {
   return data.reduce((acc, step) => {

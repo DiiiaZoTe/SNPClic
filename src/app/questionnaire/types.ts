@@ -161,7 +161,7 @@ export type CanStopFlowContent = {
   stopFlowButtons?: StopFlowButton[];
   continueFlowButton?: ContinueFlowButton;
   cancelFlowButton?: CancelFlowButton;
-  continueToStep?: number;
+  continueToStep?: number; // ? if we want multiple continue buttons, add this to the continueFlowButton
 }
 
 /** Represents the stop condition + content of a step. */
