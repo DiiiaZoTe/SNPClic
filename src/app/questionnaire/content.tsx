@@ -222,6 +222,9 @@ export const FORM_DATA: Form = [
               reason: "Situation nécessitant une prise en charge par le 15.",
             },
           ],
+          cancelFlowButton: {
+            label: "Annuler",
+          },
         },
       },
     ],
