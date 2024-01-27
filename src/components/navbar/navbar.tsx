@@ -9,7 +9,7 @@ import { githubConfig } from "@/config/site";
 import { GitHubLogo } from "../other/GithubLogo";
 
 const LINKS = [
-  ["Acceuil", "/"],
+  ["Accueil", "/"],
   ["FAQ", "/faq"],
   ["Contact", "/contact"],
   ["Questionnaire", "/questionnaire"],
