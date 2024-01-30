@@ -25,7 +25,7 @@ import {
 export const StopFlowModal = () => {
   const isDesktop = useMediaQuery("(min-width: 640px)");
   const useMSF = useMultiStepFormContext();
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [content, setContent] = useState<CanStopFlowContent | undefined>(
@@ -95,7 +95,9 @@ const StopFlowDialog = ({
         <DialogHeader>
           <DialogTitle className="text-left">{`Etape ${useMSF.stepper.currentStep}: ${title}`}</DialogTitle>
         </DialogHeader>
-        <div dangerouslySetInnerHTML={{ __html: mainContent }} />
+        {mainContent ? (
+          <div dangerouslySetInnerHTML={{ __html: mainContent }} />
+        ) : null}
         <div className="w-full flex flex-col gap-6 sm:gap-8">
           {stopFlowButtons?.map((content) => (
             <ButtonWithTexts
@@ -117,7 +119,8 @@ const StopFlowDialog = ({
               type="continue"
               onClick={() =>
                 useMSF.controlFlow.stopping.continueModalStopFlow(
-                  continueToStep
+                  continueFlowButton.continueToStep ?? continueToStep,
+                  questionKey
                 )
               }
             />
@@ -167,7 +170,9 @@ const StopFlowSheet = ({
       >
         <SheetHeader className="text-left">
           <SheetTitle>{`Etape ${useMSF.stepper.currentStep}: ${title}`}</SheetTitle>
-          <div dangerouslySetInnerHTML={{ __html: mainContent }} />
+          {mainContent ? (
+            <div dangerouslySetInnerHTML={{ __html: mainContent }} />
+          ) : null}
         </SheetHeader>
         <div className="w-full flex flex-col gap-6 sm:gap-8">
           {stopFlowButtons?.map((content) => (

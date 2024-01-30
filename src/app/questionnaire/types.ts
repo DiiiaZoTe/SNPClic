@@ -149,16 +149,19 @@ export type StopFlowButton = StopFlowButtonBase & {
 };
 
 /** Represents the continue button of a step stop flow. */
-export type ContinueFlowButton = StopFlowButtonBase;
+export type ContinueFlowButton = StopFlowButtonBase & {
+  continueToStep?: number;
+};
 
 /** Represents the cancel button of a step stop flow. */
 export type CancelFlowButton = StopFlowButtonBase;
 
 /** Represents the stop content of a step. */
 export type CanStopFlowContent = {
-  title: string;
+  title?: string;
   questionKey?: string;
-  content: string;
+  bypassModalStopReason?: string | true;
+  content?: string;
   stopFlowButtons?: StopFlowButton[];
   continueFlowButton?: ContinueFlowButton;
   cancelFlowButton?: CancelFlowButton;
@@ -167,7 +170,7 @@ export type CanStopFlowContent = {
 
 /** Represents the stop condition + content of a step. */
 export type StepCanStopFlow = {
-  condition: QuestionCondition | CompositeCondition;
+  condition: QuestionCondition | CompositeCondition | true;
   content: CanStopFlowContent;
 }
 

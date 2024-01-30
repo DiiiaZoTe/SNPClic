@@ -21,11 +21,13 @@ const NO_ANSWER = "Aucune réponse";
 export const RecapAnswers = () => {
   const useMSF = useMultiStepFormContext();
 
-  const indexOfStopQuestion = useMSF.data.flattenForm.findIndex(
-    (question) =>
-      useMSF.controlFlow.stopped.formStoppedReason?.questionKey &&
-      question.key === useMSF.controlFlow.stopped.formStoppedReason.questionKey
-  );
+  const stopReason = useMSF.controlFlow.stopped.formStoppedReason;
+
+  // const indexOfStopQuestion = useMSF.data.flattenForm.findIndex(
+  //   (question) =>
+  //     stopReason?.questionKey &&
+  //     question.key === stopReason.questionKey
+  // );
 
   return (
     <div className="p-0 flex flex-col gap-8 w-full h-full max-w-xl">
@@ -74,15 +76,10 @@ export const RecapAnswers = () => {
                   {
                     // get the question and the answer in text format
                     stepData.questions.map((question, index) => {
-                      if (indexOfStopQuestion !== -1) {
-                        const thisQuestionIndex =
-                          useMSF.data.flattenForm.findIndex(
-                            (q) => q.key === question.key
-                          );
-                        if (thisQuestionIndex > indexOfStopQuestion)
-                          return (
-                            <QuestionSkipped key={index} question={question} />
-                          );
+                      if (useMSF.questions.isSkipped(question.key)) {
+                        return (
+                          <QuestionSkipped key={index} question={question} />
+                        );
                       }
                       const answer = useMSF.answers.question(question.key);
                       return (
@@ -99,13 +96,13 @@ export const RecapAnswers = () => {
             </motion.div>
           );
         })}
-        {useMSF.controlFlow.stopped.formStoppedReason ? (
+        {stopReason?.reason ? (
           <div className="shrink-0 flex flex-col gap-4">
             <p className="text-xl font-bold leading-none tracking-tight">
               Raison de l&apos;arrêt du questionnaire
             </p>
             <div className="w-fit rounded-sm text-base font-medium bg-secondary/40 px-4 py-3">
-              {useMSF.controlFlow.stopped.formStoppedReason.reason}
+              {stopReason.reason}
             </div>
           </div>
         ) : null}
@@ -389,7 +386,9 @@ const QuestionAnswerSelect = ({
   }
   return (
     <QuestionAnswerWrapper question={question} className={wrapperClassName}>
-      <span className={cn("text-sm", className)}>{selectAnswer}</span>
+      <span className={cn("text-sm", className)}>
+        {selectAnswer}
+      </span>
     </QuestionAnswerWrapper>
   );
 };

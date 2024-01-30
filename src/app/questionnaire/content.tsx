@@ -63,6 +63,20 @@ export const FORM_DATA: Form = [
     name: "Délai de consultation souhaité par le patient",
     questions: [
       {
+        type: "text",
+        key: "997",
+        text: "test should not be skipped is required",
+        defaultAnswer: "",
+        isRequired: true,
+      },
+      {
+        type: "text",
+        key: "998",
+        text: "test should not be skipped is required",
+        defaultAnswer: "",
+        isRequired: true,
+      },
+      {
         type: "terminatorButton",
         key: "5",
         text: "Rendez-vous non urgent ?",
@@ -74,7 +88,7 @@ export const FORM_DATA: Form = [
           title: "Rendez-vous non urgent",
           content: `
             <div>
-              Proposer un rendez-vous avec le médecin traitant, puis selectionner si le rendez-vous a été donné ou non.
+              Proposer un rendez-vous avec le médecin <b>traitant</b>, puis selectionner si le rendez-vous a été donné ou non.
             </div>
           `,
           stopFlowButtons: [
@@ -92,6 +106,13 @@ export const FORM_DATA: Form = [
           },
           continueToStep: 5,
         },
+      },
+      {
+        type: "text",
+        key: "999",
+        text: "test is required",
+        defaultAnswer: "",
+        isRequired: true,
       },
     ],
     continueLabel: "Rendez-vous urgent, continuer",
@@ -183,7 +204,7 @@ export const FORM_DATA: Form = [
         content: {
           title: "Rendez-vous en urgence nécessaire.",
           content: `
-              Trouver un rendez-vous en urgence avec le médecin traitant.
+              Trouver un rendez-vous en urgence avec le médecin <b>traitant</b>.
           `,
           stopFlowButtons: [
             {
@@ -194,9 +215,9 @@ export const FORM_DATA: Form = [
             },
           ],
           continueFlowButton: {
-            label: "Mot laissé au médecin, continuer",
+            label: "Continuer",
             preText:
-              "Si aucun rdv d’urgence disponible dans le planning du médecin traitant, laisser un mot au médecin pour qu’il rappelle le patient. Continuer vers les ressources externes du patient (étape 5).",
+              "« Aucun rendez-vous disponible dans le planning du médecin traitant, continuer vers les ressources externes du patient (étape 5).",
           },
           continueToStep: 5,
         },
@@ -294,7 +315,7 @@ export const FORM_DATA: Form = [
           `,
           stopFlowButtons: [
             {
-              label: "Différer le rendez-vous",
+              label: "Rendez-vous différé",
               preText:
                 "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
               reason: "Aucune ressource interne sélectionnée.",
@@ -302,8 +323,7 @@ export const FORM_DATA: Form = [
           ],
           continueFlowButton: {
             label: "Continuer sans différer",
-            preText:
-              "Si le patient ne souhaite pas différer, continuer vers les ressources externes du patient.",
+            preText: "Si le patient ne souhaite pas différer son rendez-vous :",
           },
           continueToStep: 5,
         },
@@ -323,7 +343,7 @@ export const FORM_DATA: Form = [
           `,
           stopFlowButtons: [
             {
-              label: "Différer le rendez-vous",
+              label: "Rendez-vous différé",
               preText:
                 "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
               reason: "Une seule ressource interne sélectionnée.",
@@ -331,8 +351,34 @@ export const FORM_DATA: Form = [
           ],
           continueFlowButton: {
             label: "Continuer sans différer",
+            preText: "Si le patient ne souhaite pas différer son rendez-vous :",
+          },
+          continueToStep: 5,
+        },
+      },
+      {
+        condition: {
+          questionKey: "8",
+          operator: "SELECTED_GREATER_THAN_OR_EQUALS",
+          value: 2,
+        },
+        content: {
+          title: "Au moins 2 difficultés rencontrées.",
+          content: `
+            <div>
+              Trouver un rendez-vous en urgence avec le médecin <b>traitant</b>.
+            </div>
+          `,
+          stopFlowButtons: [
+            {
+              label: "Rendez-vous différé",
+              reason: "Au moins deux ressources internes sélectionnées.",
+            },
+          ],
+          continueFlowButton: {
+            label: "Continuer",
             preText:
-              "Si le patient ne souhaite pas différer, continuer vers les ressources externes du patient.",
+              "Aucun rendez-vous disponible dans le planning du médecin traitant, continuer vers les ressources externes du patient (étape 5)",
           },
           continueToStep: 5,
         },
@@ -348,35 +394,37 @@ export const FORM_DATA: Form = [
       {
         type: "terminatorButton",
         key: "10",
-        text: "Un rendez-vous a été donné avec un autre médecin du cabinet.",
+        text: "1. Vérifier si d’autres médecins de la structure disposent de créneaux disponibles et les proposer au patient.",
         defaultAnswer: false,
         isRequired: false,
         variant: "default",
         buttonLabel: "Rendez-vous donné",
         stopFlowContent: {
-          title: "Rendez-vous donné avec un autre médecin du cabinet.",
-          content: `
-            <div>
-              Veuillez valider votre sélection.
-            </div>
-          `,
-          stopFlowButtons: [
-            {
-              label: "Rendez-vous donné",
-              preText:
-                "Cliquez ici si le patient a accepté de prendre un rendez-vous avec le médecin.",
-              reason: "Rendez-vous donné avec un autre médecin du cabinet.",
-            },
-          ],
-          cancelFlowButton: {
-            label: "Annuler",
-          },
+          bypassModalStopReason:
+            "Rendez-vous donné avec un autre médecin du cabinet.",
+          // title: "Rendez-vous donné avec un autre médecin du cabinet.",
+          // content: `
+          //   <div>
+          //     Veuillez valider votre sélection.
+          //   </div>
+          // `,
+          // stopFlowButtons: [
+          //   {
+          //     label: "Rendez-vous donné",
+          //     preText:
+          //       "Cliquez ici si le patient a accepté de prendre un rendez-vous avec le médecin.",
+          //     reason: "Rendez-vous donné avec un autre médecin du cabinet.",
+          //   },
+          // ],
+          // cancelFlowButton: {
+          //   label: "Annuler",
+          // },
         },
       },
       {
         type: "boolean",
         key: "11",
-        text: "Vérifier les connaissances du patient sur le parcours de soins via le 15:",
+        text: "2. Vérifier les connaissances du patient sur le parcours de soins via le 15:",
         description: `
           <ul class="bulletList">
             <li>Service d’accès aux soins (SAS) en journée</li>
@@ -390,7 +438,7 @@ export const FORM_DATA: Form = [
       {
         type: "boolean",
         key: "12",
-        text: "Le patient n’est pas capable de reformuler son orientation dans le parcours de soins ou refuse de contacter le 15 ?",
+        text: "3. Est-il capable de reformuler son orientation dans le parcours de soins et accepte-t-il de contacter le 15 le cas échéant ?",
         defaultAnswer: false,
         isRequired: false,
         infoCondition: [
@@ -399,7 +447,7 @@ export const FORM_DATA: Form = [
               <p>
                 Laisser un message au médecin traitant, tout en informant le patient qu’il ne sera pas forcément recontacté.<br /> 
                 Insister sur l’intérêt de joindre le médecin régulateur du 15.<br />
-                Éventuellement envoyer la consigne par mail ou SMS au patient. 
+                Éventuellement envoyer la consigne par email ou SMS au patient. 
               </p>
             `,
             condition: {
@@ -408,7 +456,7 @@ export const FORM_DATA: Form = [
                 {
                   questionKey: "12",
                   operator: "EQUALS",
-                  value: [true],
+                  value: [false],
                 },
                 {
                   questionKey: "6",
@@ -421,24 +469,53 @@ export const FORM_DATA: Form = [
         ],
       },
     ],
+    stopFlowCondition: [
+      {
+        condition: {
+          type: "OR",
+          conditions: [
+            {
+              questionKey: "12",
+              operator: "EQUALS",
+              value: [false],
+            },
+            {
+              questionKey: "6",
+              operator: "IS_ANY_IN",
+              value: ["1", "3"],
+            },
+          ],
+        },
+        content: {
+          bypassModalStopReason: true,
+          continueToStep: 6,
+        },
+      },
+      {
+        condition: true,
+        content: {
+          bypassModalStopReason: true,
+        },
+      },
+    ],
   },
-  // {
-  //   name: "Informations complémentaires",
-  //   questions: [
-  //     {
-  //       type: "text",
-  //       key: "13",
-  //       text: "Nom complet du patient",
-  //       defaultAnswer: "",
-  //       isRequired: true,
-  //     },
-  //     {
-  //       type: "textarea",
-  //       key: "14",
-  //       text: "Notes de motifs de consultation",
-  //       defaultAnswer: "",
-  //       isRequired: false,
-  //     },
-  //   ],
-  // },
+  {
+    name: "Informations complémentaires",
+    questions: [
+      {
+        type: "text",
+        key: "13",
+        text: "Nom complet du patient",
+        defaultAnswer: "",
+        isRequired: true,
+      },
+      {
+        type: "textarea",
+        key: "14",
+        text: "Notes additionnelles",
+        defaultAnswer: "",
+        isRequired: false,
+      },
+    ],
+  },
 ];

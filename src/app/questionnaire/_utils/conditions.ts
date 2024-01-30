@@ -27,7 +27,8 @@ function isQuestionCondition(condition: QuestionCondition | CompositeCondition):
  * @param answers The entire step answers to use for evaluation.
  * @returns True if the condition is met, false otherwise.
  */
-export const evaluateCondition = (condition: QuestionCondition | CompositeCondition, answers: FormAnswers): boolean => {
+export const evaluateCondition = (condition: QuestionCondition | CompositeCondition | true, answers: FormAnswers): boolean => {
+  if (condition === true) return true;
   if (isQuestionCondition(condition)) {
     // for the condition question, get the actual answer
     const answer = answers[condition.questionKey];
