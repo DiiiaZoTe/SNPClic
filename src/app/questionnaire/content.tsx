@@ -422,4 +422,23 @@ export const FORM_DATA: Form = [
       },
     ],
   },
+  // {
+  //   name: "Informations complémentaires",
+  //   questions: [
+  //     {
+  //       type: "text",
+  //       key: "13",
+  //       text: "Nom complet du patient",
+  //       defaultAnswer: "",
+  //       isRequired: true,
+  //     },
+  //     {
+  //       type: "textarea",
+  //       key: "14",
+  //       text: "Notes de motifs de consultation",
+  //       defaultAnswer: "",
+  //       isRequired: false,
+  //     },
+  //   ],
+  // },
 ];

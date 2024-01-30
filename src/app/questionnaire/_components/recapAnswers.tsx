@@ -30,8 +30,9 @@ export const RecapAnswers = () => {
   return (
     <div className="p-0 flex flex-col gap-8 w-full h-full max-w-xl">
       <motion.div
-        initial={{ opacity: 0, y: -10, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
         className="shrink-0 flex flex-col gap-4"
       >
         <p className="text-xl font-bold leading-none tracking-tight">
@@ -47,9 +48,13 @@ export const RecapAnswers = () => {
           // if (useMSF.stepper.is.skipped(i + 1)) return null;
           return (
             <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 0.1 * (i + 1), duration: 0.2 }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: 0.1 * (i + 1),
+                duration: 0.2,
+                ease: "easeOut",
+              }}
               key={i}
               className="flex flex-col gap-2"
             >
@@ -81,7 +86,7 @@ export const RecapAnswers = () => {
                       }
                       const answer = useMSF.answers.question(question.key);
                       return (
-                        <QuestionAnswer
+                        <QuestionAnswerSwitch
                           key={index}
                           question={question}
                           answer={answer}
@@ -109,57 +114,64 @@ export const RecapAnswers = () => {
   );
 };
 
-const QuestionAnswer = ({
+const QuestionAnswerSwitch = ({
   question,
   answer,
 }: {
   question: Question<QuestionType>;
   answer: Answer;
 }) => {
-  if (question.type === "boolean") {
-    return (
-      <QuestionAnswerBoolean
-        question={question}
-        answer={answer as BooleanAnswer}
-      />
-    );
-  }
-  if (question.type === "multiChoice") {
-    return (
-      <QuestionAnswerMultiChoice
-        question={question}
-        answer={answer as MultiStringAnswer}
-      />
-    );
-  }
-  if (question.type === "multiSelect") {
-    return (
-      <QuestionAnswerMultiSelect
-        question={question}
-        answer={answer as MultiStringAnswer}
-      />
-    );
-  }
-  if (question.type === "select") {
-    return (
-      <QuestionAnswerSelect
-        question={question}
-        answer={answer as StringAnswer}
-      />
-    );
-  }
-  if (question.type === "body") {
-    return (
-      <QuestionAnswerBody question={question} answer={answer as StringAnswer} />
-    );
-  }
-  if (question.type === "terminatorButton") {
-    return (
-      <QuestionAnswerTerminatorButton
-        question={question}
-        answer={answer as BooleanAnswer}
-      />
-    );
+  switch (question.type) {
+    case "text":
+    case "textarea":
+      return (
+        <QuestionAnswerText
+          question={question}
+          answer={answer as StringAnswer}
+        />
+      );
+    case "boolean":
+      return (
+        <QuestionAnswerBoolean
+          question={question}
+          answer={answer as BooleanAnswer}
+        />
+      );
+    case "multiChoice":
+      return (
+        <QuestionAnswerMultiChoice
+          question={question}
+          answer={answer as MultiStringAnswer}
+        />
+      );
+    case "multiSelect":
+      return (
+        <QuestionAnswerMultiSelect
+          question={question}
+          answer={answer as MultiStringAnswer}
+        />
+      );
+    case "select":
+      return (
+        <QuestionAnswerSelect
+          question={question}
+          answer={answer as StringAnswer}
+        />
+      );
+    case "body":
+      return (
+        <QuestionAnswerBody
+          question={question}
+          answer={answer as StringAnswer}
+        />
+      );
+    case "terminatorButton":
+      return (
+        <QuestionAnswerTerminatorButton
+          question={question}
+          answer={answer as BooleanAnswer}
+        />
+      );
   }
   return null;
 };
@@ -209,6 +221,26 @@ const QuestionSkipped = ({
       >
         <ChevronsRight className="w-4 h-4 stroke-2" />
       </div>
+    </QuestionAnswerWrapper>
+  );
+};
+
+const QuestionAnswerText = ({
+  question,
+  answer,
+  className,
+  wrapperClassName,
+}: {
+  question: Question<"text" | "textarea">;
+  answer: StringAnswer;
+  className?: string;
+  wrapperClassName?: string;
+}) => {
+  return (
+    <QuestionAnswerWrapper question={question} className={wrapperClassName}>
+      <span className={cn("text-sm", className)}>
+        {answer ? answer : NO_ANSWER}
+      </span>
     </QuestionAnswerWrapper>
   );
 };
@@ -280,7 +312,9 @@ const QuestionAnswerMultiChoice = ({
               optionAnswerClassName
             )}
           >
-            <span className={cn("text-sm", optionClassName)}>{label}</span>
+            <span className={cn("text-sm font-[500]", optionClassName)}>
+              {label}
+            </span>
             <div
               className={cn(
                 "flex justify-center items-center text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",

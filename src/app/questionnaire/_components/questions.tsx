@@ -33,6 +33,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 type UseFormType = UseFormReturn<
   {
@@ -41,6 +43,32 @@ type UseFormType = UseFormReturn<
   any,
   undefined
 >;
+
+export const QuestionSwitch = ({
+  question
+}: {
+  question: Question<QuestionType>;
+}) => {
+  switch (question.type) {
+    case "text":
+      return <TextQuestion question={question} />;
+    case "textarea":
+      return <TextareaQuestion question={question} />;
+    case "boolean":
+      return <BooleanQuestion question={question} />;
+    case "multiChoice":
+      return <MultiChoiceQuestion question={question} />;
+    case "multiSelect":
+      return <MultiSelectQuestion question={question} />;
+    case "select":
+      return <SelectQuestion question={question} />;
+    case "body":
+      return <BodyQuestion question={question} />;
+    case "terminatorButton":
+      return <TerminatorButtonQuestion question={question} />;
+  }
+  return null;
+}
 
 export const FieldWrapper = ({
   question,
@@ -128,6 +156,36 @@ export const FieldWrapper = ({
           ) : null}
           {formMessage ? <FormMessage /> : null}
         </FormItem>
+      )}
+    />
+  );
+};
+
+export const TextQuestion = ({
+  question,
+}: {
+  question: Question<"text">;
+}) => {
+  const useMSF = useMultiStepFormContext();
+  return (
+    <FieldWrapper
+      question={question}
+      form={useMSF.form}
+      render={(field) => (
+        <Input onChange={field.onChange} value={field.value} />
+      )}
+    />
+  );
+};
+
+export const TextareaQuestion = ({ question }: { question: Question<"textarea"> }) => {
+  const useMSF = useMultiStepFormContext();
+  return (
+    <FieldWrapper
+      question={question}
+      form={useMSF.form}
+      render={(field) => (
+        <Textarea onChange={field.onChange} value={field.value} />
       )}
     />
   );

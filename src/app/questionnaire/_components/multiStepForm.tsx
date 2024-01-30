@@ -23,6 +23,7 @@ import {
   BooleanQuestion,
   MultiChoiceQuestion,
   MultiSelectQuestion,
+  QuestionSwitch,
   SelectQuestion,
   TerminatorButtonQuestion,
 } from "./questions";
@@ -66,7 +67,9 @@ const MultiStepFormComponent = () => {
       </div>
       {!useMSF.submission.isFormSubmitted ? (
         <>
-          <div className="flex flex-col items-center gap-8 w-screen px-4 sm:w-[calc(100svw-10px)] relative overflow-x-hidden grow overflow-y-hidden">
+          <div
+            className="flex flex-col items-center gap-8 w-screen px-4 sm:w-[calc(100svw-10px)] relative overflow-x-hidden grow overflow-y-hidden"
+          >
             <AnimatePresence
               initial={false}
               mode="popLayout"
@@ -114,24 +117,7 @@ const MultiStepFormComponent = () => {
                                 isHidden ? "hidden" : ""
                               )}
                             >
-                              {question.type === "boolean" && (
-                                <BooleanQuestion question={question} />
-                              )}
-                              {question.type === "multiChoice" && (
-                                <MultiChoiceQuestion question={question} />
-                              )}
-                              {question.type === "multiSelect" && (
-                                <MultiSelectQuestion question={question} />
-                              )}
-                              {question.type === "select" && (
-                                <SelectQuestion question={question} />
-                              )}
-                              {question.type === "body" && (
-                                <BodyQuestion question={question} />
-                              )}
-                              {question.type === "terminatorButton" && (
-                                <TerminatorButtonQuestion question={question} />
-                              )}
+                              <QuestionSwitch question={question} />
                             </motion.div>
                           );
                         }

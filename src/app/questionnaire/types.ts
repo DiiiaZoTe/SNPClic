@@ -22,6 +22,8 @@ export type FormAnswers = Record<string, Answer>;
 
 /** Maps each question type to its corresponding answer type. */
 export type QuestionTypeToAnswerMap = {
+  text: StringAnswer;
+  textarea: StringAnswer;
   boolean: BooleanAnswer;
   multiSelect: MultiStringAnswer;
   multiChoice: MultiStringAnswer;
@@ -35,8 +37,9 @@ export type QuestionOption = { value: string; label: string };
 export type QuestionBodyOption = Record<PathId, string[]>;
 
 /** Enumerates the different types of questions that can be used in a form. */
-export type QuestionType = "boolean" | "multiSelect" | "multiChoice" | "select" | "body" | "terminatorButton";
+export type QuestionType = keyof QuestionTypeToAnswerMap;
 
+/** Represents a question info display condition. */
 export type QuestionInfoCondition = {
   info: string;
   condition: QuestionCondition | CompositeCondition;
@@ -55,50 +58,48 @@ export type BaseQuestion<T extends QuestionType> = {
   infoCondition?: QuestionInfoCondition;
 };
 
-/**
- * Specific structure for a boolean question.
- */
+/** Specific structure for a text question. */
+type TextQuestion = BaseQuestion<'text'> & {
+  defaultAnswer: StringAnswer;
+}
+
+/** Specific structure for a textarea question. */
+type TextareaQuestion = BaseQuestion<'textarea'> & {
+  defaultAnswer: StringAnswer;
+}
+
+/** Specific structure for a boolean question. */
 type BooleanQuestion = BaseQuestion<'boolean'> & {
   defaultAnswer: BooleanAnswer;
 }
 
-/**
- * Specific structure for a multiChoice question.
- */
+/** Specific structure for a multiChoice question. */
 type MultiChoiceQuestion = BaseQuestion<'multiChoice'> & {
   options: QuestionOption[];
   defaultAnswer: MultiStringAnswer;
 };
 
-/**
- * Specific structure for a multiSelect question.
- */
+/** Specific structure for a multiSelect question. */
 type MultiSelectQuestion = BaseQuestion<'multiSelect'> & {
   options: QuestionOption[];
   placeholder: string;
   defaultAnswer: MultiStringAnswer;
 };
 
-/**
- * Specific structure for a select question.
- */
+/** Specific structure for a select question. */
 type SelectQuestion = BaseQuestion<'select'> & {
   options: QuestionOption[];
   placeholder: string;
   defaultAnswer: StringAnswer;
 };
 
-/**
- * Specific structure for a body question.
- */
+/** Specific structure for a body question. */
 type BodyQuestion = BaseQuestion<'body'> & {
   options: QuestionBodyOption;
   defaultAnswer: StringAnswer;
 };
 
-/**
- * Specific structure for a terminator button question.
- */
+/** Specific structure for a terminator button question. */
 type TerminatorButtonQuestion = BaseQuestion<'terminatorButton'> & {
   buttonLabel?: string;
   defaultAnswer: BooleanAnswer;
@@ -106,10 +107,10 @@ type TerminatorButtonQuestion = BaseQuestion<'terminatorButton'> & {
   stopFlowContent: CanStopFlowContent;
 };
 
-/**
- * Union type for all question.
- */
+/** Union type for all question. */
 export type Question<T extends QuestionType> =
+  T extends 'text' ? TextQuestion :
+  T extends 'textarea' ? TextareaQuestion :
   T extends 'boolean' ? BooleanQuestion :
   T extends 'multiChoice' ? MultiChoiceQuestion :
   T extends 'multiSelect' ? MultiSelectQuestion :
@@ -170,6 +171,7 @@ export type StepCanStopFlow = {
   content: CanStopFlowContent;
 }
 
+/** Represents the reason for stopping a flow. */
 export type StopFlowReason = { reason: string, questionKey?: string } | undefined;
 
 //! Utility types
@@ -193,6 +195,7 @@ export type CompositeCondition = {
 /** Defines logical operators for combining conditions. */
 export type LogicalOperator = "AND" | "OR";
 
+/** Defines operators for comparing selected numbers. */
 export type SelectedNumberOperator =
   "SELECTED_EQUALS" |
   "SELECTED_NOT_EQUALS" |
@@ -209,6 +212,7 @@ export type ConditionOperator =
   "IS_EMPTY" | "NOT_IS_EMPTY" |
   SelectedNumberOperator;
 
+/** Defines the possible values for a question condition. */
 export type QuestionConditionValue = Boolean[] | string[] | number;
 
 /** Represents a condition based on a question's answer. */

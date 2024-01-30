@@ -24,11 +24,9 @@ export const getStepZodSchema = (step: Step) => {
           .array(z.string())
           .default(question.defaultAnswer)
         break;
+      case "text":
+      case "textarea":
       case "select":
-        schema[question.key] = z
-          .string()
-          .default(question.defaultAnswer)
-        break;
       case "body":
         schema[question.key] = z
           .string()
@@ -48,6 +46,16 @@ export const getStepZodSchema = (step: Step) => {
         isRequired = evaluateCondition(question.displayCondition, fullValues);
       }
       switch (question.type) {
+        case "text":
+        case "textarea":
+          const answer = values[question.key] as string;
+          if (isRequired && answer.length === 0)
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Ajouter une valeur.',
+              path: [question.key]
+            });
+          break;
         case "multiChoice":
         case "multiSelect":
           const multiAnswer = values[question.key] as string[];
