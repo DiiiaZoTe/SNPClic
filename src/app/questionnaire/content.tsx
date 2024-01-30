@@ -63,20 +63,6 @@ export const FORM_DATA: Form = [
     name: "Délai de consultation souhaité par le patient",
     questions: [
       {
-        type: "text",
-        key: "997",
-        text: "test should not be skipped is required",
-        defaultAnswer: "",
-        isRequired: true,
-      },
-      {
-        type: "text",
-        key: "998",
-        text: "test should not be skipped is required",
-        defaultAnswer: "",
-        isRequired: true,
-      },
-      {
         type: "terminatorButton",
         key: "5",
         text: "Rendez-vous non urgent ?",
@@ -106,13 +92,6 @@ export const FORM_DATA: Form = [
           },
           continueToStep: 5,
         },
-      },
-      {
-        type: "text",
-        key: "999",
-        text: "test is required",
-        defaultAnswer: "",
-        isRequired: true,
       },
     ],
     continueLabel: "Rendez-vous urgent, continuer",

@@ -169,7 +169,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     // @ts-ignore if no error then it will be undefined so valid
     //! you may want to get all the issues not just the first one... then return false with the issues to set later?
     const stepValidationErrors = stepValidation.error?.issues?.filter((issue: any) => includedQuestions.includes(issue.path[0]));
-    if (stepValidationErrors?.length === 0) return {
+    if (!stepValidationErrors || stepValidationErrors?.length === 0) return {
       success: true
     };
     return {
@@ -209,7 +209,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     if (currentStep === numberOfSteps) return;
     if (isFormSubmitted) return;
     // if the current step is not valid, don't go to next step
-    const {success: isCurrentValid} = validateStepAnswers(currentStep);
+    const { success: isCurrentValid } = validateStepAnswers(currentStep);
     if (!isCurrentValid) return;
 
     // check if the step can stop the flow
@@ -471,7 +471,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       setDirection("forward");
       return;
     }
-    if (stopFlowContent.continueToStep) return continueInStopFlow(stopFlowContent.continueToStep);
+    if (stopFlowContent.continueToStep) return continueInStopFlow(stopFlowContent.continueToStep, questionKey);
     goToRecapStoppingFlow({ reason: reason === true ? "" : reason, questionKey });
   }
 
