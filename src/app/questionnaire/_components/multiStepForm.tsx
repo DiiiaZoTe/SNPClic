@@ -4,7 +4,7 @@ import { useRef } from "react";
 import * as MSF from "../types";
 import { cn } from "@/lib/utils";
 
-import { ArrowBigLeftIcon, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { stepFormVariants } from "../_utils/utils";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,15 +18,7 @@ import {
 } from "../_hooks/multiStepFormContext";
 
 import { FormTracker } from "./formTracker";
-import {
-  BodyQuestion,
-  BooleanQuestion,
-  MultiChoiceQuestion,
-  MultiSelectQuestion,
-  QuestionSwitch,
-  SelectQuestion,
-  TerminatorButtonQuestion,
-} from "./questions";
+import { QuestionSwitch } from "./questions";
 import { StopFlowModal } from "./stopFlowModal";
 import { RecapAnswers } from "./recapAnswers";
 
@@ -50,26 +42,10 @@ const MultiStepFormComponent = () => {
   return (
     <>
       <TodoList />
-      <div className="w-full max-w-xl flex justify-between items-center">
-        <Button
-          onClick={() => {
-            useMSF.stepper.goTo.previous();
-          }}
-          variant="outline"
-          className={cn(
-            "h-[54px] w-[54px] flex justify-center items-center",
-            useMSF.stepper.is.firstStep ? "invisible pointer-events-none" : ""
-          )}
-        >
-          <ArrowBigLeftIcon className="w-5 h-5 fill-current" />
-        </Button>
-        <FormTracker className="rounded-lg" canOnlyGoBack={false} />
-      </div>
+      <FormTracker canOnlyGoBack={false} />
       {!useMSF.submission.isFormSubmitted ? (
         <>
-          <div
-            className="flex flex-col items-center gap-8 w-screen px-4 sm:w-[calc(100svw-10px)] relative overflow-x-hidden grow overflow-y-hidden"
-          >
+          <div className="flex flex-col items-center gap-8 w-screen px-4 sm:w-[calc(100svw-10px)] relative overflow-x-hidden grow overflow-y-hidden">
             <AnimatePresence
               initial={false}
               mode="popLayout"
