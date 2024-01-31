@@ -169,8 +169,9 @@ const QuestionAnswerSwitch = ({
           answer={answer as BooleanAnswer}
         />
       );
+    default:
+      return null;
   }
-  return null;
 };
 
 const QuestionAnswerWrapper = ({
@@ -386,9 +387,7 @@ const QuestionAnswerSelect = ({
   }
   return (
     <QuestionAnswerWrapper question={question} className={wrapperClassName}>
-      <span className={cn("text-sm", className)}>
-        {selectAnswer}
-      </span>
+      <span className={cn("text-sm", className)}>{selectAnswer}</span>
     </QuestionAnswerWrapper>
   );
 };

@@ -45,7 +45,7 @@ type UseFormType = UseFormReturn<
 >;
 
 export const QuestionSwitch = ({
-  question
+  question,
 }: {
   question: Question<QuestionType>;
 }) => {
@@ -66,9 +66,10 @@ export const QuestionSwitch = ({
       return <BodyQuestion question={question} />;
     case "terminatorButton":
       return <TerminatorButtonQuestion question={question} />;
+    default:
+      return null;
   }
-  return null;
-}
+};
 
 export const FieldWrapper = ({
   question,
@@ -94,7 +95,7 @@ export const FieldWrapper = ({
   if (infoMessage)
     infoMessageContent = useMSF.questions.checkQuestionInfoCondition(
       useMSF.answers.form(),
-      question.infoCondition,
+      question.infoCondition
     );
   return (
     <FormField
@@ -161,11 +162,7 @@ export const FieldWrapper = ({
   );
 };
 
-export const TextQuestion = ({
-  question,
-}: {
-  question: Question<"text">;
-}) => {
+export const TextQuestion = ({ question }: { question: Question<"text"> }) => {
   const useMSF = useMultiStepFormContext();
   return (
     <FieldWrapper
@@ -178,7 +175,11 @@ export const TextQuestion = ({
   );
 };
 
-export const TextareaQuestion = ({ question }: { question: Question<"textarea"> }) => {
+export const TextareaQuestion = ({
+  question,
+}: {
+  question: Question<"textarea">;
+}) => {
   const useMSF = useMultiStepFormContext();
   return (
     <FieldWrapper
@@ -380,8 +381,10 @@ export const TerminatorButtonQuestion = ({
   question: Question<"terminatorButton">;
 }) => {
   const useMSF = useMultiStepFormContext();
-  const isLabelBig = question?.buttonLabel !== undefined && question?.buttonLabel.length > 10;
-  const isLabelEmpty = question?.buttonLabel === undefined || question?.buttonLabel.length === 0;
+  const isLabelBig =
+    question?.buttonLabel !== undefined && question?.buttonLabel.length > 10;
+  const isLabelEmpty =
+    question?.buttonLabel === undefined || question?.buttonLabel.length === 0;
 
   return (
     <FieldWrapper
@@ -400,11 +403,7 @@ export const TerminatorButtonQuestion = ({
           type="button"
           className={cn(
             "flex flex-row w-full gap-2 justify-center self-end min-w-0 group",
-            isLabelEmpty
-              ? "max-w-fit"
-              : !isLabelBig
-              ? "sm:max-w-fit"
-              : ""
+            isLabelEmpty ? "max-w-fit" : !isLabelBig ? "sm:max-w-fit" : ""
           )}
           variant={question.variant ?? "default"}
           onClick={() => {
