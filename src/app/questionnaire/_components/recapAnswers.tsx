@@ -23,12 +23,6 @@ export const RecapAnswers = () => {
 
   const stopReason = useMSF.controlFlow.stopped.formStoppedReason;
 
-  // const indexOfStopQuestion = useMSF.data.flattenForm.findIndex(
-  //   (question) =>
-  //     stopReason?.questionKey &&
-  //     question.key === stopReason.questionKey
-  // );
-
   return (
     <div className="p-0 flex flex-col gap-8 w-full h-full max-w-xl">
       <motion.div
@@ -46,8 +40,6 @@ export const RecapAnswers = () => {
       </motion.div>
       <div className="grow overflow-y-auto flex flex-col gap-8">
         {useMSF.data.form.map((stepData, i) => {
-          // only show the steps before or equal to the current step
-          // if (useMSF.stepper.is.skipped(i + 1)) return null;
           return (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
