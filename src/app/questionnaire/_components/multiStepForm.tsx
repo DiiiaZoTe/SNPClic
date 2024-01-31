@@ -99,33 +99,35 @@ const MultiStepFormComponent = () => {
                         }
                       )}
                     </div>
-                    <div className="flex flex-row justify-between gap-8">
-                      {useMSF.stepper.is.lastStep ? (
-                        <Button
-                          type="submit"
-                          variant="default"
-                          className="w-fit max-w-full ml-auto"
-                        >
-                          <span className="truncate min-w-0">
-                            {useMSF.data.currentStep.continueLabel ??
-                              "Terminer"}
-                          </span>
-                          <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
-                        </Button>
-                      ) : (
-                        <Button
-                          type="submit"
-                          variant="secondary"
-                          className="w-fit max-w-full ml-auto group"
-                        >
-                          <span className="truncate min-w-0">
-                            {useMSF.data.currentStep.continueLabel ??
-                              "Continuer"}
-                          </span>
-                          <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
-                        </Button>
-                      )}
-                    </div>
+                    {useMSF.data.currentStep.noContinueButton ? null : (
+                      <div className="flex flex-row justify-between gap-8">
+                        {useMSF.stepper.is.lastStep ? (
+                          <Button
+                            type="submit"
+                            variant="default"
+                            className="w-fit max-w-full ml-auto"
+                          >
+                            <span className="truncate min-w-0">
+                              {useMSF.data.currentStep.continueLabel ??
+                                "Terminer"}
+                            </span>
+                            <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
+                          </Button>
+                        ) : (
+                          <Button
+                            type="submit"
+                            variant="secondary"
+                            className="w-fit max-w-full ml-auto group"
+                          >
+                            <span className="truncate min-w-0">
+                              {useMSF.data.currentStep.continueLabel ??
+                                "Continuer"}
+                            </span>
+                            <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </form>
                 </Form>
               </motion.div>
@@ -147,9 +149,9 @@ import {
 } from "@/components/ui/popover";
 
 const todo = [
-  "recap to pdf + freeform name and notes",
   "verify everything is working as expected",
   "submission flow",
+  "recap to pdf",
   "backend database",
   "no need to create the form builder for now, maybe last",
 ];

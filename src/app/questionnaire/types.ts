@@ -127,6 +127,7 @@ export type Step = {
   description?: string;
   questions: Array<Question<QuestionType>>;
   continueLabel?: string;
+  noContinueButton?: boolean;
   stopFlowCondition?: StepCanStopFlow[];
 };
 

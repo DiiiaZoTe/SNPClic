@@ -10,21 +10,21 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "boolean",
-        key: "1",
+        key: "1-1",
         text: "Prendre l'identité du patient.",
         defaultAnswer: false,
         isRequired: false,
       },
       {
         type: "boolean",
-        key: "2",
+        key: "1-2",
         text: "Le patient est-il connu du cabinet ?",
         defaultAnswer: false,
         isRequired: false,
       },
       {
         type: "boolean",
-        key: "3",
+        key: "1-3",
         text: "Avez-vous complété la fiche patient ?",
         defaultAnswer: false,
         popupInfo:
@@ -33,7 +33,7 @@ export const FORM_DATA: Form = [
       },
       {
         type: "boolean",
-        key: "4",
+        key: "1-4",
         text: "Y-a-t-il une alerte sur la fiche patient ?",
         description: "Ex. Patient fragile,...",
         defaultAnswer: false,
@@ -47,7 +47,7 @@ export const FORM_DATA: Form = [
               </div>
             `,
             condition: {
-              questionKey: "4",
+              questionKey: "1-4",
               operator: "EQUALS",
               value: [true],
             },
@@ -64,12 +64,12 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "terminatorButton",
-        key: "5",
+        key: "2-1",
         text: "Rendez-vous non urgent ?",
         defaultAnswer: false,
         isRequired: false,
         variant: "default",
-        buttonLabel: "Non urgent",
+        buttonLabel: "Continuer",
         stopFlowContent: {
           title: "Rendez-vous non urgent",
           content: `
@@ -93,8 +93,22 @@ export const FORM_DATA: Form = [
           continueToStep: 5,
         },
       },
+      {
+        type: "terminatorButton",
+        key: "2-2",
+        text: "Rendez-vous urgent ?",
+        defaultAnswer: false,
+        isRequired: false,
+        variant: "secondary",
+        buttonLabel: "Continuer",
+        stopFlowContent: {
+          bypassModalStopReason: true,
+          continueToStep: 3,
+        },
+      },
     ],
     continueLabel: "Rendez-vous urgent, continuer",
+    noContinueButton: true,
   },
   //******************************************************
   //*                      STEP 3
@@ -104,7 +118,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "select",
-        key: "6",
+        key: "3-1",
         text: "Quel âge a le patient ?",
         placeholder: "Sélectionner une tranche d'âge",
         defaultAnswer: "",
@@ -114,11 +128,11 @@ export const FORM_DATA: Form = [
           { value: "2", label: "Entre 6 mois et 80 ans" },
           { value: "3", label: "Plus de 80 ans" },
         ],
-        dependents: ["7"],
+        dependents: ["3-2"],
       },
       {
         type: "body",
-        key: "7",
+        key: "3-2",
         text: "Aide à l’orientation vers le 15 pour les urgences vitales ?",
         description: `
           <p>
@@ -167,7 +181,7 @@ export const FORM_DATA: Form = [
           ],
         },
         displayCondition: {
-          questionKey: "6",
+          questionKey: "3-1",
           operator: "EQUALS",
           value: ["2"],
         },
@@ -176,7 +190,7 @@ export const FORM_DATA: Form = [
     stopFlowCondition: [
       {
         condition: {
-          questionKey: "6",
+          questionKey: "3-1",
           operator: "IS_ANY_IN",
           value: ["1", "3"],
         },
@@ -203,7 +217,7 @@ export const FORM_DATA: Form = [
       },
       {
         condition: {
-          questionKey: "7",
+          questionKey: "3-2",
           operator: "NOT_IS_EMPTY",
         },
         content: {
@@ -237,7 +251,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "multiChoice",
-        key: "8",
+        key: "4-1",
         text: "Demander en quoi ce motif semble urgent au patient.",
         defaultAnswer: [],
         isRequired: false,
@@ -260,7 +274,7 @@ export const FORM_DATA: Form = [
       },
       {
         type: "multiChoice",
-        key: "9",
+        key: "4-2",
         text: "Demander au patient ce qu’il a essayé de faire pour améliorer ses symptômes.",
         defaultAnswer: [],
         isRequired: false,
@@ -281,7 +295,7 @@ export const FORM_DATA: Form = [
     stopFlowCondition: [
       {
         condition: {
-          questionKey: "8",
+          questionKey: "4-1",
           operator: "SELECTED_EQUALS",
           value: 0,
         },
@@ -309,7 +323,7 @@ export const FORM_DATA: Form = [
       },
       {
         condition: {
-          questionKey: "8",
+          questionKey: "4-1",
           operator: "SELECTED_EQUALS",
           value: 1,
         },
@@ -337,7 +351,7 @@ export const FORM_DATA: Form = [
       },
       {
         condition: {
-          questionKey: "8",
+          questionKey: "4-1",
           operator: "SELECTED_GREATER_THAN_OR_EQUALS",
           value: 2,
         },
@@ -372,7 +386,7 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "terminatorButton",
-        key: "10",
+        key: "5-1",
         text: "1. Vérifier si d’autres médecins de la structure disposent de créneaux disponibles et les proposer au patient.",
         defaultAnswer: false,
         isRequired: false,
@@ -402,7 +416,7 @@ export const FORM_DATA: Form = [
       },
       {
         type: "boolean",
-        key: "11",
+        key: "5-2",
         text: "2. Vérifier les connaissances du patient sur le parcours de soins via le 15:",
         description: `
           <ul class="bulletList">
@@ -416,7 +430,7 @@ export const FORM_DATA: Form = [
       },
       {
         type: "boolean",
-        key: "12",
+        key: "5-3",
         text: "3. Est-il capable de reformuler son orientation dans le parcours de soins et accepte-t-il de contacter le 15 le cas échéant ?",
         defaultAnswer: false,
         isRequired: false,
@@ -433,12 +447,12 @@ export const FORM_DATA: Form = [
               type: "OR",
               conditions: [
                 {
-                  questionKey: "12",
+                  questionKey: "5-3",
                   operator: "EQUALS",
                   value: [false],
                 },
                 {
-                  questionKey: "6",
+                  questionKey: "3-1",
                   operator: "IS_ANY_IN",
                   value: ["1", "3"],
                 },
@@ -454,12 +468,12 @@ export const FORM_DATA: Form = [
           type: "OR",
           conditions: [
             {
-              questionKey: "12",
+              questionKey: "5-3",
               operator: "EQUALS",
               value: [false],
             },
             {
-              questionKey: "6",
+              questionKey: "3-1",
               operator: "IS_ANY_IN",
               value: ["1", "3"],
             },
@@ -483,14 +497,14 @@ export const FORM_DATA: Form = [
     questions: [
       {
         type: "text",
-        key: "13",
+        key: "6-1",
         text: "Nom complet du patient",
         defaultAnswer: "",
         isRequired: true,
       },
       {
         type: "textarea",
-        key: "14",
+        key: "6-2",
         text: "Notes additionnelles",
         defaultAnswer: "",
         isRequired: false,
