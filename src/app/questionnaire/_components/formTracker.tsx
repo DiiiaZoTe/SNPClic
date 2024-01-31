@@ -140,7 +140,7 @@ const SelectStep = ({
                 stroke: theme === "dark" ? "#1c9c4b" : "#10a847",
               },
               trail: {
-                stroke: theme === "dark" ? "#262626" : "#f2f2f2",
+                stroke: theme === "dark" ? "#333333" : "#eeeeee",
               },
             }}
           />
@@ -223,12 +223,12 @@ const Dot = ({
       : isSkipped
       ? "bg-yellow-500"
       : !isVisited
-      ? "bg-accent"
+      ? "bg-secondary"
       : !isValid
       ? "bg-destructive/80"
       : isVisited && isValid
       ? "bg-primary"
-      : "bg-accent",
+      : "bg-secondary",
     canClick ? "cursor-pointer" : "cursor-default pointer-events-none"
   );
 
