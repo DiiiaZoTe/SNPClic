@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --verbose",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "rebase-all-from-dev": "git checkout preview; git rebase dev; git push; git checkout main; git rebase dev; git push; git checkout dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
