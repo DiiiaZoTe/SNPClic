@@ -7,8 +7,7 @@ import {
 } from "@/components/ui/card";
 import Balancer from "react-wrap-balancer";
 
-import { CONTACT_CONTENT } from "./content";
-import { SubContentType } from "./content-type";
+import { CONTACT_CONTENT, type SubContentType } from "./content";
 import Link from "next/link";
 
 export const metadata = {
