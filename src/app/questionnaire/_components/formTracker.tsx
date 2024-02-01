@@ -129,10 +129,10 @@ const SelectStep = ({
           <CircularProgressbar
             value={
               isFormSubmitted
-                ? useMSF.stepper.numberOfSteps - 1
+                ? useMSF.stepper.numberOfSteps
                 : currentStep - 1
             }
-            maxValue={useMSF.stepper.numberOfSteps - 1}
+            maxValue={useMSF.stepper.numberOfSteps}
             className="w-8 h-8"
             strokeWidth={20}
             styles={{
