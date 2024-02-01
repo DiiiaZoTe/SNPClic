@@ -3,7 +3,7 @@
 import { ControllerRenderProps, UseFormReturn } from "react-hook-form";
 
 import type { Answer, Question, QuestionType } from "../types";
-import { useMultiStepFormContext } from "../_hooks/multiStepFormContext";
+import { useMultiStepFormContext } from "../_hooks/multiStepForm-context";
 
 import {
   FormControl,

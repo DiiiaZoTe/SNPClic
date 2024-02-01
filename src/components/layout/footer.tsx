@@ -1,9 +1,9 @@
-import Logo from "@/components/logo";
+import { Logo } from "@/components/logos/logo";
 import Link from "next/link";
 
 import { githubConfig } from "@/config/site";
 import { ThemeToggle } from "../theme-toggle";
-import { GitHubLogo } from "../other/GithubLogo";
+import { GitHubLogo } from "../logos/githubLogo";
 
 const LINKS = [
   {

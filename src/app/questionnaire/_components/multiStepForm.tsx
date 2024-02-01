@@ -15,12 +15,12 @@ import { Form, FormDescription, FormLabel } from "@/components/ui/form";
 import {
   MultiStepFormProvider,
   useMultiStepFormContext,
-} from "../_hooks/multiStepFormContext";
+} from "../_hooks/multiStepForm-context";
 
-import { FormTracker } from "./formTracker";
+import { FormTracker } from "./form-tracker";
 import { QuestionSwitch } from "./questions";
-import { StopFlowModal } from "./stopFlowModal";
-import { RecapAnswers } from "./recapAnswers";
+import { StopFlowModal } from "./stop-flow-modal";
+import { RecapAnswers } from "./recap-answers";
 
 export const MultiStepForm = ({ stepsData }: { stepsData: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);

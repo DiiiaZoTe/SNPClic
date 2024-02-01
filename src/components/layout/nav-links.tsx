@@ -14,7 +14,7 @@ type NavLinkProps = {
   routing?: boolean;
 };
 
-export function NavLinks(props: NavLinkProps) {
+export const NavLinks = (props: NavLinkProps) => {
   const pathName = usePathname();
   const {
     links,
@@ -47,4 +47,4 @@ export function NavLinks(props: NavLinkProps) {
       ))}
     </ul>
   );
-}
+};

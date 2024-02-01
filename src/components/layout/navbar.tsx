@@ -1,12 +1,12 @@
 import Link from "next/link";
-import NavLinks from "@/components/navlinks";
-import Logo from "@/components/logo";
+import { NavLinks } from "@/components/layout/nav-links";
+import { Logo } from "@/components/logos/logo";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "../theme-toggle";
 import { githubConfig } from "@/config/site";
-import { GitHubLogo } from "../other/GithubLogo";
+import { GitHubLogo } from "@/components/logos/githubLogo";
 
 const LINKS = [
   ["Accueil", "/"],
