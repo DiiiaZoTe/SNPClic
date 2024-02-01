@@ -58,6 +58,7 @@ const MobileNavbar = () => {
             className="flex flex-col gap-8 font-medium"
             activeLinkClass="text-primary cursor-default"
             defaultLinkClass="text-foreground/70 hover:text-foreground hover:underline underline-offset-2"
+            sheetClose
           />
         </div>
         <div className="flex gap-4 items-center">

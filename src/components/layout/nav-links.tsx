@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import Balancer from "react-wrap-balancer";
+import { SheetClose } from "../ui/sheet";
 
 type NavLinkProps = {
   links: string[][];
@@ -12,6 +13,7 @@ type NavLinkProps = {
   defaultLinkClass?: string;
   activeLinkClass?: string;
   routing?: boolean;
+  sheetClose?: boolean;
 };
 
 export const NavLinks = (props: NavLinkProps) => {
@@ -23,6 +25,7 @@ export const NavLinks = (props: NavLinkProps) => {
     defaultLinkClass,
     activeLinkClass,
     routing,
+    sheetClose = false,
     ...otherProps
   } = props;
   const routingEnabled = routing ?? true; // default to true
@@ -31,18 +34,35 @@ export const NavLinks = (props: NavLinkProps) => {
     <ul role="list" className={cn(className)} {...otherProps}>
       {links.map(([name, href]) => (
         <li key={name} className={listItemClass}>
-          <Link
-            key={name}
-            href={href}
-            className={
-              routingEnabled && pathName === href
-                ? activeLinkClass
-                : defaultLinkClass
-            }
-            prefetch={true}
-          >
-            <Balancer>{name}</Balancer>
-          </Link>
+          {sheetClose ? (
+            <SheetClose asChild>
+              <Link
+                key={name}
+                href={href}
+                prefetch={true}
+                className={
+                  routingEnabled && pathName === href
+                    ? activeLinkClass
+                    : defaultLinkClass
+                }
+              >
+                <Balancer>{name}</Balancer>
+              </Link>
+            </SheetClose>
+          ) : (
+            <Link
+              key={name}
+              href={href}
+              prefetch={true}
+              className={
+                routingEnabled && pathName === href
+                  ? activeLinkClass
+                  : defaultLinkClass
+              }
+            >
+              <Balancer>{name}</Balancer>
+            </Link>
+          )}
         </li>
       ))}
     </ul>
