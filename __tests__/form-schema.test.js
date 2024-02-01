@@ -1,4 +1,4 @@
-import { getStepZodSchema } from '../src/app/questionnaire/_utils/utils';
+import { getStepZodSchema } from '../src/app/questionnaire/_hooks/schemas';
 
 describe('Form Schema Generation Tests', () => {
   // Tests for boolean type
