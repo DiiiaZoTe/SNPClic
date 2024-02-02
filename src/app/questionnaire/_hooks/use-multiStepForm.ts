@@ -25,7 +25,6 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   const [currentStep, setCurrentStep] = useState(1);
   const [direction, setDirection] = useState<StepDirection>("forward");
-  // const [visitedSteps, setVisitedSteps] = useState<StepVisited[]>(["visited", ...Array(numberOfSteps - 1).fill("notVisited")]);
   const [visitedSteps, setVisitedSteps] = useState<boolean[]>([true, ...Array(numberOfSteps - 1).fill(false)]);
   const [skippedSteps, setSkippedSteps] = useState<boolean[]>([true, ...Array(numberOfSteps - 1).fill(false)]);
 
@@ -259,6 +258,8 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       }
       return newSkipped;
     });
+    resetAllTerminatorsInStep(currentStep);
+
     // if the current was a continue after stop flow, then remove it.
     if (currentWasContinueFlow)
       setStepCalledContinueFlow((prev) => prev.filter((step) => step !== currentStep));
@@ -305,7 +306,11 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
   /** go to a specific step if possible */
   const goToStep = (toStep: number) => {
     if (toStep < 1 || toStep > numberOfSteps) return;
-    if (toStep === currentStep && !isFormSubmitted) return;
+    // we go back to the step that submitted the form
+    if (isFormSubmitted) return internalBasicSetStep(toStep, "backward");
+    if (toStep === currentStep) return;
+    if (toStep > currentStep && stepTryStopFlow(currentStep)) return;
+    
     // logic go to step
     // if the current step is not valid, don't go to next step
     const { success: isCurrentValid } = validateStepAnswers(currentStep);
@@ -402,7 +407,11 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       return newValids;
     });
     setSkippedSteps((prev) =>
-      prev.map((skipped, index) => skipped || currentStep - 1 < index && index < goToStep - 1)
+      prev.map((skipped, index) => {
+        if (index < currentStep - 1) return skipped;
+        if (currentStep - 1 < index && index < goToStep - 1) return true;
+        return false;
+      })
     );
     setVisitedSteps((prev) =>
       prev.map((visited, index) => (
@@ -413,6 +422,9 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
             : visited
       ))
     );
+    // we should also reset all the terminator buttons that did not trigger the stop flow
+    resetAllTerminatorsInStep(currentStep, triggerByQuestionKey);
+
     // we should also set skipped all the questions that are:
     // - after the triggerByQuestionKey of the current step or first question of next step
     // - in the steps after the current step up to the goToStep
@@ -457,6 +469,15 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     setContentStoppingFlow(undefined);
     setFormStoppedReason(undefined);
   };
+
+  const resetAllTerminatorsInStep = (step: number, triggerByQuestionKey?: string) => {
+    const stepData = data[step - 1];
+    stepData.questions.forEach((question) => {
+      if (question.type !== "terminatorButton") return;
+      if (question.key === triggerByQuestionKey) return;
+      form.setValue(question.key, false);
+    });
+  }
 
   /** 
    * Check if the stop flow content can be bypassed,
