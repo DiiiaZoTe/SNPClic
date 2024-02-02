@@ -31,15 +31,16 @@ export const FormTracker = ({
   const useMSF = useMultiStepFormContext();
   const currentStep = useMSF.stepper.currentStep;
   const numberOfSteps = useMSF.stepper.numberOfSteps;
+  const isFormSubmitted = useMSF.submission.isFormSubmitted;
 
   const canClick = useCallback(
     (step: number, isVisited: boolean) => {
-      if (step === currentStep) return false;
+      if (step === currentStep && !isFormSubmitted) return false;
       if (canOnlyGoBack) return step < currentStep; // can only go back
       // is the current step already visited?
       return isVisited;
     },
-    [currentStep, canOnlyGoBack]
+    [currentStep, canOnlyGoBack, isFormSubmitted]
   );
 
   return (
@@ -109,10 +110,9 @@ const SelectStep = ({
 
   return (
     <Select
-      value={currentStep.toString() || "1"}
+      value={isFormSubmitted ? "-1" : currentStep.toString() || "1"}
       onValueChange={(v) => {
         const toStep = parseInt(v);
-        if (toStep === currentStep) return;
         useMSF.stepper.goTo.step(toStep);
       }}
     >
@@ -128,9 +128,7 @@ const SelectStep = ({
         <div className="flex flex-row w-full h-full items-center gap-2">
           <CircularProgressbar
             value={
-              isFormSubmitted
-                ? useMSF.stepper.numberOfSteps
-                : currentStep - 1
+              isFormSubmitted ? useMSF.stepper.numberOfSteps : currentStep - 1
             }
             maxValue={useMSF.stepper.numberOfSteps}
             className="w-8 h-8"
@@ -168,7 +166,7 @@ const SelectStep = ({
               withCheck={false}
               className={cn(
                 "h-10 w-full",
-                step === currentStep
+                step === currentStep && !isFormSubmitted
                   ? "bg-primary/10 focus:bg-primary/10 cursor-default"
                   : ""
               )}
