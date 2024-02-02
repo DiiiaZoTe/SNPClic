@@ -3,7 +3,7 @@ export const siteConfig = {
   url: process.env.ENVIRONMENT == 'production'
     ? "https://snpclic.fr"
     : process.env.ENVIRONMENT == 'preview'
-      ? "https://snpclic-preview.alexvencel.com"
+      ? "https://preview.snpclic.fr"
       : "http://localhost:3000",
   ogImage: "/og.png",
   description:

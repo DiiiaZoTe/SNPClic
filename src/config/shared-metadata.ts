@@ -28,7 +28,7 @@ export const getSharedMetadata = (title?: string, description?: string, url?: st
       type: "website",
       locale: "fr_FR",
       url: url ?? siteConfig.url,
-      title: `${title} - ${siteConfig.name}` ?? siteConfig.name,
+      title: title ? `${title} - ${siteConfig.name}` : siteConfig.name,
       description: description ?? siteConfig.description,
       siteName: siteConfig.name,
       images: [
@@ -42,7 +42,7 @@ export const getSharedMetadata = (title?: string, description?: string, url?: st
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} - ${siteConfig.name}` ?? siteConfig.name,
+      title: title ? `${title} - ${siteConfig.name}` : siteConfig.name,
       description: description ?? siteConfig.description,
       images: [siteConfig.ogImage],
     },
