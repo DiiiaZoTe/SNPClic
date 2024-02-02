@@ -2,7 +2,7 @@
 "use client";
 
 import { RefObject, useCallback, useEffect, useMemo, useState } from "react";
-import { FormAnswers, Form, StepDirection, CanStopFlowContent, QuestionInfoCondition, Question, Step, StopFlowReason } from "../types";
+import { FormAnswers, Form, StepDirection, CanStopFlowContent, QuestionInfoCondition, Question, Step, StopFlowReason, QuestionType } from "../types";
 import { evaluateCondition } from "../_utils/conditions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -113,15 +113,8 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   // Effect to set the hidden questions when step changes
   useEffect(() => {
-    const toHide = <string[]>[];
-    flattenForm.forEach((q) => {
-      const question = q.question;
-      if (!question.displayCondition) return;
-      const displayEvaluated = evaluateCondition(question.displayCondition, getDefaultStore().get(formAnswersAtom));
-      if (!displayEvaluated) {
-        toHide.push(question.key);
-      }
-    });
+    const flattenFormJustQuestions = flattenForm.map((q) => q.question);
+    const toHide = getQuestionsToHide(getDefaultStore().get(formAnswersAtom), flattenFormJustQuestions);
     setHiddenQuestions(toHide);
   }, [flattenForm, defaultValues, currentStep]);
 
@@ -133,14 +126,13 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       if (eventType !== "change") return;
       const question = currentStepData.questions.find((q) => q.key === questionKey);
       if (!question) return;
-      if (question.dependents === undefined || question.dependents.length === 0) return;
-      //! for perf reasons, we may say the steps questions flat map to not process it every time...
-      const dependents = flattenForm.filter((q) => question.dependents?.includes(q.key)).map((q) => q.question);
-      const toHide = checkDependentsDisplayCondition(formValues, dependents);
-      toHide.forEach((questionKey) => {
-        resetAnswer(questionKey);
-      });
-      setHiddenQuestions(toHide);
+
+      // hide dependents if needed
+      if (question.dependents?.length !== 0) {
+        const dependents = flattenForm.filter((q) => question.dependents?.includes(q.key)).map((q) => q.question);
+        const toHide = getQuestionsToHide(formValues, dependents);
+        setHiddenQuestions(toHide);
+      }
     });
 
     return () => {
@@ -218,14 +210,9 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     // we need to get all the skipped steps following the next step (not current since we reset next anyway)
     // if the current was a continue after stop flow
     // we do this to invalidate those steps as we can now access them
-    const followingSkippedStep = <number[]>[];
     const currentWasContinueFlow = stepCalledContinueFlow.includes(currentStep);
-    if (currentWasContinueFlow) {
-      for (let i = currentStep + 1; i < skippedSteps.length; i++) {
-        if (!skippedSteps[i]) break;
-        followingSkippedStep.push(i);
-      }
-    }
+    let followingSkippedStep = <number[]>[];
+    if (currentWasContinueFlow) followingSkippedStep = getFollowingSkippedStep(skippedSteps, currentStep);
 
     // logic go to next step
     setValidSteps((prev) => {
@@ -310,7 +297,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     if (isFormSubmitted) return internalBasicSetStep(toStep, "backward");
     if (toStep === currentStep) return;
     if (toStep > currentStep && stepTryStopFlow(currentStep)) return;
-    
+
     // logic go to step
     // if the current step is not valid, don't go to next step
     const { success: isCurrentValid } = validateStepAnswers(currentStep);
@@ -371,12 +358,17 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     stoppingFlowSetter(question.stopFlowContent, question.key);
   }
 
+  /** check if a step can stop the flow */
+  const stepCanStopFlow = useCallback((step: number, values?: FormAnswers) => {
+    const stepData = data[step - 1];
+    return stepData.stopFlowCondition?.find(condition =>
+      evaluateCondition(condition.condition, values ?? form.getValues())
+    )?.content;
+  }, [data, form]);
+
   /** try to stop the flow from a step */
   const stepTryStopFlow = (step: number) => {
-    const stepData = data[step - 1];
-    const stopCondition = stepData.stopFlowCondition?.find(condition =>
-      evaluateCondition(condition.condition, form.getValues())
-    )?.content;
+    const stopCondition = stepCanStopFlow(step)
     if (stopCondition === undefined) return false;
     stoppingFlowSetter(stopCondition);
     return true;
@@ -470,6 +462,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     setFormStoppedReason(undefined);
   };
 
+  /** reset all the terminator buttons in the current step except the triggered if provided */
   const resetAllTerminatorsInStep = (step: number, triggerByQuestionKey?: string) => {
     const stepData = data[step - 1];
     stepData.questions.forEach((question) => {
@@ -556,6 +549,67 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     });
     setSkippedQuestions((prev) => [...prev, ...questionsToSkip.map((question) => question.key)]);
   };
+
+  // watch answer changes and resets skipped steps according to can stop flow
+  useEffect(() => {
+    const watching = form.watch((_values, { name: _questionKey, type: eventType }) => {
+      if (eventType !== "change") return;
+      const canStepStopFlow = stepCanStopFlow(currentStep);
+      const currentStepCalledContinueFlow = stepCalledContinueFlow.includes(currentStep);
+
+      // we remove the previously skipped steps if not skipped anymore
+      if (canStepStopFlow === undefined) {
+        setStepCalledContinueFlow((prev) => prev.filter((step) => step !== currentStep));
+        const followingSkippedStep = getFollowingSkippedStep(skippedSteps, currentStep);
+        setValidSteps((prev) => {
+          const newValids = [...prev];
+          for (const skippedStep of followingSkippedStep) {
+            newValids[skippedStep] = false;
+          }
+          return newValids;
+        });
+        setVisitedSteps((prev) => {
+          const newVisited = [...prev];
+          for (const skippedStep of followingSkippedStep) {
+            newVisited[skippedStep] = false;
+          }
+          return newVisited;
+        });
+        setSkippedSteps((prev) => {
+          const newSkipped = [...prev];
+          for (const skippedStep of followingSkippedStep) {
+            newSkipped[skippedStep] = false;
+          }
+          return newSkipped;
+        });
+        return;
+      }
+      // we add the potentially skipped steps, allows to reset if making modifications
+      if (canStepStopFlow) {
+        const toPotentialStep = canStepStopFlow.continueToStep ?? currentStep + 1;
+        if (toPotentialStep <= currentStep) return;
+        setValidSteps((prev) => prev.map((valid, index) => {
+          if (index === currentStep - 1) return false;
+          if (currentStep - 1 < index && index < toPotentialStep - 1) return false;
+          return valid;
+        }));
+        setVisitedSteps((prev) => prev.map((visited, index) => {
+          if (index === currentStep - 1) return true;
+          if (currentStep - 1 < index && index < toPotentialStep - 1) return false;
+          return visited;
+        }));
+        setSkippedSteps((prev) => prev.map((skipped, index) => {
+          if (index === currentStep - 1) return false;
+          if (currentStep - 1 < index && index < toPotentialStep - 1) return true;
+          return skipped;
+        }));
+      }
+    });
+
+    return () => {
+      watching.unsubscribe();
+    }
+  }, [currentStep, form, stepCanStopFlow, stepCalledContinueFlow, skippedSteps]);
 
   //******************************************************
   //*                 The return object
@@ -645,14 +699,14 @@ const checkQuestionInfoCondition = (formAnswers: FormAnswers, infoConditions?: Q
   }
 }
 
-/** check if dependents should be hidden */
-const checkDependentsDisplayCondition = (formAnswers: FormAnswers, dependents: Question<any>[]) => {
+/** evaluate questions to hide based on the form answers and get which one needs to be hidden */
+const getQuestionsToHide = (formAnswers: FormAnswers, questions: Question<QuestionType>[]) => {
   const toHide = <string[]>[];
-  dependents.forEach((dependent) => {
-    if (!dependent.displayCondition) return;
-    const displayEvaluated = evaluateCondition(dependent.displayCondition, formAnswers);
+  questions.forEach((question) => {
+    if (!question.displayCondition) return;
+    const displayEvaluated = evaluateCondition(question.displayCondition, formAnswers);
     if (!displayEvaluated) {
-      toHide.push(dependent.key);
+      toHide.push(question.key);
     }
   });
   return toHide;
@@ -688,7 +742,18 @@ export const getStepAnswers = (stepData: Step, formAnswers: FormAnswers) => {
   }, {} as FormAnswers);
 }
 
+/** Get the questions before a specific question */
 export const getStepQuestionsBefore = (stepData: Step, questionKey: string) => {
   const index = stepData.questions.findIndex((question) => question.key === questionKey);
   return stepData.questions.slice(0, index + 1);
+}
+
+/** Get index of all skipped step passed certain step up to the first non skipped one */
+const getFollowingSkippedStep = (skippedSteps: boolean[], currentStep: number) => {
+  const followingSkippedStep = <number[]>[];
+  for (let i = currentStep; i < skippedSteps.length; i++) {
+    if (!skippedSteps[i]) break;
+    followingSkippedStep.push(i);
+  }
+  return followingSkippedStep;
 }
