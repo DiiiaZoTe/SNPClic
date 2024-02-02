@@ -311,7 +311,8 @@ export const FORM_DATA: Form = [
               label: "Rendez-vous différé",
               preText:
                 "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
-              reason: "Aucune ressource interne sélectionnée.",
+              reason:
+                "Aucune ressource interne sélectionnée, rendez-vous différé.",
             },
           ],
           continueFlowButton: {
@@ -339,7 +340,8 @@ export const FORM_DATA: Form = [
               label: "Rendez-vous différé",
               preText:
                 "Rappeler au patient les resources externes disponibles, ainsi que de revenir vers nous si ces symptômes persistent ou s'aggravent.",
-              reason: "Une seule ressource interne sélectionnée.",
+              reason:
+                "Une seule ressource interne sélectionnée, rendez-vous différé.",
             },
           ],
           continueFlowButton: {
@@ -365,7 +367,8 @@ export const FORM_DATA: Form = [
           stopFlowButtons: [
             {
               label: "Rendez-vous différé",
-              reason: "Au moins deux ressources internes sélectionnées.",
+              reason:
+                "Au moins deux ressources internes sélectionnées, rendez-vous différé.",
             },
           ],
           continueFlowButton: {

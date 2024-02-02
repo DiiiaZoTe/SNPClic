@@ -68,6 +68,7 @@ export const RecapAnswers = () => {
                   {
                     // get the question and the answer in text format
                     stepData.questions.map((question, index) => {
+                      if (useMSF.questions.isHidden(question.key)) return null;
                       if (useMSF.questions.isSkipped(question.key)) {
                         return (
                           <QuestionSkipped key={index} question={question} />
@@ -190,25 +191,15 @@ const QuestionAnswerWrapper = ({
 
 const QuestionSkipped = ({
   question,
-  className,
 }: {
   question: Question<QuestionType>;
-  className?: string;
 }) => {
   return (
     <QuestionAnswerWrapper
       question={question}
-      className={cn(
-        "flex flex-row items-center justify-between gap-4",
-        className
-      )}
+      className="flex flex-row items-center justify-between gap-4"
     >
-      <div
-        className={cn(
-          "flex justify-center items-center bg-yellow-500 text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",
-          className
-        )}
-      >
+      <div className="flex justify-center items-center bg-yellow-500 text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]">
         <ChevronsRight className="w-4 h-4 stroke-2" />
       </div>
     </QuestionAnswerWrapper>
@@ -218,19 +209,13 @@ const QuestionSkipped = ({
 const QuestionAnswerText = ({
   question,
   answer,
-  className,
-  wrapperClassName,
 }: {
   question: Question<"text" | "textarea">;
   answer: StringAnswer;
-  className?: string;
-  wrapperClassName?: string;
 }) => {
   return (
-    <QuestionAnswerWrapper question={question} className={wrapperClassName}>
-      <span className={cn("text-sm", className)}>
-        {answer ? answer : NO_ANSWER}
-      </span>
+    <QuestionAnswerWrapper question={question}>
+      <span className="text-sm">{answer ? answer : NO_ANSWER}</span>
     </QuestionAnswerWrapper>
   );
 };
@@ -238,32 +223,23 @@ const QuestionAnswerText = ({
 const QuestionAnswerBoolean = ({
   question,
   answer,
-  className,
 }: {
   question: Question<"boolean">;
   answer: BooleanAnswer;
-  className?: string;
 }) => {
+  const Icon = answer ? Check : X;
   return (
     <QuestionAnswerWrapper
       question={question}
-      className={cn(
-        "flex flex-row items-center justify-between gap-4",
-        className
-      )}
+      className="flex flex-row items-center justify-between gap-4"
     >
       <div
         className={cn(
           "flex justify-center items-center text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",
-          answer ? " bg-green-500" : "bg-destructive",
-          className
+          answer ? " bg-green-500" : "bg-destructive"
         )}
       >
-        {answer ? (
-          <Check className="w-4 h-4 stroke-2" />
-        ) : (
-          <X className="w-4 h-4 stroke-2" />
-        )}
+        <Icon className="w-4 h-4 stroke-2" />
       </div>
     </QuestionAnswerWrapper>
   );
@@ -272,51 +248,30 @@ const QuestionAnswerBoolean = ({
 const QuestionAnswerMultiChoice = ({
   question,
   answer,
-  className,
-  wrapperClassName,
-  optionClassName,
-  optionAnswerClassName,
 }: {
   question: Question<"multiChoice">;
   answer: MultiStringAnswer;
-  className?: string;
-  wrapperClassName?: string;
-  optionClassName?: string;
-  optionAnswerClassName?: string;
 }) => {
   let answers = answer;
   if (!Array.isArray(answer)) answers = [];
   return (
-    <QuestionAnswerWrapper
-      question={question}
-      className={cn("gap-3", wrapperClassName)}
-    >
+    <QuestionAnswerWrapper question={question} className="gap-3">
       {question.options?.map(({ value, label }, index) => {
-        // @ts-ignore
         const optionAnswer = answers.includes(value);
+        const Icon = optionAnswer ? Check : X;
         return (
           <div
             key={index}
-            className={cn(
-              "flex flex-row gap-4 items-center justify-between bg-background border-muted border rounded-sm px-4 py-3",
-              optionAnswerClassName
-            )}
+            className="flex flex-row gap-4 items-center justify-between bg-background border-muted border rounded-sm px-4 py-3"
           >
-            <span className={cn("text-sm font-[500]", optionClassName)}>
-              {label}
-            </span>
+            <span className="text-sm font-[500]">{label}</span>
             <div
               className={cn(
                 "flex justify-center items-center text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",
-                optionAnswer ? " bg-green-500" : "bg-destructive",
-                className
+                optionAnswer ? " bg-green-500" : "bg-destructive"
               )}
             >
-              {optionAnswer ? (
-                <Check className="w-4 h-4 stroke-2" />
-              ) : (
-                <X className="w-4 h-4 stroke-2" />
-              )}
+              <Icon className="w-4 h-4 stroke-2" />
             </div>
           </div>
         );
@@ -328,30 +283,18 @@ const QuestionAnswerMultiChoice = ({
 const QuestionAnswerMultiSelect = ({
   question,
   answer,
-  className,
-  wrapperClassName,
 }: {
   question: Question<"multiSelect">;
   answer: MultiStringAnswer;
-  className?: string;
-  wrapperClassName?: string;
 }) => {
   let answers = answer;
   if (!Array.isArray(answer)) answers = [];
   return (
-    <QuestionAnswerWrapper question={question} className={wrapperClassName}>
-      {
-        // @ts-ignore
-        answers.length === 0 && <span>{NO_ANSWER}</span>
-      }
+    <QuestionAnswerWrapper question={question}>
+      {answers.length === 0 && <span>{NO_ANSWER}</span>}
       {question.options?.map(({ value, label }, index) =>
-        // @ts-ignore
         !answers.includes(value) ? null : (
-          <Badge
-            key={index}
-            className={cn("rounded-sm", className)}
-            variant="secondary"
-          >
+          <Badge key={index} className="rounded-sm" variant="secondary">
             {label}
           </Badge>
         )
@@ -363,13 +306,9 @@ const QuestionAnswerMultiSelect = ({
 const QuestionAnswerSelect = ({
   question,
   answer,
-  className,
-  wrapperClassName,
 }: {
   question: Question<"select">;
   answer: StringAnswer;
-  className?: string;
-  wrapperClassName?: string;
 }) => {
   //check the answer is in the options and get the label
   let selectAnswer = NO_ANSWER;
@@ -378,8 +317,8 @@ const QuestionAnswerSelect = ({
     if (option) selectAnswer = option.label;
   }
   return (
-    <QuestionAnswerWrapper question={question} className={wrapperClassName}>
-      <span className={cn("text-sm", className)}>{selectAnswer}</span>
+    <QuestionAnswerWrapper question={question}>
+      <span className="text-sm">{selectAnswer}</span>
     </QuestionAnswerWrapper>
   );
 };
@@ -387,28 +326,24 @@ const QuestionAnswerSelect = ({
 const QuestionAnswerBody = ({
   question,
   answer,
-  className,
-  wrapperClassName,
 }: {
   question: Question<"body">;
   answer: StringAnswer;
-  className?: string;
-  wrapperClassName?: string;
 }) => {
   return (
-    <QuestionAnswerWrapper question={question} className={wrapperClassName}>
+    <QuestionAnswerWrapper question={question}>
       {answer ? (
         <ul className="flex flex-col gap-2 list-disc list-inside">
           {question.options[answer as keyof typeof question.options].map(
             (item, index) => (
-              <li key={index} className={cn("text-sm", className)}>
+              <li key={index} className="text-sm">
                 {item}
               </li>
             )
           )}
         </ul>
       ) : (
-        <span className={cn("text-sm", className)}>{NO_ANSWER}</span>
+        <span className="text-sm">{NO_ANSWER}</span>
       )}
     </QuestionAnswerWrapper>
   );
@@ -417,32 +352,23 @@ const QuestionAnswerBody = ({
 const QuestionAnswerTerminatorButton = ({
   question,
   answer,
-  className,
 }: {
   question: Question<"terminatorButton">;
   answer: BooleanAnswer;
-  className?: string;
 }) => {
+  const Icon = answer ? Check : X;
   return (
     <QuestionAnswerWrapper
       question={question}
-      className={cn(
-        "flex flex-row items-center justify-between gap-4",
-        className
-      )}
+      className="flex flex-row items-center justify-between gap-4"
     >
       <div
         className={cn(
           "flex justify-center items-center text-white rounded-full w-5 h-5 min-w-[1.25rem] min-h-[1.25rem]",
-          answer ? " bg-green-500" : "bg-destructive",
-          className
+          answer ? " bg-green-500" : "bg-destructive"
         )}
       >
-        {answer ? (
-          <Check className="w-4 h-4 stroke-2" />
-        ) : (
-          <X className="w-4 h-4 stroke-2" />
-        )}
+        <Icon className="w-4 h-4 stroke-2" />
       </div>
     </QuestionAnswerWrapper>
   );
