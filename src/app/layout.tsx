@@ -5,49 +5,18 @@ import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import { Navbar } from "@/components/layout/navbar";
-import {Footer} from "@/components/layout/footer";
+import { Footer } from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/toaster";
+import { getSharedMetadata } from "@/config/shared-metadata";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
   keywords: ["Soin non programmé", "SNP"],
-  authors: [
-    {
-      name: siteConfig.author,
-    },
-  ],
-  creator: siteConfig.author,
-  openGraph: {
-    type: "website",
-    locale: "fr_FR",
-    url: siteConfig.url,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.url + siteConfig.ogImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [siteConfig.ogImage],
-  },
-  icons: {
-    icon: "/favicon/favicon.ico",
-    shortcut: "/favicon/favicon-16x16.png",
-  },
+  ...getSharedMetadata(),
 };
 
 export default function RootLayout({

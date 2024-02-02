@@ -1,11 +1,20 @@
-import Balancer from "react-wrap-balancer";
+import { siteConfig } from "@/config/site";
+import { getSharedMetadata } from "@/config/shared-metadata";
 
-import { PRIVACY_CONTENT } from "./content";
-
-export const metadata = {
+const METADATA = {
   title: "Politique de Confidentialité",
   description: "Politique de Confidentialité SNPClic",
+  url: siteConfig.url + "/politique-confidentialite",
 };
+
+export const metadata = {
+  title: METADATA.title,
+  description: METADATA.description,
+  ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
+};
+
+import Balancer from "react-wrap-balancer";
+import { PRIVACY_CONTENT } from "./content";
 
 export default function Page() {
   return (

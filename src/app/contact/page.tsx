@@ -1,3 +1,18 @@
+import { siteConfig } from "@/config/site";
+import { getSharedMetadata } from "@/config/shared-metadata";
+
+const METADATA = {
+  title: "Contact",
+  description: "Page de contact SNPClic",
+  url: siteConfig.url + "/contact",
+};
+
+export const metadata = {
+  title: METADATA.title,
+  description: METADATA.description,
+  ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
+};
+
 import {
   Card,
   CardContent,
@@ -9,11 +24,6 @@ import Balancer from "react-wrap-balancer";
 
 import { CONTACT_CONTENT, type SubContentType } from "./content";
 import Link from "next/link";
-
-export const metadata = {
-  title: "Contact",
-  description: "Page de contact SNPClic",
-};
 
 export default function Page() {
   return (

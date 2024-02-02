@@ -1,11 +1,20 @@
-import { Balancer } from "react-wrap-balancer";
+import { siteConfig } from "@/config/site";
+import { getSharedMetadata } from "@/config/shared-metadata";
 
-import { TERMS_CONTENT } from "./content";
-
-export const metadata = {
+const METADATA = {
   title: "Conditions d'Utilisation",
   description: "Conditions d'Utilisation SNPClic",
+  url: siteConfig.url + "/conditions-utilisation",
 };
+
+export const metadata = {
+  title: METADATA.title,
+  description: METADATA.description,
+  ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
+};
+
+import { Balancer } from "react-wrap-balancer";
+import { TERMS_CONTENT } from "./content";
 
 export default function Page() {
   return (

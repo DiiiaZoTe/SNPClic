@@ -1,3 +1,18 @@
+import { siteConfig } from "@/config/site";
+import { getSharedMetadata } from "@/config/shared-metadata";
+
+const METADATA = {
+  title: "Mentions légales",
+  description: "Mentions légales SNPClic",
+  url: siteConfig.url + "/mentions-legales",
+};
+
+export const metadata = {
+  title: METADATA.title,
+  description: METADATA.description,
+  ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
+};
+
 import {
   Card,
   CardContent,
@@ -7,17 +22,10 @@ import {
 } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
 import Balancer from "react-wrap-balancer";
-
 import { LEGAL_CONTENT } from "./content";
 import type { LegalContentType } from "../type";
 
-export const metadata = {
-  title: "Mentions légales",
-  description: "Mentions légales SNPClic",
-};
-
-export default function Page() {;
-
+export default function Page() {
   return (
     <>
       <h1 className="text-4xl font-bold tracking-tight text-center">

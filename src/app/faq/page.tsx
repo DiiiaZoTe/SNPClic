@@ -1,18 +1,26 @@
+import { siteConfig } from "@/config/site";
+import { getSharedMetadata } from "@/config/shared-metadata";
+
+const METADATA = {
+  title: "FAQ",
+  description: "Foire aux questions SNPClic",
+  url: siteConfig.url + "/faq",
+};
+
+export const metadata = {
+  title: METADATA.title,
+  description: METADATA.description,
+  ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
+};
+
 import { Balancer } from "react-wrap-balancer";
-
 import { FAQ_CONTENT } from "./content";
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-export const metadata = {
-  title: "FAQ",
-  description: "Foire aux questions SNPClic",
-};
 
 export default function Page() {
   return (

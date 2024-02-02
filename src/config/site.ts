@@ -8,11 +8,9 @@ export const siteConfig = {
   ogImage: "/og.png",
   description:
     "SNPClic est un outil indépendant d’aide à l’orientation des patients en demande de soins non programmés par les secrétaires",
-  author: "Katarina Vencel",
+  authors: ["Katarina Vencel", "Alexander Vencel"],
 }
 
 export const githubConfig = {
   repo: "https://github.com/DiiiaZoTe/SNPClic"
 }
-
-export type SiteConfig = typeof siteConfig
