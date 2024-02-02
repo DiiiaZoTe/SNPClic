@@ -36,7 +36,7 @@ export const getSharedMetadata = (title?: string, description?: string, url?: st
           url: siteConfig.url + siteConfig.ogImage,
           width: 1200,
           height: 630,
-          alt: `${title} - ${siteConfig.name}`,
+          alt: title ? `${title} - ${siteConfig.name}` : siteConfig.name,
         },
       ],
     },
