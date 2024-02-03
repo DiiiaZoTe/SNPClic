@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "../theme-toggle";
 import { githubConfig } from "@/config/site";
 import { GitHubLogo } from "@/components/logos/githubLogo";
+import { SheetClose } from "../ui/sheet";
 
 const LINKS = [
   ["Accueil", "/"],
@@ -19,12 +20,12 @@ export const Navbar = () => {
   return (
     <header className="container">
       <div className="flex py-6 items-center gap-8">
-        <div className="flex items-center gap-4">
+        <Link href="/" className="flex items-center gap-4">
           <h1 className="text-primary text-4xl font-bold tracking-tight">
             SNP<span className=" text-foreground"> · Clic</span>
           </h1>
           <Logo className="w-8 h-8 hidden sm:block" />
-        </div>
+        </Link>
         <div className="hidden ml-auto sm:flex items-center gap-8 ">
           <NavLinks
             links={LINKS}
@@ -52,7 +53,11 @@ const MobileNavbar = () => {
       </SheetTrigger>
       <SheetContent side="right" className="flex flex-col justify-between">
         <div className="flex flex-col gap-8">
-          <Logo className="w-8 h-8" />
+          <SheetClose asChild>
+            <Link href="/">
+              <Logo className="w-8 h-8" />
+            </Link>
+          </SheetClose>
           <NavLinks
             links={LINKS}
             className="flex flex-col gap-8 font-medium"
