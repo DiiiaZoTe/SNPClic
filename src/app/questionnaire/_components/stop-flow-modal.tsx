@@ -195,7 +195,8 @@ const StopFlowSheet = ({
               type="continue"
               onClick={() =>
                 useMSF.controlFlow.stopping.continueModalStopFlow(
-                  continueToStep
+                  continueToStep,
+                  questionKey
                 )
               }
             />
