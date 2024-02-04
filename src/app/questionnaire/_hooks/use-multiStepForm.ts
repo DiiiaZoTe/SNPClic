@@ -15,6 +15,15 @@ import { scrollToViewIfNeeded } from "../_utils/utils";
 
 export type UseMSF = ReturnType<typeof useMultiStepForm>;
 
+// Define the function types as before
+type UpdateStepMapFunction = (v: boolean, i: number) => boolean;
+type UpdateStepPrevFunction = (prev: boolean[]) => boolean[];
+
+// Use discriminated unions for UpdateStepFunction
+type UpdateStepFunction =
+  | { type: "map"; function: UpdateStepMapFunction }
+  | { type: "prev"; function: UpdateStepPrevFunction };
+
 export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElement>) => {
   /** number of steps in the form */
   const numberOfSteps = data.length;
@@ -64,6 +73,100 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
   const flattenForm = useMemo(() => flattenFormData(data), [data]);
 
   //******************************************************
+  //*                 Update State helpers
+  //******************************************************
+  /**
+   * update the states of the steps based on a function and return the new states.
+   * @returns the new states after the update or undefined if we didn't update the state
+   * @example // changing the current steps state using map
+   * const { validSteps, visitedSteps, skippedSteps } = updateStepStates({
+   *   valid: { type: "map", function: (v, i) => i === currentStep - 1 ? true : v }
+   * });
+   * @example // changing the current steps state using pev
+   * const { validSteps, visitedSteps, skippedSteps } = updateStepStates({
+   *   valid: { type: "prev", function: (prev) => { prev[currentStep - 1] = true; return prev;} }
+   * });
+   */
+  const updateStepStates = (
+    { valid, visited, skipped }: {
+      valid?: UpdateStepFunction,
+      visited?: UpdateStepFunction,
+      skipped?: UpdateStepFunction,
+    },
+  ) => {
+    let newValids = <boolean[] | undefined>undefined;
+    let newVisited = <boolean[] | undefined>undefined;
+    let newSkipped = <boolean[] | undefined>undefined;
+    if (valid !== undefined) setValidSteps((prev) => {
+      if (valid.type === "map")
+        return newValids = prev.map((v, i) => valid.function(v, i));
+      if (valid.type === "prev")
+        return newValids = valid.function(prev);
+      return prev;
+    });
+    if (visited !== undefined) setVisitedSteps((prev) => {
+      if (visited.type === "map")
+        return newVisited = prev.map((v, i) => visited.function(v, i));
+      if (visited.type === "prev")
+        return newVisited = visited.function(prev);
+      return prev;
+    });
+    if (skipped !== undefined) setSkippedSteps((prev) => {
+      if (skipped.type === "map")
+        return newSkipped = prev.map((v, i) => skipped.function(v, i));
+      if (skipped.type === "prev")
+        return newSkipped = skipped.function(prev);
+      return prev;
+    });
+    return {
+      validSteps: newValids,
+      visitedSteps: newVisited,
+      skippedSteps: newSkipped,
+    };
+  };
+
+  /** reset all the terminator buttons in the current step except the triggered if provided */
+  const resetAllTerminatorsInStep = (step: number, triggerByQuestionKey?: string) => {
+    const stepData = data[step - 1];
+    stepData.questions.forEach((question) => {
+      if (question.type !== "terminatorButton") return;
+      if (question.key === triggerByQuestionKey) return;
+      form.setValue(question.key, false);
+    });
+  }
+
+  /** reset the following skipped steps after the current step */
+  const resetFollowingSkippedStep = useCallback((currentStep: number) => {
+    const followingSkippedStep = getFollowingSkippedStep(skippedSteps, currentStep);
+    updateStepStates({
+      valid: {
+        type: "prev", function: (prev) => {
+          for (const skippedStep of followingSkippedStep) {
+            prev[skippedStep] = false;
+          }
+          return prev;
+        }
+      },
+      visited: {
+        type: "prev", function: (prev) => {
+          for (const skippedStep of followingSkippedStep) {
+            prev[skippedStep] = false;
+          }
+          return prev;
+        }
+      },
+      skipped: {
+        type: "prev", function: (prev) => {
+          for (const skippedStep of followingSkippedStep) {
+            prev[skippedStep] = false;
+          }
+          return prev;
+        }
+      }
+    });
+  }, [skippedSteps]);
+
+  //******************************************************
   //*                 The Form initialization
   //******************************************************
 
@@ -110,36 +213,6 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       resetAnswer(question.key);
     });
   }, [data, resetAnswer]);
-
-  // Effect to set the hidden questions when step changes
-  useEffect(() => {
-    const flattenFormJustQuestions = flattenForm.map((q) => q.question);
-    const toHide = getQuestionsToHide(getDefaultStore().get(formAnswersAtom), flattenFormJustQuestions);
-    setHiddenQuestions(toHide);
-  }, [flattenForm, defaultValues, currentStep]);
-
-  // Effect to watch for answer changes and hide questions accordingly
-  useEffect(() => {
-    const watching = form.watch((values, { name: questionKey, type: eventType }) => {
-      const formValues = values as FormAnswers;
-      getDefaultStore().set(formAnswersAtom, formValues);
-      if (eventType !== "change") return;
-      const question = currentStepData.questions.find((q) => q.key === questionKey);
-      if (!question) return;
-
-      // hide dependents if needed
-      if (question.dependents?.length !== 0) {
-        const dependents = flattenForm.filter((q) => question.dependents?.includes(q.key)).map((q) => q.question);
-        const toHide = getQuestionsToHide(formValues, dependents);
-        setHiddenQuestions(toHide);
-      }
-    });
-
-    return () => {
-      watching.unsubscribe();
-    }
-  }, [form, currentStepData, flattenForm, resetAnswer]);
-
 
   /** 
    * validate the answers of the current step. 
@@ -211,40 +284,33 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     // if the current was a continue after stop flow
     // we do this to invalidate those steps as we can now access them
     const currentWasContinueFlow = stepCalledContinueFlow.includes(currentStep);
-    let followingSkippedStep = <number[]>[];
-    if (currentWasContinueFlow) followingSkippedStep = getFollowingSkippedStep(skippedSteps, currentStep);
+    if (currentWasContinueFlow) resetFollowingSkippedStep(currentStep);
 
     // logic go to next step
-    setValidSteps((prev) => {
-      const newValids = [...prev];
-      newValids[currentStep - 1] = true;
-      newValids[currentStep] = false;
-      // invalidate the skipped steps after the current step
-      for (const skippedStep of followingSkippedStep) {
-        newValids[skippedStep] = false;
+    updateStepStates({
+      valid: {
+        type: "prev", function(prev) {
+          prev[currentStep - 1] = true;
+          prev[currentStep] = false;
+          return prev;
+        }
+      },
+      visited: {
+        type: "prev", function(prev) {
+          prev[currentStep - 1] = true;
+          prev[currentStep] = true;
+          return prev;
+        }
+      },
+      skipped: {
+        type: "prev", function(prev) {
+          prev[currentStep - 1] = false;
+          prev[currentStep] = false;
+          return prev;
+        }
       }
-      return newValids;
     });
-    setVisitedSteps((prev) => {
-      const newVisited = [...prev];
-      newVisited[currentStep - 1] = true;
-      newVisited[currentStep] = true;
-      // invalidate the skipped steps after the current step
-      for (const skippedStep of followingSkippedStep) {
-        newVisited[skippedStep] = false;
-      }
-      return newVisited;
-    });
-    setSkippedSteps((prev) => {
-      const newSkipped = [...prev];
-      newSkipped[currentStep - 1] = false;
-      newSkipped[currentStep] = false;
-      // invalidate the skipped steps after the current step
-      for (const skippedStep of followingSkippedStep) {
-        newSkipped[skippedStep] = false;
-      }
-      return newSkipped;
-    });
+
     resetAllTerminatorsInStep(currentStep);
 
     // if the current was a continue after stop flow, then remove it.
@@ -261,33 +327,37 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     // we go back to the step that submitted the form
     if (isFormSubmitted) return internalBasicSetStep(currentStep, "backward");
 
-    // if the current step is not valid, don't go to next step
-    const { success: isCurrentValid } = validateStepAnswers(currentStep);
 
     // get the first step before the current one that is skipped
     const skippedSubset = skippedSteps.slice(0, currentStep - 1);
-    let goToStep = currentStep - 1;
+    let toStep = currentStep - 1;
     for (let i = skippedSubset.length - 1; i >= 0; i--) {
       if (!skippedSubset[i]) {
-        goToStep = i + 1;
+        toStep = i + 1;
         break;
       }
     }
 
+    // get validity of the current step
+    const { success: isCurrentValid } = validateStepAnswers(currentStep);
     // logic go to previous step
-    setValidSteps((prev) => {
-      const newValids = [...prev];
-      newValids[currentStep - 1] = isCurrentValid;
-      newValids[goToStep - 1] = false;
-      return newValids;
+    updateStepStates({
+      valid: {
+        type: "prev", function(prev) {
+          prev[currentStep - 1] = isCurrentValid;
+          prev[toStep - 1] = false;
+          return prev;
+        }
+      },
+      visited: {
+        type: "prev", function(prev) {
+          prev[currentStep - 1] = true;
+          prev[toStep - 1] = true;
+          return prev;
+        }
+      },
     });
-    setVisitedSteps((prev) => {
-      const newVisited = [...prev];
-      newVisited[currentStep - 1] = true;
-      newVisited[goToStep - 1] = true;
-      return newVisited;
-    });
-    internalBasicSetStep(goToStep, "backward");
+    internalBasicSetStep(toStep, "backward");
   };
 
   /** go to a specific step if possible */
@@ -302,11 +372,14 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     // if the current step is not valid, don't go to next step
     const { success: isCurrentValid } = validateStepAnswers(currentStep);
     // logic go to previous step
-    setValidSteps((prev) => {
-      const newValids = [...prev];
-      newValids[currentStep - 1] = isCurrentValid;
-      newValids[toStep - 1] = false; // invalidated the step we go to
-      return newValids;
+    updateStepStates({
+      valid: {
+        type: "prev", function(prev) {
+          prev[currentStep - 1] = isCurrentValid;
+          prev[toStep - 1] = false;
+          return prev;
+        }
+      },
     });
     internalBasicSetStep(toStep, toStep > currentStep ? "forward" : "backward");
   };
@@ -321,15 +394,19 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     // go to first invalid step
     const validStepsWithCurrent = getValidSteps();
     validStepsWithCurrent[currentStep - 1] = isCurrentValid;
-    const firstInvalidStep = validStepsWithCurrent.findIndex((valid) => !valid);
-    if (firstInvalidStep !== -1) return goToStep(firstInvalidStep + 1);
+    const toStep = shouldGoToFirstInvalidStep(validStepsWithCurrent);
+    if (toStep) return goToStep(toStep);
 
     // logic go to recap
-    setValidSteps((prev) => {
-      const newValids = [...prev];
-      newValids[currentStep - 1] = true;
-      return newValids;
+    updateStepStates({
+      valid: {
+        type: "prev", function(prev) {
+          prev[currentStep - 1] = true;
+          return prev;
+        }
+      },
     });
+
     setIsFormSubmitted(true);
     scrollToViewIfNeeded(containerRef);
   };
@@ -375,11 +452,13 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
   };
 
   /** continue after trying stopping flow */
-  const continueInStopFlow = (toStep?: number, triggerByQuestionKey?: string) => {
+  const continueInStopFlow = (to?: number, triggerByQuestionKey?: string) => {
+    // can't go past the last step
     if (currentStep === numberOfSteps) goToRecap();
-    const goToStep = toStep ?? currentStep + 1;
-    if (goToStep < currentStep) return;
+    const toStep = to ?? currentStep + 1;
+    if (toStep < currentStep) return;
 
+    // only go if step was valid
     const { success: isCurrentValid, errors } = validateStepAnswers(
       currentStep,
       triggerByQuestionKey ? getStepQuestionsBefore(currentStepData, triggerByQuestionKey).map((question) => question.key) : undefined
@@ -393,38 +472,42 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       return;
     };
 
-    setValidSteps((prev) => {
-      const newValids = [...prev];
-      newValids[currentStep - 1] = true;
-      return newValids;
+    // update the states of the steps
+    updateStepStates({
+      valid: {
+        type: "prev", function: (prev) => {
+          prev[currentStep - 1] = true;
+          return prev;
+        }
+      },
+      visited: {
+        type: "map", function: (v, i) => {
+          if (i === currentStep - 1 || i === toStep - 1) return true;
+          if (currentStep - 1 < i && i < toStep - 1) return false;
+          return v;
+        }
+      },
+      skipped: {
+        type: "map", function: (v, i) => {
+          if (i < currentStep - 1) return v;
+          if (currentStep - 1 < i && i < toStep - 1) return true;
+          return false;
+        }
+      }
     });
-    setSkippedSteps((prev) =>
-      prev.map((skipped, index) => {
-        if (index < currentStep - 1) return skipped;
-        if (currentStep - 1 < index && index < goToStep - 1) return true;
-        return false;
-      })
-    );
-    setVisitedSteps((prev) =>
-      prev.map((visited, index) => (
-        index === currentStep - 1 || index === goToStep - 1
-          ? true
-          : currentStep - 1 < index && index < goToStep - 1
-            ? false
-            : visited
-      ))
-    );
+
+
     // we should also reset all the terminator buttons that did not trigger the stop flow
     resetAllTerminatorsInStep(currentStep, triggerByQuestionKey);
 
     // we should also set skipped all the questions that are:
     // - after the triggerByQuestionKey of the current step or first question of next step
-    // - in the steps after the current step up to the goToStep
-    // - keep the skipped questions that are before the current step and after the goToStep
+    // - in the steps after the current step up to the toStep
+    // - keep the skipped questions that are before the current step and after the toStep
     const indexQuestionKey = triggerByQuestionKey
       ? flattenForm.findIndex((question) => question.key === triggerByQuestionKey) // question that triggered the stop flow
       : flattenForm.findIndex((question) => question.step === currentStep + 1); // first question of next step
-    const firstQuestionKeyGoToStep = data[goToStep - 1].questions[0].key;
+    const firstQuestionKeyGoToStep = data[toStep - 1].questions[0].key;
     const indexFirstGoToStepQuestion = flattenForm.findIndex((question) => question.key === firstQuestionKeyGoToStep);
     const questionsToSkip = flattenForm.slice(indexQuestionKey + 1, indexFirstGoToStepQuestion);
     setSkippedQuestions((prev) => {
@@ -434,8 +517,13 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       });
       return [...keepSkipped, ...questionsToSkip.map((question) => question.key)];
     });
-    setStepCalledContinueFlow((prev) => [...prev, currentStep]);
-    internalBasicSetStep(goToStep, "forward");
+    setStepCalledContinueFlow((prev) => {
+      if (prev.includes(currentStep)) return prev;
+      return [...prev, currentStep];
+    });
+
+    // go to the step
+    internalBasicSetStep(toStep, "forward");
   }
 
   /** cancel the step stopping flow */
@@ -448,9 +536,11 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
         if (!skipped) return;
         resetStepAnswers(index + 1);
       });
-      setValidSteps((prev) => prev.map((valid, index) => index >= currentStep ? false : valid));
-      setVisitedSteps((prev) => prev.map((visited, index) => index >= currentStep ? false : visited));
-      setSkippedSteps((prev) => prev.map((skipped, index) => index >= currentStep ? false : skipped));
+      updateStepStates({
+        valid: { type: "map", function: (v, i) => i >= currentStep ? false : v },
+        visited: { type: "map", function: (v, i) => i >= currentStep ? false : v },
+        skipped: { type: "map", function: (v, i) => i >= currentStep ? false : v }
+      });
     }
     // same thing we also reset the terminator button value
     if (formStoppedReason?.questionKey)
@@ -461,16 +551,6 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     setContentStoppingFlow(undefined);
     setFormStoppedReason(undefined);
   };
-
-  /** reset all the terminator buttons in the current step except the triggered if provided */
-  const resetAllTerminatorsInStep = (step: number, triggerByQuestionKey?: string) => {
-    const stepData = data[step - 1];
-    stepData.questions.forEach((question) => {
-      if (question.type !== "terminatorButton") return;
-      if (question.key === triggerByQuestionKey) return;
-      form.setValue(question.key, false);
-    });
-  }
 
   /** 
    * Check if the stop flow content can be bypassed,
@@ -491,8 +571,10 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   /** go to recap step */
   const goToRecapStoppingFlow = (stopFlowReason: StopFlowReason) => {
+    if (isFormSubmitted) return;
     if (!stopFlowReason) return;
-    //! may need another validation here as step could have invalid answers when using terminator
+
+    // if the current step is not valid, don't go
     const { success: isCurrentValid, errors } = validateStepAnswers(
       currentStep,
       stopFlowReason.questionKey ? getStepQuestionsBefore(currentStepData, stopFlowReason.questionKey).map((question) => question.key) : undefined
@@ -505,29 +587,34 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       cancelStopFlow();
       return;
     };
-    if (isFormSubmitted) return;
 
     // go to first invalid step, only checking up to the current step
-    let validStepsWithCurrent = getValidSteps();
-    validStepsWithCurrent = validStepsWithCurrent.slice(0, currentStep);
+    const validStepsWithCurrent = getValidSteps();
     validStepsWithCurrent[currentStep - 1] = isCurrentValid;
-    const firstInvalidStep = validStepsWithCurrent.findIndex((valid) => !valid);
-    if (firstInvalidStep !== -1) return goToStep(firstInvalidStep + 1);
+    const toStep = shouldGoToFirstInvalidStep(validStepsWithCurrent, currentStep);
+    if (toStep) return goToStep(toStep);
 
     // logic go to recap
-    setValidSteps((prev) => {
-      const newValids = [...prev];
-      newValids[currentStep - 1] = true;
-      return newValids;
-    });
     const newSkipped = skippedSteps.map((skipped, index) =>
       index < currentStep ? skipped : true
     );
     const newVisited = newSkipped.map((skipped, index) =>
       index < currentStep - 1 ? visitedSteps[index] : !skipped
     );
-    setVisitedSteps(newVisited);
-    setSkippedSteps(newSkipped);
+    updateStepStates({
+      valid: {
+        type: "prev", function: (prev) => {
+          prev[currentStep - 1] = true;
+          return prev;
+        }
+      },
+      visited: {
+        type: "prev", function: () => newVisited
+      },
+      skipped: {
+        type: "prev", function: () => newSkipped
+      }
+    });
     setIsFormSubmitted(true);
     scrollToViewIfNeeded(containerRef);
     setFormStoppedReason(stopFlowReason);
@@ -550,66 +637,85 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     setSkippedQuestions((prev) => [...prev, ...questionsToSkip.map((question) => question.key)]);
   };
 
-  // watch answer changes and resets skipped steps according to can stop flow
-  useEffect(() => {
-    const watching = form.watch((_values, { name: _questionKey, type: eventType }) => {
-      if (eventType !== "change") return;
-      const canStepStopFlow = stepCanStopFlow(currentStep);
-      const currentStepCalledContinueFlow = stepCalledContinueFlow.includes(currentStep);
+  //******************************************************
+  //*                 The effect logic
+  //******************************************************
 
-      // we remove the previously skipped steps if not skipped anymore
-      if (canStepStopFlow === undefined) {
-        setStepCalledContinueFlow((prev) => prev.filter((step) => step !== currentStep));
-        const followingSkippedStep = getFollowingSkippedStep(skippedSteps, currentStep);
-        setValidSteps((prev) => {
-          const newValids = [...prev];
-          for (const skippedStep of followingSkippedStep) {
-            newValids[skippedStep] = false;
-          }
-          return newValids;
-        });
-        setVisitedSteps((prev) => {
-          const newVisited = [...prev];
-          for (const skippedStep of followingSkippedStep) {
-            newVisited[skippedStep] = false;
-          }
-          return newVisited;
-        });
-        setSkippedSteps((prev) => {
-          const newSkipped = [...prev];
-          for (const skippedStep of followingSkippedStep) {
-            newSkipped[skippedStep] = false;
-          }
-          return newSkipped;
-        });
-        return;
-      }
-      // we add the potentially skipped steps, allows to reset if making modifications
-      if (canStepStopFlow) {
-        const toPotentialStep = canStepStopFlow.continueToStep ?? currentStep + 1;
-        if (toPotentialStep <= currentStep) return;
-        setValidSteps((prev) => prev.map((valid, index) => {
-          if (index === currentStep - 1) return false;
-          if (currentStep - 1 < index && index < toPotentialStep - 1) return false;
-          return valid;
-        }));
-        setVisitedSteps((prev) => prev.map((visited, index) => {
-          if (index === currentStep - 1) return true;
-          if (currentStep - 1 < index && index < toPotentialStep - 1) return false;
-          return visited;
-        }));
-        setSkippedSteps((prev) => prev.map((skipped, index) => {
-          if (index === currentStep - 1) return false;
-          if (currentStep - 1 < index && index < toPotentialStep - 1) return true;
-          return skipped;
-        }));
+  // Effect to set the hidden questions when step changes
+  useEffect(() => {
+    const flattenFormJustQuestions = flattenForm.map((q) => q.question);
+    const toHide = getQuestionsToHide(getDefaultStore().get(formAnswersAtom), flattenFormJustQuestions);
+    setHiddenQuestions(toHide);
+  }, [flattenForm, defaultValues, currentStep]);
+
+  // Effect to watch for answer changes and hide questions accordingly
+  useEffect(() => {
+    const watching = form.watch((values, { name: questionKey, type: eventType }) => {
+      const formValues = values as FormAnswers;
+      getDefaultStore().set(formAnswersAtom, formValues);
+      if (eventType !== "change") return;
+      const question = currentStepData.questions.find((q) => q.key === questionKey);
+      if (!question) return;
+
+      // hide dependents if needed
+      if (question.dependents?.length !== 0) {
+        const dependents = flattenForm.filter((q) => question.dependents?.includes(q.key)).map((q) => q.question);
+        const toHide = getQuestionsToHide(formValues, dependents);
+        setHiddenQuestions(toHide);
       }
     });
 
     return () => {
       watching.unsubscribe();
     }
-  }, [currentStep, form, stepCanStopFlow, stepCalledContinueFlow, skippedSteps]);
+  }, [form, currentStepData, flattenForm, resetAnswer]);
+
+  // watch answer changes and resets skipped steps according to can stop flow
+  useEffect(() => {
+    const watching = form.watch((_values, { name: _questionKey, type: eventType }) => {
+      if (eventType !== "change") return;
+      const canStepStopFlow = stepCanStopFlow(currentStep);
+
+      // we remove the previously skipped steps if not skipped anymore
+      if (canStepStopFlow === undefined) {
+        setStepCalledContinueFlow((prev) => prev.filter((step) => step !== currentStep));
+        resetFollowingSkippedStep(currentStep);
+        return;
+      }
+      // we add the potentially skipped steps, allows to reset if making modifications
+      if (canStepStopFlow) {
+        const toPotentialStep = canStepStopFlow.continueToStep ?? currentStep + 1;
+        if (toPotentialStep <= currentStep) return;
+        updateStepStates({
+          valid: {
+            type: "map", function: (v, i) => {
+              if (i === currentStep - 1) return false;
+              if (currentStep - 1 < i && i < toPotentialStep - 1) return false;
+              return v;
+            }
+          },
+          visited: {
+            type: "map", function: (v, i) => {
+              if (i === currentStep - 1) return true;
+              if (currentStep - 1 < i && i < toPotentialStep - 1) return false;
+              return v;
+            }
+          },
+          skipped: {
+            type: "map", function: (v, i) => {
+              if (i === currentStep - 1) return false;
+              if (currentStep - 1 < i && i < toPotentialStep - 1) return true;
+              return v;
+            }
+          }
+        })
+      }
+    });
+
+    return () => {
+      watching.unsubscribe();
+    }
+  }, [currentStep, form, stepCanStopFlow, stepCalledContinueFlow, resetFollowingSkippedStep]);
 
   //******************************************************
   //*                 The return object
@@ -756,4 +862,12 @@ const getFollowingSkippedStep = (skippedSteps: boolean[], currentStep: number) =
     followingSkippedStep.push(i);
   }
   return followingSkippedStep;
+}
+
+const shouldGoToFirstInvalidStep = (currentValidSteps: boolean[], upToStep?: number) => {
+  let stepsToCheck = currentValidSteps
+  if (upToStep !== undefined) stepsToCheck = currentValidSteps.slice(0, upToStep);
+  const firstInvalidStep = stepsToCheck.findIndex((valid) => !valid);
+  if (firstInvalidStep !== -1) return firstInvalidStep + 1;
+  return null;
 }
