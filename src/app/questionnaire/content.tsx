@@ -61,6 +61,8 @@ export const FORM_DATA: Form = [
   //******************************************************
   {
     name: "Délai de consultation souhaité par le patient",
+    description:
+      "Demander au patient dans quel délais il souhaite prendre rendez-vous.",
     questions: [
       {
         type: "terminatorButton",
@@ -88,7 +90,7 @@ export const FORM_DATA: Form = [
           continueFlowButton: {
             label: "Continuer",
             preText:
-              "Si aucun créneau du médecin traitant ne convient au patient, continuer vers les ressources externes du patient (étape 5).",
+              "Si aucun créneau du médecin traitant n’est compatible avec l’agenda du patient, et qu’il existe un réel besoin médical ne pouvant être reporté : continuer vers l’étape 5.",
           },
           continueToStep: 5,
         },
@@ -133,7 +135,7 @@ export const FORM_DATA: Form = [
       {
         type: "body",
         key: "3-2",
-        text: "Aide à l’orientation vers le 15 pour les urgences vitales ?",
+        text: "Aide à l’orientation vers le 15 pour les urgences vitales.",
         description: `
           <p>
             Demander le motif de consultation puis sélectionner la zone du corps concernée.<br />
@@ -225,7 +227,8 @@ export const FORM_DATA: Form = [
           content: `
             <div>
               Le patient doit appeler le 15 pour une prise en charge en urgence rapide.<br />
-              Informer le médecin de la situation du patient.
+              Informer le médecin de la situation du patient.<br />
+              Recontacter le patient afin de connaitre la réponse apportée par le 15.
             </div>
           `,
           stopFlowButtons: [
@@ -263,7 +266,7 @@ export const FORM_DATA: Form = [
           { value: "2", label: "Trouve-t-il les symptômes trop graves ?" },
           {
             value: "3",
-            label: "S'agit-il de symptômes inhabituels/inconnus ?",
+            label: "S'agit-il de symptômes inhabituels ou inconnus ?",
           },
           {
             value: "4",
@@ -314,10 +317,18 @@ export const FORM_DATA: Form = [
               reason:
                 "Aucune ressource interne sélectionnée, rendez-vous différé.",
             },
+            {
+              label: "Rendez-vous en urgence donné",
+              preText:
+                "Le patient ne souhaite pas différer son rendez-vous. Un rendez-vous en urgence a été donné avec le médecin traitant.",
+              reason:
+                "Aucune ressource interne sélectionnée, rendez-vous en urgence avec le médecin traitant donné.",
+            },
           ],
           continueFlowButton: {
-            label: "Continuer sans différer",
-            preText: "Si le patient ne souhaite pas différer son rendez-vous :",
+            label: "Continuer",
+            preText:
+              "Aucun rendez-vous disponible dans le planning du médecin traitant, continuer vers les ressources externes du patient (étape 5)",
           },
           continueToStep: 5,
         },
@@ -343,10 +354,18 @@ export const FORM_DATA: Form = [
               reason:
                 "Une seule ressource interne sélectionnée, rendez-vous différé.",
             },
+            {
+              label: "Rendez-vous en urgence donné",
+              preText:
+                "Le patient ne souhaite pas différer son rendez-vous. Un rendez-vous en urgence a été donné avec le médecin traitant.",
+              reason:
+                "Une seule ressource interne sélectionnée, rendez-vous en urgence avec le médecin traitant donné.",
+            },
           ],
           continueFlowButton: {
-            label: "Continuer sans différer",
-            preText: "Si le patient ne souhaite pas différer son rendez-vous :",
+            label: "Continuer",
+            preText:
+              "Aucun rendez-vous disponible dans le planning du médecin traitant, continuer vers les ressources externes du patient (étape 5)",
           },
           continueToStep: 5,
         },
@@ -366,7 +385,7 @@ export const FORM_DATA: Form = [
           `,
           stopFlowButtons: [
             {
-              label: "Rendez-vous différé",
+              label: "Rendez-vous en urgence donné ",
               reason:
                 "Au moins deux ressources internes sélectionnées, rendez-vous différé.",
             },
@@ -508,7 +527,7 @@ export const FORM_DATA: Form = [
       {
         type: "textarea",
         key: "6-2",
-        text: "Notes additionnelles",
+        text: "Motif(s) de la demande",
         defaultAnswer: "",
         isRequired: false,
       },
