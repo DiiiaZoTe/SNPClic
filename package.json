@@ -11,6 +11,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.501.0",
     "@hookform/resolvers": "^3.3.2",
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-accordion": "^1.1.2",
