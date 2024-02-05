@@ -6,7 +6,7 @@ import {
   StopFlowButton,
 } from "../types";
 import { ChevronRight } from "lucide-react";
-import { useMultiStepFormContext } from "../_hooks/multiStepForm-context";
+import { useMultiStepFormContext } from "../_hooks/multi-step-form-context";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {

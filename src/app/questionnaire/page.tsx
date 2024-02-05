@@ -1,5 +1,5 @@
 import { FORM_DATA } from "./content";
-import { MultiStepForm } from "./_components/multiStepForm";
+import { MultiStepForm } from "./_components/multi-step-form";
 import { Provider } from "jotai";
 import { getSharedMetadata } from "@/config/shared-metadata";
 import { siteConfig } from "@/config/site";

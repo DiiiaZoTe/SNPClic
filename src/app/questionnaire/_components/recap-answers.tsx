@@ -11,7 +11,7 @@ import {
   BooleanAnswer,
   Answer,
 } from "../types";
-import { useMultiStepFormContext } from "../_hooks/multiStepForm-context";
+import { useMultiStepFormContext } from "../_hooks/multi-step-form-context";
 import { Badge } from "@/components/ui/badge";
 
 import { motion } from "framer-motion";

@@ -1,7 +1,7 @@
 // multiStepFormContext.tsx
 import React, { createContext, useContext, ReactNode, RefObject } from "react";
 // import { useMultiStepForm, UseMSF } from "./useMultiStepForm";
-import { useMultiStepForm, UseMSF } from "./use-multiStepForm";
+import { useMultiStepForm, UseMSF } from "./use-multi-step-form";
 import { Form } from "../types";
 
 const MultiStepFormContext = createContext<

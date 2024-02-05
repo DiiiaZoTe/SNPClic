@@ -15,7 +15,7 @@ import { Form, FormDescription, FormLabel } from "@/components/ui/form";
 import {
   MultiStepFormProvider,
   useMultiStepFormContext,
-} from "../_hooks/multiStepForm-context";
+} from "../_hooks/multi-step-form-context";
 
 import { FormTracker } from "./form-tracker";
 import { QuestionSwitch } from "./questions";
