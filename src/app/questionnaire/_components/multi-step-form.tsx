@@ -65,12 +65,11 @@ const MultiStepFormComponent = () => {
                     onSubmit={useMSF.form.handleSubmit(
                       useMSF.submission.onSubmitCallback
                     )}
-                    className="flex flex-col gap-8 w-full p-8 rounded-xl bg-background border border-muted"
+                    className="flex flex-col gap-8 w-full xs:p-8 rounded-xl bg-background xs:border border-muted"
                   >
                     <div>
                       <FormLabel className="font-bold text-xl">
-                        {useMSF.stepper.currentStep}.{" "}
-                        {useMSF.data.currentStep.name}
+                        {`${useMSF.stepper.currentStep}. ${useMSF.data.currentStep.name}`}
                       </FormLabel>
                       <FormDescription>
                         {useMSF.data.currentStep.description}

@@ -165,7 +165,7 @@ const StopFlowSheet = ({
       onOpenChange={() => useMSF.controlFlow.stopping.cancelStopFlow()}
     >
       <SheetContent
-        className="flex flex-col gap-6 p-6 sm:p-8 w-full  pt-12"
+        className="flex flex-col gap-6 p-6 sm:p-8 w-full pt-12 overflow-y-scroll max-h-[100dvh]"
         side="bottom"
       >
         <SheetHeader className="text-left">
