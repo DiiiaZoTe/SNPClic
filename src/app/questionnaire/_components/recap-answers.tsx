@@ -167,15 +167,14 @@ const QuestionAnswerSwitch = ({
   }
 };
 
+interface QuestionAnswerWrapperProps extends React.ComponentPropsWithoutRef<"div"> {
+  question: Question<QuestionType>;
+}
 const QuestionAnswerWrapper = ({
   question,
   children,
   className,
-}: {
-  question: Question<QuestionType>;
-  children: ReactNode;
-  className?: string;
-}) => {
+}: QuestionAnswerWrapperProps) => {
   return (
     <div
       className={cn(
