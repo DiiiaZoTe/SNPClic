@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --verbose",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "pages:build": "npx @cloudflare/next-on-pages"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.8.6",
     "@hookform/resolvers": "^3.3.2",
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-accordion": "^1.1.2",
