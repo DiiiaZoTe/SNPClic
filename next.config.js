@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  experimental: {
+    serverComponentsExternalPackages: ["chrome-aws-lambda"]
+  },
   async headers() {
     return [
 

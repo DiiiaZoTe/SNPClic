@@ -15,6 +15,7 @@ import { useMultiStepFormContext } from "../_hooks/multi-step-form-context";
 import { Badge } from "@/components/ui/badge";
 
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const NO_ANSWER = "Aucune réponse";
 
@@ -34,7 +35,7 @@ export const RecapAnswers = () => {
         <p className="text-xl font-bold leading-none tracking-tight">
           Récapitulatif
         </p>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground print:hidden">
           Vérifier la validité de vos réponses.
         </p>
       </motion.div>
@@ -57,7 +58,7 @@ export const RecapAnswers = () => {
                   {i + 1}. {useMSF.data.form[i].name}
                 </span>
                 {useMSF.stepper.is.skipped(i + 1) ? (
-                  <div className="w-fit rounded-sm flex justify-center items-center gap-1 text-xs bg-secondary/40 px-2 py-1">
+                  <div className="w-fit min-w-[14ch] rounded-sm flex justify-center items-center gap-1 text-xs bg-secondary/40 px-2 py-1">
                     Etape sautée
                     <ChevronsRight className="w-4 h-4 stroke-2" />
                   </div>
@@ -100,6 +101,9 @@ export const RecapAnswers = () => {
           </div>
         ) : null}
       </div>
+      <Button onClick={() => window.print()} className="print:hidden">
+        Download PDF
+      </Button>
     </div>
   );
 };

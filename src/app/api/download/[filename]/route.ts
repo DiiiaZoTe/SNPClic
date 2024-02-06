@@ -16,8 +16,7 @@ export async function GET(
     const pdf = await r2.send(
       new GetObjectCommand({
         Bucket: process.env.R2_BUCKET_NAME,
-        // Key: `${filename}.pdf`,
-        Key: `${filename}.png`,
+        Key: `${filename}.pdf`,
       })
     );
 
@@ -27,12 +26,11 @@ export async function GET(
 
     return new Response(pdf.Body?.transformToWebStream(), {
       headers: {
-        // 'Content-Type': 'application/pdf',
-        'Content-Type': 'image/png',
+        'Content-Type': 'application/pdf',
       },
     });
   } catch (err: any) {
-    logError({request, error: err.message || err, location: `/api/download/${filename}`});
+    logError({ request, error: err.message || err, location: `/api/download/${filename}` });
     return new Response("File could not be downloaded.", { status: 500 });
   }
 }
