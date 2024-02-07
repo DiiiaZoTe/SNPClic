@@ -23,7 +23,7 @@ import {
 import Balancer from "react-wrap-balancer";
 
 import { CONTACT_CONTENT, type SubContentType } from "./content";
-import Link from "next/link";
+import MyLink from "@/components/utilities/link";
 
 export default function Page() {
   return (
@@ -65,13 +65,13 @@ const CustomCard = ({
           typeof subContent === "string" ? (
             <p key={subContent}>{subContent}</p>
           ) : (
-            <Link
+            <MyLink
               href={subContent.url}
               key={subContent.value}
               className="text-primary underline underline-offset-2 w-fit"
             >
               {subContent.value}
-            </Link>
+            </MyLink>
           )
         )}
       </CardContent>

@@ -1,7 +1,7 @@
 import Balancer from "react-wrap-balancer";
 import { HOME_CONTENT } from "./content";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import MyLink from "@/components/utilities/link";
 
 export default function Home() {
   return (
@@ -21,7 +21,7 @@ export default function Home() {
         ))}
       </div>
       <Button asChild variant="default">
-        <Link href="/questionnaire">Accéder au questionnaire</Link>
+        <MyLink href="/questionnaire">Accéder au questionnaire</MyLink>
       </Button>
     </div>
   );

@@ -1,5 +1,5 @@
 import { Logo } from "@/components/logos/logo";
-import Link from "next/link";
+import MyLink from "../utilities/link";
 
 import { githubConfig } from "@/config/site";
 import { ThemeToggle } from "../theme-toggle";
@@ -53,10 +53,10 @@ export const Footer = () => {
             </div>
             <div className="flex gap-4 items-center">
               <p className="text-sm">Open Source</p>
-              <Link href={githubConfig.repo}>
+              <MyLink href={githubConfig.repo}>
                 <GitHubLogo className="w-4 h-4" />
                 <span className="sr-only">GitHub</span>
-              </Link>
+              </MyLink>
               <ThemeToggle />
             </div>
           </div>
@@ -65,9 +65,9 @@ export const Footer = () => {
               <div key={title} className="flex flex-col">
                 <p className="font-semibold">{title}</p>
                 {links.map(({ linkName, href }) => (
-                  <Link key={linkName} href={href} className="hover:underline">
+                  <MyLink key={linkName} href={href} className="hover:underline">
                     {linkName}
-                  </Link>
+                  </MyLink>
                 ))}
               </div>
             ))}

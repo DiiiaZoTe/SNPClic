@@ -1,4 +1,4 @@
-import Link from "next/link";
+import MyLink from "@/components/utilities/link";
 import { NavLinks } from "@/components/layout/nav-links";
 import { Logo } from "@/components/logos/logo";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
@@ -20,12 +20,12 @@ export const Navbar = () => {
   return (
     <header className="container">
       <div className="flex py-6 items-center gap-8">
-        <Link href="/" className="flex items-center gap-4">
+        <MyLink href="/" className="flex items-center gap-4">
           <h1 className="text-primary text-4xl font-bold tracking-tight">
             SNP<span className=" text-foreground"> · Clic</span>
           </h1>
           <Logo className="w-8 h-8 hidden sm:block" />
-        </Link>
+        </MyLink>
         <div className="hidden ml-auto sm:flex items-center gap-8 ">
           <NavLinks
             links={LINKS}
@@ -54,9 +54,9 @@ const MobileNavbar = () => {
       <SheetContent side="right" className="flex flex-col justify-between">
         <div className="flex flex-col gap-8">
           <SheetClose asChild>
-            <Link href="/">
+            <MyLink href="/">
               <Logo className="w-8 h-8" />
-            </Link>
+            </MyLink>
           </SheetClose>
           <NavLinks
             links={LINKS}
@@ -68,10 +68,10 @@ const MobileNavbar = () => {
         </div>
         <div className="flex gap-4 items-center">
           <p className="text-sm">Open Source</p>
-          <Link href={githubConfig.repo}>
+          <MyLink href={githubConfig.repo}>
             <GitHubLogo className="w-4 h-4" />
             <span className="sr-only">GitHub</span>
-          </Link>
+          </MyLink>
           <ThemeToggle />
         </div>
       </SheetContent>
