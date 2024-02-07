@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --verbose",
-    "prepare": "husky install",
-    "pages:build": "npx @cloudflare/next-on-pages"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.8.6",
