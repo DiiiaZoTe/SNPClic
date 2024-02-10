@@ -6,7 +6,7 @@ import { FormAnswers, Form, StepDirection, CanStopFlowContent, QuestionInfoCondi
 import { evaluateCondition } from "../_utils/conditions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { set, z } from "zod";
 
 import { getDefaultStore } from "jotai";
 import { formAnswersAtom } from "./atom";
@@ -25,6 +25,7 @@ type UpdateStepFunction =
   | { type: "prev"; function: UpdateStepPrevFunction };
 
 export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElement>) => {
+
   /** number of steps in the form */
   const numberOfSteps = data.length;
 
@@ -33,6 +34,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
   //******************************************************
 
   const [currentStep, setCurrentStep] = useState(1);
+  if (currentStep !== -1 && (currentStep < 1 || currentStep > numberOfSteps)) setCurrentStep(1); // prevent invalid currentStep
   const [direction, setDirection] = useState<StepDirection>("forward");
   const [visitedSteps, setVisitedSteps] = useState<boolean[]>([true, ...Array(numberOfSteps - 1).fill(false)]);
   const [skippedSteps, setSkippedSteps] = useState<boolean[]>([true, ...Array(numberOfSteps - 1).fill(false)]);
@@ -69,7 +71,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
   //*          The Form data variables + states
   //******************************************************
 
-  const currentStepData = useMemo(() => data[currentStep - 1], [data, currentStep]);
+  const currentStepData = useMemo(() => getStepData(data, currentStep), [data, currentStep]);
   const flattenForm = useMemo(() => flattenFormData(data), [data]);
 
   //******************************************************
@@ -127,11 +129,12 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   /** reset all the terminator buttons in the current step except the triggered if provided */
   const resetAllTerminatorsInStep = (step: number, triggerByQuestionKey?: string) => {
-    const stepData = data[step - 1];
+    const stepData = getStepData(data, step);
+    if (!stepData) return;
     stepData.questions.forEach((question) => {
       if (question.type !== "terminatorButton") return;
       if (question.key === triggerByQuestionKey) return;
-      form.setValue(question.key, false);
+      form.setValue(question?.key, false);
     });
   }
 
@@ -177,7 +180,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   /** zod schema of the current step */
   const currentStepSchema = useMemo(() =>
-    stepSchemas[currentStep - 1], [currentStep, stepSchemas]
+    stepSchemas[currentStep - 1]!, [currentStep, stepSchemas] // this is safe because of the currentStep safe guard
   );
 
   /** default values of the form */
@@ -208,7 +211,8 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   /** resets a step's answers */
   const resetStepAnswers = useCallback((step: number) => {
-    const stepData = data[step - 1];
+    const stepData = getStepData(data, step);
+    if (!stepData) return;
     stepData.questions.forEach((question) => {
       resetAnswer(question.key);
     });
@@ -223,12 +227,14 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     success: boolean;
     errors?: any
   } => {
-    const stepData = data[step - 1];
+    const stepData = getStepData(data, step);
+    if (!stepData) return { success: false };
     const stepSchema = stepSchemas[step - 1];
+    if (!stepSchema) return { success: false };
     const stepAnswers = getStepAnswers(stepData, form.getValues());
     const stepValidation = stepSchema.safeParse(stepAnswers);
     if (!!!includedQuestions) {
-      return { success: stepValidation.success || skippedSteps[step - 1] };
+      return { success: stepValidation.success || !!skippedSteps[step - 1] };
     }
     // @ts-ignore if no error then it will be undefined so valid
     //! you may want to get all the issues not just the first one... then return false with the issues to set later?
@@ -244,7 +250,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   /** a step is valid if it's valid or skipped */
   const getValidSteps = useCallback(() => {
-    return validSteps.map((valid, index) => valid || skippedSteps[index]);
+    return validSteps.map((valid, index) => valid || !!skippedSteps[index]);
   }, [validSteps, skippedSteps]);
 
   //******************************************************
@@ -260,7 +266,8 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     setCurrentStep(toStep);
     scrollToViewIfNeeded(containerRef);
     setSkippedQuestions((prev) => { // remove the skipped questions of the step we are going to
-      const stepQuestions = data[toStep - 1].questions.map((question) => question.key);
+      const stepData = getStepData(data, toStep);
+      const stepQuestions = stepData.questions.map((question) => question.key);
       return prev.filter((skipped) => !stepQuestions.includes(skipped));
     })
     form.clearErrors();
@@ -437,7 +444,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 
   /** check if a step can stop the flow */
   const stepCanStopFlow = useCallback((step: number, values?: FormAnswers) => {
-    const stepData = data[step - 1];
+    const stepData = getStepData(data, step);
     return stepData.stopFlowCondition?.find(condition =>
       evaluateCondition(condition.condition, values ?? form.getValues())
     )?.content;
@@ -507,7 +514,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     const indexQuestionKey = triggerByQuestionKey
       ? flattenForm.findIndex((question) => question.key === triggerByQuestionKey) // question that triggered the stop flow
       : flattenForm.findIndex((question) => question.step === currentStep + 1); // first question of next step
-    const firstQuestionKeyGoToStep = data[toStep - 1].questions[0].key;
+    const firstQuestionKeyGoToStep = getStepData(data, toStep).questions[0]?.key;
     const indexFirstGoToStepQuestion = flattenForm.findIndex((question) => question.key === firstQuestionKeyGoToStep);
     const questionsToSkip = flattenForm.slice(indexQuestionKey + 1, indexFirstGoToStepQuestion);
     setSkippedQuestions((prev) => {
@@ -599,7 +606,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
       index < currentStep ? skipped : true
     );
     const newVisited = newSkipped.map((skipped, index) =>
-      index < currentStep - 1 ? visitedSteps[index] : !skipped
+      index < currentStep - 1 ? !!visitedSteps[index] : !skipped
     );
     updateStepStates({
       valid: {
@@ -725,7 +732,7 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     data: {
       form: data,
       currentStep: currentStepData,
-      step: (step: number) => data[step - 1],
+      step: (step: number) => getStepData(data, step),
       flattenForm
     },
     stepper: {
@@ -761,8 +768,8 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
     },
     answers: {
       form: () => form.getValues(),
-      currentStep: () => getStepAnswers(data[currentStep - 1], form.getValues()),
-      step: (step: number) => getStepAnswers(data[step - 1], form.getValues()),
+      currentStep: () => getStepAnswers(getStepData(data, currentStep), form.getValues()),
+      step: (step: number) => getStepAnswers(getStepData(data, step), form.getValues()),
       question: (questionKey: string) => form.getValues(questionKey),
     },
     submission: {
@@ -794,6 +801,10 @@ export const useMultiStepForm = (data: Form, containerRef: RefObject<HTMLDivElem
 //******************************************************
 //*                 Utility functions
 //******************************************************
+
+const getStepData = (data: Form, step: number) => {
+  return data[step - 1]!;
+}
 
 /** evaluate the info condition of a question and return the info if true */
 const checkQuestionInfoCondition = (formAnswers: FormAnswers, infoConditions?: QuestionInfoCondition) => {
@@ -864,6 +875,7 @@ const getFollowingSkippedStep = (skippedSteps: boolean[], currentStep: number) =
   return followingSkippedStep;
 }
 
+/** Get the first step that is invalid */
 const shouldGoToFirstInvalidStep = (currentValidSteps: boolean[], upToStep?: number) => {
   let stepsToCheck = currentValidSteps
   if (upToStep !== undefined) stepsToCheck = currentValidSteps.slice(0, upToStep);

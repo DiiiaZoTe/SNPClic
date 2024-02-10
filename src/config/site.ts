@@ -1,8 +1,10 @@
+import { env } from "@/env";
+
 export const siteConfig = {
   name: "SNPClic",
-  url: process.env.ENVIRONMENT == 'production'
+  url: env.ENVIRONMENT == 'production'
     ? "https://snpclic.fr"
-    : process.env.ENVIRONMENT == 'preview'
+    : env.ENVIRONMENT == 'preview'
       ? "https://preview.snpclic.fr"
       : "http://localhost:3000",
   ogImage: "/og.png",
