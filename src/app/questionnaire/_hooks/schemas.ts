@@ -14,13 +14,13 @@ export const getStepZodSchema = (step: Step) => {
       case "boolean":
       case "terminatorButton":
         // always required for boolean but we have a default value
-        schema[question.key] = z
+        schema[question.id] = z
           .boolean()
           .default(question.defaultAnswer)
         break;
       case "multiChoice":
       case "multiSelect":
-        schema[question.key] = z
+        schema[question.id] = z
           .array(z.string())
           .default(question.defaultAnswer)
         break;
@@ -28,7 +28,7 @@ export const getStepZodSchema = (step: Step) => {
       case "textarea":
       case "select":
       case "body":
-        schema[question.key] = z
+        schema[question.id] = z
           .string()
           .default(question.defaultAnswer)
         break;
@@ -48,53 +48,53 @@ export const getStepZodSchema = (step: Step) => {
       switch (question.type) {
         case "text":
         case "textarea":
-          const answer = values[question.key] as string;
+          const answer = values[question.id] as string;
           if (isRequired && answer.length === 0)
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: 'Ajouter une valeur.',
-              path: [question.key]
+              path: [question.id]
             });
           break;
         case "multiChoice":
         case "multiSelect":
-          const multiAnswer = values[question.key] as string[];
+          const multiAnswer = values[question.id] as string[];
           if (isRequired && multiAnswer.length === 0) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: 'Ajouter au moins une valeur.',
-              path: [question.key]
+              path: [question.id]
             });
           }
           if (!multiAnswer.every((v) => question.options.some((option) => option.value === v)))
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: 'Une valeur non valide a été ajoutée.',
-              path: [question.key]
+              path: [question.id]
             });
           break;
         case "select":
-          const selectAnswer = values[question.key] as string;
+          const selectAnswer = values[question.id] as string;
           if (isRequired && selectAnswer.length === 0)
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: 'Ajouter une valeur.',
-              path: [question.key]
+              path: [question.id]
             });
           if (selectAnswer !== question.defaultAnswer && !question.options.some((option) => option.value === selectAnswer))
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: 'Ajouter une valeur valide.',
-              path: [question.key]
+              path: [question.id]
             });
           break;
         case "body":
-          const bodyAnswer = values[question.key] as string;
+          const bodyAnswer = values[question.id] as string;
           if (isRequired && bodyAnswer.length === 0)
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: 'Sélectionner une partie du corps.',
-              path: [question.key]
+              path: [question.id]
             });
           break;
       }

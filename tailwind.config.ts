@@ -67,6 +67,10 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        "fade-in": {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
         "accordion-down": {
           from: { height: 0 },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -79,11 +83,17 @@ module.exports = {
           from: { opacity: 0, transform: "translateY(-10px)" },
           to: { opacity: 1, transform: "translateY(0)" },
         },
+        "in-down": {
+          from: { opacity: 0, transform: "translateY(-10px)" },
+          to: { opacity: 1, transform: "translateY(0)" },
+        },
       },
       animation: {
+        "fade-in": "fade-in 0.3s ease",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "in": "in 0.3s ease 0.15s both",
+        "in-down": "in-down 0.3s ease",
       },
     },
   },

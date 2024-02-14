@@ -18,7 +18,7 @@ export const orCondition = (...conditions: Array<QuestionCondition | CompositeCo
 
 /** Function to determine if question condition */
 function isQuestionCondition(condition: QuestionCondition | CompositeCondition): condition is QuestionCondition {
-  return (condition as QuestionCondition).questionKey !== undefined;
+  return (condition as QuestionCondition).questionID !== undefined;
 }
 
 /**
@@ -31,7 +31,7 @@ export const evaluateCondition = (condition: QuestionCondition | CompositeCondit
   if (condition === true) return true;
   if (isQuestionCondition(condition)) {
     // for the condition question, get the actual answer
-    const answer = answers[condition.questionKey];
+    const answer = answers[condition.questionID];
     // The answer can't be undefined, because we have a default value for each question
     if (answer === undefined) return false;
     // since condition.value is optional for certain operators, we need to make sure it's not undefined for type checking

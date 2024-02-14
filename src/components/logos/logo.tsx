@@ -1,4 +1,6 @@
-export const Logo = ({ className }: { className?: string }) => {
+interface LogoProps extends React.HTMLAttributes<HTMLOrSVGElement> {}
+
+export const Logo = ({ className }: LogoProps) => {
   return (
     <svg viewBox="0 0 1024 1024" className={className}>
       <path

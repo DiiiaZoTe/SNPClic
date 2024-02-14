@@ -1,9 +1,8 @@
-import { FORM_DATA } from "./content";
 import { MultiStepForm } from "./_components/multi-step-form";
 import { Provider } from "jotai";
 import { getSharedMetadata } from "@/config/shared-metadata";
 import { siteConfig } from "@/config/site";
-// import { api } from "@/trpc/server";
+import { api } from "@/trpc/server";
 
 const METADATA = {
   title: "Questionnaire",
@@ -18,12 +17,12 @@ export const metadata = {
 };
 
 export default async function Page() {
-  // const { form } = await api.questionnaire.getDefaultForm.query();
-  // if (!form) return <div>Formulaire non trouvé</div>;
+  const { form } = await api.questionnaire.getDefaultForm.query();
+  if (!form) return <div>Formulaire non trouvé</div>;
   return (
     <div className="flex flex-col grow">
       <Provider>
-        <MultiStepForm form={FORM_DATA} />
+        <MultiStepForm form={form} />
       </Provider>
     </div>
   );

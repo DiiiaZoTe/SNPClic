@@ -1,6 +1,5 @@
 "use client";
 
-import { ReactNode } from "react";
 import { Check, ChevronsRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -14,92 +13,71 @@ import {
 import { useMultiStepFormContext } from "../_hooks/multi-step-form-context";
 import { Badge } from "@/components/ui/badge";
 
-import { motion } from "framer-motion";
-
 const NO_ANSWER = "Aucune réponse";
 
-export const RecapAnswers = () => {
+export const Recap = () => {
   const useMSF = useMultiStepFormContext();
-
   const stopReason = useMSF.controlFlow.stopped.formStoppedReason;
-
   return (
-    <div className="p-0 flex flex-col gap-8 w-full h-full max-w-xl">
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="shrink-0 flex flex-col gap-4"
-      >
+    <div className="flex flex-col gap-8 w-full h-full">
+      <div className="shrink-0 flex flex-col gap-4">
         <p className="text-xl font-bold leading-none tracking-tight">
           Récapitulatif
         </p>
         <p className="text-sm text-muted-foreground">
           Vérifier la validité de vos réponses.
         </p>
-      </motion.div>
-      <div className="grow overflow-y-auto flex flex-col gap-8">
-        {useMSF.data.form.map((stepData, i) => {
-          return (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 0.1 * (i + 1),
-                duration: 0.2,
-                ease: "easeOut",
-              }}
-              key={i}
-              className="flex flex-col gap-2"
-            >
-              <div className="flex flex-col justify-center items-between gap-4 xs:flex-row xs:justify-between xs:items-center font-semibold text-foreground">
-                <span>
-                  {i + 1}. {useMSF.data.form[i].name}
-                </span>
-                {useMSF.stepper.is.skipped(i + 1) ? (
-                  <div className="w-fit rounded-sm flex justify-center items-center gap-1 text-xs bg-secondary/40 px-2 py-1">
-                    Etape sautée
-                    <ChevronsRight className="w-4 h-4 stroke-2" />
-                  </div>
-                ) : null}
-              </div>
-              {!useMSF.stepper.is.skipped(i + 1) ? (
-                <div className="flex flex-col gap-2">
-                  {
-                    // get the question and the answer in text format
-                    stepData.questions.map((question, index) => {
-                      if (useMSF.questions.isHidden(question.key)) return null;
-                      if (useMSF.questions.isSkipped(question.key)) {
-                        return (
-                          <QuestionSkipped key={index} question={question} />
-                        );
-                      }
-                      const answer = useMSF.answers.question(question.key);
-                      return (
-                        <QuestionAnswerSwitch
-                          key={index}
-                          question={question}
-                          answer={answer}
-                        />
-                      );
-                    })
-                  }
+      </div>
+      {useMSF.data.form.map((stepData, i) => {
+        return (
+          <div key={i} className="flex flex-col gap-2 animate-in-down">
+            <div className="flex flex-col justify-center items-between gap-4 xs:flex-row xs:justify-between xs:items-center font-semibold text-foreground">
+              <span>
+                {i + 1}. {useMSF.data.step(i + 1).name}
+              </span>
+              {useMSF.stepper.is.skipped(i + 1) ? (
+                <div className="w-fit rounded-sm flex justify-center items-center gap-1 text-xs bg-secondary/40 px-2 py-1">
+                  Etape sautée
+                  <ChevronsRight className="w-4 h-4 stroke-2" />
                 </div>
               ) : null}
-            </motion.div>
-          );
-        })}
-        {stopReason?.reason ? (
-          <div className="shrink-0 flex flex-col gap-4">
-            <p className="text-xl font-bold leading-none tracking-tight">
-              Raison de l&apos;arrêt du questionnaire
-            </p>
-            <div className="w-fit rounded-sm text-base font-medium bg-secondary/40 px-4 py-3">
-              {stopReason.reason}
             </div>
+            {!useMSF.stepper.is.skipped(i + 1) ? (
+              <div className="flex flex-col gap-2">
+                {
+                  // get the question and the answer in text format
+                  stepData.questions.map((question, index) => {
+                    if (useMSF.questions.isHidden(question.id)) return null;
+                    if (useMSF.questions.isSkipped(question.id)) {
+                      return (
+                        <QuestionSkipped key={index} question={question} />
+                      );
+                    }
+                    const answer = useMSF.answers.question(question.id);
+                    return (
+                      <QuestionAnswerSwitch
+                        key={index}
+                        question={question}
+                        answer={answer}
+                      />
+                    );
+                  })
+                }
+              </div>
+            ) : null}
           </div>
-        ) : null}
-      </div>
+        );
+      })}
+      {stopReason?.reason ? (
+        <div className="shrink-0 flex flex-col gap-4">
+          <p className="text-xl font-bold leading-none tracking-tight">
+            Raison de l&apos;arrêt du questionnaire
+          </p>
+          <div className="w-fit rounded-sm text-base font-medium bg-secondary/40 px-4 py-3">
+            {stopReason.reason}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -167,7 +145,8 @@ const QuestionAnswerSwitch = ({
   }
 };
 
-interface QuestionAnswerWrapperProps extends React.ComponentPropsWithoutRef<"div"> {
+interface QuestionAnswerWrapperProps
+  extends React.ComponentPropsWithoutRef<"div"> {
   question: Question<QuestionType>;
 }
 const QuestionAnswerWrapper = ({

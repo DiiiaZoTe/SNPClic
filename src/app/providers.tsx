@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
 import { TRPCReactProvider } from "@/trpc/react";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     >
       <TRPCReactProvider>
         {children}
-        <Toaster />
+        <Toaster closeButton />
       </TRPCReactProvider>
     </ThemeProvider>
   );

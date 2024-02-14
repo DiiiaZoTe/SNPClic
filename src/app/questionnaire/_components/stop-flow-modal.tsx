@@ -79,7 +79,7 @@ const StopFlowDialog = ({
   const {
     title,
     content: mainContent,
-    questionKey,
+    questionID,
     stopFlowButtons,
     continueFlowButton,
     cancelFlowButton,
@@ -107,7 +107,7 @@ const StopFlowDialog = ({
               onClick={() => {
                 useMSF.controlFlow.stopped.goToRecap({
                   reason: content.reason,
-                  questionKey,
+                  questionID,
                 });
               }}
             />
@@ -120,7 +120,7 @@ const StopFlowDialog = ({
               onClick={() =>
                 useMSF.controlFlow.stopping.continueModalStopFlow(
                   continueFlowButton.continueToStep ?? continueToStep,
-                  questionKey
+                  questionID
                 )
               }
             />
@@ -152,7 +152,7 @@ const StopFlowSheet = ({
   const {
     title,
     content: mainContent,
-    questionKey,
+    questionID,
     stopFlowButtons,
     continueFlowButton,
     cancelFlowButton,
@@ -183,7 +183,7 @@ const StopFlowSheet = ({
               onClick={() => {
                 useMSF.controlFlow.stopped.goToRecap({
                   reason: content.reason,
-                  questionKey,
+                  questionID,
                 });
               }}
             />
@@ -196,7 +196,7 @@ const StopFlowSheet = ({
               onClick={() =>
                 useMSF.controlFlow.stopping.continueModalStopFlow(
                   continueToStep,
-                  questionKey
+                  questionID
                 )
               }
             />

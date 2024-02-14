@@ -2,17 +2,19 @@
 
 import { sql } from "drizzle-orm";
 import { db } from "./index";
-import { forms } from "./schema";
+import { form } from "./schema";
+import { generateUUID } from "@/lib/uuid";
 
-// import { FORM_DATA } from "@/app/questionnaire/content";
-// db.insert(forms).values({
-//   name: "Formulaire SNPClic",
-//   config: FORM_DATA,
-// }).then((result) => {
-//   console.log(result)
-// }).catch((error) => {
-//   console.error(error)
-// });
+import { FORM_DATA } from "@/app/questionnaire/content";
+db.insert(form).values({
+  uuid: generateUUID(),
+  name: "Questionnaire SNPClic",
+  config: FORM_DATA.config,
+}).then((result) => {
+  console.log(result)
+}).catch((error) => {
+  console.error(error)
+});
 
 // db.select({ config: forms.config }).from(forms).where(sql`${forms.id} = 1`).then((result) => {
 //   console.log(JSON.stringify(result[0]?.config, null, 2))

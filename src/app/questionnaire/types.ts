@@ -48,7 +48,7 @@ export type QuestionInfoCondition = {
 /** Base structure for a question.  Generic T extends QuestionType for specific question type enforcement. */
 export type BaseQuestion<T extends QuestionType> = {
   text: string;
-  key: string;
+  id: string;
   type: T;
   isRequired: boolean;
   description?: string;
@@ -131,8 +131,15 @@ export type Step = {
   stopFlowCondition?: StepCanStopFlow[];
 };
 
+/** Represents the configuration of a form. */
+export type FormConfig = Step[];
+
 /** Represents the entire form as a sequence of steps. */
-export type Form = Step[];
+export type Form = {
+  id: string;
+  name: string;
+  config: FormConfig;
+};
 
 //! Control flow types
 
@@ -160,7 +167,7 @@ export type CancelFlowButton = StopFlowButtonBase;
 /** Represents the stop content of a step. */
 export type CanStopFlowContent = {
   title?: string;
-  questionKey?: string;
+  questionID?: string;
   bypassModalStopReason?: string | true;
   content?: string;
   stopFlowButtons?: StopFlowButton[];
@@ -176,7 +183,7 @@ export type StepCanStopFlow = {
 }
 
 /** Represents the reason for stopping a flow. */
-export type StopFlowReason = { reason: string, questionKey?: string } | undefined;
+export type StopFlowReason = { reason: string, questionID?: string } | undefined;
 
 //! Utility types
 
@@ -221,7 +228,7 @@ export type QuestionConditionValue = Boolean[] | string[] | number;
 
 /** Represents a condition based on a question's answer. */
 export type QuestionCondition = {
-  questionKey: string;
+  questionID: string;
   operator: ConditionOperator;
   value?: QuestionConditionValue;
 };
