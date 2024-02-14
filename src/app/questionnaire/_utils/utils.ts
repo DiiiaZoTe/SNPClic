@@ -1,13 +1,13 @@
 import type { StepDirection } from "../types";
 
 /** Scroll to allow the element to be visible */
-export const scrollToViewIfNeeded = (ref?: React.RefObject<HTMLElement>) => {
+export const scrollToViewIfNeeded = (ref?: React.RefObject<HTMLElement>, smooth = true) => {
   if (!ref) return false;
   if (!ref.current) return false;
   const rect = ref.current.getBoundingClientRect();
   if (rect.top >= 0 && rect.top <= window.innerHeight) return;
   ref.current?.scrollIntoView({
-    behavior: "smooth",
+    behavior: smooth ? "smooth" : "instant",
   });
 };
 

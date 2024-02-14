@@ -45,7 +45,7 @@ const MultiStepFormComponent = () => {
     });
 
   const handleSubmit = () => {
-    useMSF.other.scrollToView();
+    useMSF.other.scrollToView(false);
     mutate({
       formID: useMSF.id,
       stopReason: useMSF.controlFlow.stopped.formStoppedReason,
@@ -69,67 +69,98 @@ const MultiStepFormComponent = () => {
     });
   };
 
-  return isLoading ? (
-    <div className="flex-grow flex flex-col gap-8 justify-center items-center animate-in-down">
-      <Logo className="w-20 h-20" />
-      <div className="flex flex-col gap-2 justify-center items-center">
-        <p className="text-center text-lg font-semibold">
-          Envoie du questionnaire...
-        </p>
-        <p className="max-w-sm text-center">
-          <Balancer>
-            Merci de patienter un instant, nous sommes en train de finaliser
-            l&apos;envoie de vos réponses.
-          </Balancer>
-        </p>
+  //* form is loading
+  if (isLoading) return <LoadingScreen />;
+
+  // * form is not submitted (not in recap state)
+  if (!useMSF.submission.isFormSubmitted)
+    return (
+      <div className="w-full flex flex-col gap-8 items-center animate-in-down">
+        <TodoList />
+        <FormTracker canOnlyGoBack={false} />
+        <CurrentStepForm />
+        <StopFlowModal />
       </div>
-      <Loading />
-    </div>
-  ) : (
-    <div className="w-full flex flex-col gap-8 items-center animate-in-down">
-      <TodoList />
-      {!isSuccess && <FormTracker canOnlyGoBack={false} />}
-      {!useMSF.submission.isFormSubmitted && (
-        <div className="w-full flex flex-col gap-8 items-center">
-          <CurrentStepForm />
-          <StopFlowModal />
-        </div>
-      )}
-      {useMSF.submission.isFormSubmitted && (
-        <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
-          <Recap />
-          <Separator />
-          <div className="flex flex-col gap-4 w-full">
-            <p className="text-xl font-bold leading-none tracking-tight">
-              Finaliser le questionnaire
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Envoyer vos réponses pour terminer le questionnaire. Une fois
-              terminé, vous ne pourrez plus modifier vos réponses. L&apos;envoie
-              peut prendre quelques instants.
-            </p>
-            {isError && !isSuccess && (
-              <p className="text-destructive text-sm font-medium">
-                Une erreur est survenue lors de l&apos;envoie. Veuillez
-                réessayer dans quelques secondes.
-                <br /> Si le problème persiste, veuillez nous contacter par
-                email.
-              </p>
-            )}
-            <Button
-              onClick={handleSubmit}
-              className="w-fit max-w-full ml-auto group"
-              disabled={isSuccess || isLoading}
-            >
-              <span className="truncate min-w-0">Valider et terminer</span>
-              <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
-            </Button>
-          </div>
-        </div>
-      )}
+    );
+
+  // * form is awaiting final submission
+  if (!isSuccess)
+    return (
+      <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
+        <FormTracker canOnlyGoBack={false} />
+        <Recap />
+        <FinalizeQuestionnaire
+          handleSubmit={handleSubmit}
+          isError={isError}
+          isSuccess={isSuccess}
+          isLoading={isLoading}
+        />
+      </div>
+    );
+
+  // * form is fully submitted
+  return (
+    <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
+      <Recap />
     </div>
   );
 };
+
+const LoadingScreen = () => (
+  <div className="flex-grow flex flex-col gap-8 justify-center items-center animate-in-down">
+    <Logo className="w-20 h-20" />
+    <div className="flex flex-col gap-2 justify-center items-center">
+      <p className="text-center text-lg font-semibold">
+        Envoie du questionnaire...
+      </p>
+      <p className="max-w-sm text-center">
+        <Balancer>
+          Merci de patienter un instant, nous sommes en train de finaliser
+          l&apos;envoie de vos réponses.
+        </Balancer>
+      </p>
+    </div>
+    <Loading />
+  </div>
+);
+
+const FinalizeQuestionnaire = ({
+  handleSubmit,
+  isLoading,
+  isSuccess,
+  isError,
+}: {
+  handleSubmit: () => void;
+  isLoading?: boolean;
+  isSuccess?: boolean;
+  isError?: boolean;
+}) => (
+  <div className="flex flex-col gap-4 w-full">
+    <p className="text-xl font-bold leading-none tracking-tight">
+      Finaliser le questionnaire
+    </p>
+    <p className="text-sm text-muted-foreground">
+      Envoyer vos réponses pour terminer le questionnaire. Une fois terminé,
+      vous ne pourrez plus modifier vos réponses. L&apos;envoie peut prendre
+      quelques instants.
+    </p>
+    {isError && (
+      <p className="text-destructive text-sm font-medium">
+        Une erreur est survenue lors de l&apos;envoie. Veuillez réessayer dans
+        quelques secondes.
+        <br /> Si le problème persiste, veuillez nous contacter par email.
+      </p>
+    )}
+    <Button
+      onClick={handleSubmit}
+      className="w-fit max-w-full ml-auto group"
+      disabled={isSuccess || isLoading}
+    >
+      <span className="truncate min-w-0">Valider et terminer</span>
+      <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
+    </Button>
+  </div>
+);
 
 const errorToast = (submitForm: () => void) => {
   toast(
@@ -161,6 +192,7 @@ import { Logo } from "@/components/logos/logo";
 import Balancer from "react-wrap-balancer";
 import { Separator } from "@/components/ui/separator";
 import { ChevronRight } from "lucide-react";
+import { is } from "drizzle-orm";
 
 const todo = [
   "submission flow",

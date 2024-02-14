@@ -819,7 +819,7 @@ export const useMultiStepForm = (formData: Form, containerRef: RefObject<HTMLDiv
       },
     },
     other: {
-      scrollToView: () => scrollToViewIfNeeded(containerRef),
+      scrollToView: (smooth: boolean) => scrollToViewIfNeeded(containerRef, smooth),
     }
   }
 };
