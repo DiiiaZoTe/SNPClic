@@ -1,9 +1,10 @@
 import Balancer from "react-wrap-balancer";
 import { HOME_CONTENT } from "./content";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import MyLink from "@/components/utilities/link";
 
 export default function Home() {
+
   return (
     <div className="flex flex-col gap-16 max-w-xl items-center self-center grow">
       <div className="flex flex-col gap-8 justify-center items-center">
@@ -21,7 +22,7 @@ export default function Home() {
         ))}
       </div>
       <Button asChild variant="default">
-        <Link href="/questionnaire">Accéder au questionnaire</Link>
+        <MyLink href="/questionnaire">Accéder au questionnaire</MyLink>
       </Button>
     </div>
   );

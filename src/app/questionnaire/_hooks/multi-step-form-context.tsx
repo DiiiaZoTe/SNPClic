@@ -20,10 +20,10 @@ export const useMultiStepFormContext = () => {
 
 export const MultiStepFormProvider: React.FC<{
   children: ReactNode;
-  stepsData: Form;
+  form: Form;
   containerRef: RefObject<HTMLDivElement>;
-}> = ({ children, stepsData, containerRef }) => {
-  const multiStepFormState = useMultiStepForm(stepsData, containerRef);
+}> = ({ children, form, containerRef }) => {
+  const multiStepFormState = useMultiStepForm(form, containerRef);
   return (
     <MultiStepFormContext.Provider value={multiStepFormState}>
       {children}

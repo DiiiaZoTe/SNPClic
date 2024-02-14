@@ -20,8 +20,6 @@ import {
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-import { useTheme } from "next-themes";
-
 /** a component that tracks the steps of the form */
 export const FormTracker = ({
   canOnlyGoBack = true,
@@ -106,7 +104,6 @@ const SelectStep = ({
   const useMSF = useMultiStepFormContext();
   const currentStep = useMSF.stepper.currentStep;
   const isFormSubmitted = useMSF.submission.isFormSubmitted;
-  const { theme } = useTheme();
 
   return (
     <Select
@@ -116,14 +113,6 @@ const SelectStep = ({
         useMSF.stepper.goTo.step(toStep);
       }}
     >
-      {/* <SelectTrigger className="w-full h-[54px] rounded-md min-w-0 gap-2">
-        <div className="min-w-0">
-          <span className="truncate block">{`${currentStep}. ${
-            useMSF.data.step(currentStep).name
-          }`}</span>
-        </div>
-      </SelectTrigger> */}
-
       <SelectTrigger className="w-fit h-[54px] rounded-md min-w-0 gap-2">
         <div className="flex flex-row w-full h-full items-center gap-2">
           <CircularProgressbar
@@ -135,10 +124,10 @@ const SelectStep = ({
             strokeWidth={20}
             styles={{
               path: {
-                stroke: theme === "dark" ? "#1c9c4b" : "#10a847",
+                stroke: "#10a847",
               },
               trail: {
-                stroke: theme === "dark" ? "#333333" : "#eeeeee",
+                stroke: "rgba(125,125,125,0.2)",
               },
             }}
           />

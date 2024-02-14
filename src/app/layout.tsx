@@ -2,12 +2,11 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 
 import { siteConfig } from "@/config/site";
-import { ThemeProvider } from "@/components/theme-provider";
 
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { Toaster } from "@/components/ui/toaster";
 import { getSharedMetadata } from "@/config/shared-metadata";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: {
@@ -105,19 +104,13 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className="flex flex-col min-h-screen bg-background font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <Navbar />
           <main className="container flex flex-col flex-1 py-10">
             {children}
           </main>
           <Footer />
-          <Toaster />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

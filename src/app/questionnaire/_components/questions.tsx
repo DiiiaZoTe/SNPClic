@@ -99,10 +99,10 @@ export const FieldWrapper = ({
     );
   return (
     <FormField
-      name={question.key}
+      name={question.id}
       control={form.control}
       render={({ field }) => (
-        <FormItem id={`${question.key}_item`} className="flex flex-col gap-2">
+        <FormItem id={`${question.id}_item`} className="flex flex-col gap-2">
           <div className={itemClassName ?? "flex flex-col gap-2"}>
             <FormLabel className="flex flex-col gap-2">
               <div
@@ -350,7 +350,7 @@ export const BodyQuestion = ({ question }: { question: Question<"body"> }) => {
               />
             </div>
             {field.value ? (
-              <div className="flex flex-col gap-2 animate-[in_0.5s_ease-in-out]">
+              <div className="flex flex-col gap-2 animate-[in-down_0.5s_ease-in-out]">
                 <div className="flex flex-row items-center flex-wrap gap-2">
                   Vous avez sélectionné:
                   <Badge variant="default" className="rounded-sm">

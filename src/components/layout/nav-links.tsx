@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Link from "next/link";
+import MyLink from "@/components/utilities/link";
 import { cn } from "@/lib/utils";
 import Balancer from "react-wrap-balancer";
 import { SheetClose } from "../ui/sheet";
@@ -14,6 +14,7 @@ type NavLinkProps = {
   activeLinkClass?: string;
   routing?: boolean;
   sheetClose?: boolean;
+  prefetch?: boolean;
 };
 
 export const NavLinks = (props: NavLinkProps) => {
@@ -26,6 +27,7 @@ export const NavLinks = (props: NavLinkProps) => {
     activeLinkClass,
     routing,
     sheetClose = false,
+    prefetch = false,
     ...otherProps
   } = props;
   const routingEnabled = routing ?? true; // default to true
@@ -36,10 +38,10 @@ export const NavLinks = (props: NavLinkProps) => {
         <li key={name} className={listItemClass}>
           {sheetClose ? (
             <SheetClose asChild>
-              <Link
+              <MyLink
                 key={name}
                 href={href}
-                prefetch={true}
+                prefetch={prefetch}
                 className={
                   routingEnabled && pathName === href
                     ? activeLinkClass
@@ -47,13 +49,13 @@ export const NavLinks = (props: NavLinkProps) => {
                 }
               >
                 <Balancer>{name}</Balancer>
-              </Link>
+              </MyLink>
             </SheetClose>
           ) : (
-            <Link
+            <MyLink
               key={name}
               href={href}
-              prefetch={true}
+              prefetch={prefetch}
               className={
                 routingEnabled && pathName === href
                   ? activeLinkClass
@@ -61,7 +63,7 @@ export const NavLinks = (props: NavLinkProps) => {
               }
             >
               <Balancer>{name}</Balancer>
-            </Link>
+            </MyLink>
           )}
         </li>
       ))}

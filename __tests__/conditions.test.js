@@ -10,7 +10,7 @@ describe('Form Conditions Evaluation Tests', () => {
   describe('createQuestionCondition', () => {
     it('creates a basic question condition', () => {
       const condition = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [true],
       };
@@ -22,12 +22,12 @@ describe('Form Conditions Evaluation Tests', () => {
   describe('andCondition', () => {
     it('creates an AND condition', () => {
       const condition1 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [true],
       };
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'NOT_EQUALS',
         value: ["option1"],
       };
@@ -43,12 +43,12 @@ describe('Form Conditions Evaluation Tests', () => {
   describe('orCondition', () => {
     it('creates an OR condition', () => {
       const condition1 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [true],
       };
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'NOT_EQUALS',
         value: ["option1"],
       };
@@ -73,7 +73,7 @@ describe('Form Conditions Evaluation Tests', () => {
     // Boolean
     it('evaluates EQUALS condition correctly be true for boolean', () => {
       const condition = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [true],
       };
@@ -81,19 +81,19 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates EQUALS condition correctly be false for boolean', () => {
       const condition1 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [false],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [false, true],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [],
       };
@@ -103,19 +103,19 @@ describe('Form Conditions Evaluation Tests', () => {
     // String[]
     it('evaluates EQUALS condition correctly be true for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'EQUALS',
         value: ['option1', 'option2'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'EQUALS',
         value: [],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
       const condition3 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'EQUALS',
         value: [''],
       };
@@ -123,25 +123,25 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates EQUALS condition correctly be false for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'EQUALS',
         value: ['option1', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'EQUALS',
         value: ['option1', 'option2', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'EQUALS',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(false);
       const condition4 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'EQUALS',
         value: ['nonExistingOption'],
       };
@@ -151,19 +151,19 @@ describe('Form Conditions Evaluation Tests', () => {
     // String
     it('evaluates EQUALS condition correctly be true for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'EQUALS',
         value: ['singleOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'EQUALS',
         value: [],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
       const condition3 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'EQUALS',
         value: [''],
       };
@@ -171,25 +171,25 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates EQUALS condition correctly be false for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'EQUALS',
         value: ['singleOption', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'EQUALS',
         value: ['nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'EQUALS',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(false);
       const condition4 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'EQUALS',
         value: ['nonExistingOption'],
       };
@@ -210,13 +210,13 @@ describe('Form Conditions Evaluation Tests', () => {
     // Boolean
     it('evaluates IS_ALL_IN condition correctly be true for boolean', () => {
       const condition1 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ALL_IN',
         value: [true],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ALL_IN',
         value: [true, false],
       };
@@ -224,19 +224,19 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates IS_ALL_IN condition correctly be false for boolean', () => {
       const condition1 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ALL_IN',
         value: [false],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ALL_IN',
         value: [false, false],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ALL_IN',
         value: [],
       };
@@ -246,31 +246,31 @@ describe('Form Conditions Evaluation Tests', () => {
     // String[]
     it('evaluates IS_ALL_IN condition correctly be true for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ALL_IN',
         value: ['option1', 'option2'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ALL_IN',
         value: ['option1', 'option2', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
       const condition3 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ALL_IN',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(true);
       const condition4 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ALL_IN',
         value: [''],
       };
       expect(evaluateCondition(condition4, mockAnswers)).toBe(true);
       const condition5 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ALL_IN',
         value: ['', 'nonExistingOption'],
       };
@@ -278,19 +278,19 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates IS_ALL_IN condition correctly be false for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ALL_IN',
         value: ['option1', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ALL_IN',
         value: [],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ALL_IN',
         value: ['nonExistingOption'],
       };
@@ -300,31 +300,31 @@ describe('Form Conditions Evaluation Tests', () => {
     // String
     it('evaluates IS_ALL_IN condition correctly be true for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ALL_IN',
         value: ['singleOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ALL_IN',
         value: ['singleOption', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
       const condition3 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_ALL_IN',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(true);
       const condition4 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_ALL_IN',
         value: [''],
       };
       expect(evaluateCondition(condition4, mockAnswers)).toBe(true);
       const condition5 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ALL_IN',
         value: ['', 'nonExistingOption'],
       };
@@ -332,25 +332,25 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates IS_ALL_IN condition correctly be false for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ALL_IN',
         value: ['notAnOption', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ALL_IN',
         value: ['nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ALL_IN',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(false);
       const condition4 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_ALL_IN',
         value: ['nonExistingOption'],
       };
@@ -371,13 +371,13 @@ describe('Form Conditions Evaluation Tests', () => {
     // Boolean
     it('evaluates IS_ANY_IN condition correctly be true for boolean', () => {
       const condition1 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ANY_IN',
         value: [true],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ANY_IN',
         value: [true, false],
       };
@@ -385,19 +385,19 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates IS_ANY_IN condition correctly be false for boolean', () => {
       const condition1 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ANY_IN',
         value: [false],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ANY_IN',
         value: [false, false],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'IS_ANY_IN',
         value: [],
       };
@@ -407,31 +407,31 @@ describe('Form Conditions Evaluation Tests', () => {
     // String[]
     it('evaluates IS_ANY_IN condition correctly be true for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ANY_IN',
         value: ['option1', 'option2'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ANY_IN',
         value: ['option1', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
       const condition3 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ANY_IN',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(true);
       const condition4 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ANY_IN',
         value: [''],
       };
       expect(evaluateCondition(condition4, mockAnswers)).toBe(true);
       const condition5 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ANY_IN',
         value: ['', 'nonExistingOption'],
       };
@@ -439,19 +439,19 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates IS_ANY_IN condition correctly be false for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ANY_IN',
         value: ['notAnOption', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ANY_IN',
         value: [],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ANY_IN',
         value: ['nonExistingOption'],
       };
@@ -461,31 +461,31 @@ describe('Form Conditions Evaluation Tests', () => {
     // String
     it('evaluates IS_ANY_IN condition correctly be true for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ANY_IN',
         value: ['singleOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ANY_IN',
         value: ['singleOption', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
       const condition3 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_ANY_IN',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(true);
       const condition4 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_ANY_IN',
         value: [''],
       };
       expect(evaluateCondition(condition4, mockAnswers)).toBe(true);
       const condition5 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_ANY_IN',
         value: ['', 'nonExistingOption'],
       };
@@ -493,25 +493,25 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates IS_ANY_IN condition correctly be false for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ANY_IN',
         value: ['notAnOption', 'nonExistingOption'],
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ANY_IN',
         value: ['nonExistingOption'],
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_ANY_IN',
         value: [],
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(false);
       const condition4 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_ANY_IN',
         value: ['nonExistingOption'],
       };
@@ -534,14 +534,14 @@ describe('Form Conditions Evaluation Tests', () => {
     // String[]
     it('evaluates IS_EMPTY condition correctly be true for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
     });
     it('evaluates IS_EMPTY condition correctly be false for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
@@ -550,7 +550,7 @@ describe('Form Conditions Evaluation Tests', () => {
     // String
     it('evaluates IS_EMPTY condition correctly be true for string', () => {
       const condition1 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
@@ -558,7 +558,7 @@ describe('Form Conditions Evaluation Tests', () => {
 
     it('evaluates IS_EMPTY condition correctly be false for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
@@ -580,14 +580,14 @@ describe('Form Conditions Evaluation Tests', () => {
     // String[]
     it('evaluates IS_EMPTY condition correctly be true for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArrayEmpty',
+        questionID: 'stringArrayEmpty',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
     });
     it('evaluates IS_EMPTY condition correctly be false for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
@@ -596,7 +596,7 @@ describe('Form Conditions Evaluation Tests', () => {
     // String
     it('evaluates IS_EMPTY condition correctly be true for string', () => {
       const condition1 = {
-        questionKey: 'stringEmpty',
+        questionID: 'stringEmpty',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
@@ -604,7 +604,7 @@ describe('Form Conditions Evaluation Tests', () => {
 
     it('evaluates IS_EMPTY condition correctly be false for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'IS_EMPTY',
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
@@ -626,49 +626,49 @@ describe('Form Conditions Evaluation Tests', () => {
     // String[]
     it('evaluates SELECTED_* condition correctly be true for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_EQUALS',
         value: 2
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(true);
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_NOT_EQUALS',
         value: 3
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(true);
       const condition3 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_LESS_THAN',
         value: 3
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(true);
       const condition4_1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_LESS_THAN_OR_EQUALS',
         value: 3
       };
       expect(evaluateCondition(condition4_1, mockAnswers)).toBe(true);
       const condition4_2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_LESS_THAN_OR_EQUALS',
         value: 2
       };
       expect(evaluateCondition(condition4_2, mockAnswers)).toBe(true);
       const condition5 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_GREATER_THAN',
         value: 1
       };
       expect(evaluateCondition(condition5, mockAnswers)).toBe(true);
       const condition6_1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_GREATER_THAN_OR_EQUALS',
         value: 1
       };
       expect(evaluateCondition(condition6_1, mockAnswers)).toBe(true);
       const condition6_2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_GREATER_THAN_OR_EQUALS',
         value: 2
       };
@@ -676,37 +676,37 @@ describe('Form Conditions Evaluation Tests', () => {
     });
     it('evaluates SELECTED_* condition correctly be false for string[]', () => {
       const condition1 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_EQUALS',
         value: 3
       };
       expect(evaluateCondition(condition1, mockAnswers)).toBe(false);
       const condition2 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_NOT_EQUALS',
         value: 2
       };
       expect(evaluateCondition(condition2, mockAnswers)).toBe(false);
       const condition3 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_LESS_THAN',
         value: 2
       };
       expect(evaluateCondition(condition3, mockAnswers)).toBe(false);
       const condition4 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_LESS_THAN_OR_EQUALS',
         value: 1
       };
       expect(evaluateCondition(condition4, mockAnswers)).toBe(false);
       const condition5 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_GREATER_THAN',
         value: 2
       };
       expect(evaluateCondition(condition5, mockAnswers)).toBe(false);
       const condition6 = {
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'SELECTED_GREATER_THAN_OR_EQUALS',
         value: 3
       };
@@ -716,7 +716,7 @@ describe('Form Conditions Evaluation Tests', () => {
     // String
     it('evaluates SELECTED_* condition correctly be false for string', () => {
       const condition1 = {
-        questionKey: 'string',
+        questionID: 'string',
         operator: 'SELECTED_EQUALS',
         value: 1,
       };
@@ -738,12 +738,12 @@ describe('Form Conditions Evaluation Tests', () => {
 
     it('evaluates composite AND condition correctly be true', () => {
       const condition1 = { // true
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [true],
       };
       const condition2 = { // true
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ALL_IN',
         value: ['option1', 'option2'],
       };
@@ -756,12 +756,12 @@ describe('Form Conditions Evaluation Tests', () => {
 
     it('evaluates composite AND condition correctly be false', () => {
       const condition1 = { // false
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [false],
       };
       const condition2 = { // true
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ALL_IN',
         value: ['option1', 'option2'],
       };
@@ -785,12 +785,12 @@ describe('Form Conditions Evaluation Tests', () => {
 
     it('evaluates composite OR condition correctly be true', () => {
       const condition1 = { // false
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [false],
       };
       const condition2 = { // true
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ANY_IN',
         value: ['option1'],
       };
@@ -801,12 +801,12 @@ describe('Form Conditions Evaluation Tests', () => {
       expect(evaluateCondition(orConditionComposite1, mockAnswers)).toBe(true);
 
       const condition3 = { // true
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [true],
       };
       const condition4 = { // true
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ANY_IN',
         value: ['option1'],
       };
@@ -819,12 +819,12 @@ describe('Form Conditions Evaluation Tests', () => {
 
     it('evaluates composite OR condition correctly be false', () => {
       const condition1 = { // false
-        questionKey: 'booleanAnswer',
+        questionID: 'booleanAnswer',
         operator: 'EQUALS',
         value: [false],
       };
       const condition2 = { // false
-        questionKey: 'stringArray',
+        questionID: 'stringArray',
         operator: 'IS_ANY_IN',
         value: ['nonExistingOption'],
       };
