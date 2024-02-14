@@ -38,7 +38,6 @@ const MultiStepFormComponent = () => {
     api.questionnaire.submitForm.useMutation({
       onSuccess: ({ submissionID }) => {
         toast.success(`Questionnaire envoyé avec succès. ID: ${submissionID}`);
-
       },
       onError: () => {
         errorToast(handleSubmit);
@@ -109,7 +108,7 @@ const MultiStepFormComponent = () => {
               terminé, vous ne pourrez plus modifier vos réponses. L&apos;envoie
               peut prendre quelques instants.
             </p>
-            {isError && (
+            {isError && !isSuccess && (
               <p className="text-destructive text-sm font-medium">
                 Une erreur est survenue lors de l&apos;envoie. Veuillez
                 réessayer dans quelques secondes.
