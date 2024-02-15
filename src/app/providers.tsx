@@ -12,7 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     >
       <TRPCReactProvider>
         {children}
-        <Toaster closeButton />
+        <Toaster />
       </TRPCReactProvider>
     </ThemeProvider>
   );

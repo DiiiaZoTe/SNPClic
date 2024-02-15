@@ -67,7 +67,7 @@ export const questionnaireRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       if (input.fake) {
         // wait 1 second to simulate a slow request
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         if (input.error) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error submitting form" });
         return { success: true };
       }

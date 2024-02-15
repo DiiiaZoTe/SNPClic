@@ -4,18 +4,22 @@ import { useRef } from "react";
 import * as MSF from "../types";
 
 import { Button } from "@/components/ui/button";
+import { LoadingScreen } from "./loading-screen";
+import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { api } from "@/trpc/react";
 
 import {
   MultiStepFormProvider,
   useMultiStepFormContext,
 } from "../_hooks/multi-step-form-context";
 
-import { api } from "@/trpc/react";
-
 import { FormTracker } from "./form-tracker";
 import { StopFlowModal } from "./stop-flow-modal";
+import { CurrentStepForm } from "./current-step-form";
 import { Recap } from "./recap";
+import { errorToast } from "./other";
+
 
 export const MultiStepForm = ({ form }: { form: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);
@@ -40,7 +44,13 @@ const MultiStepFormComponent = () => {
         toast.success(`Questionnaire envoyé avec succès. ID: ${submissionID}`);
       },
       onError: () => {
-        errorToast(handleSubmit);
+        errorToast({
+          action: handleSubmit,
+          title: "Erreur lors de l'envoie du questionnaire",
+          description: "Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
+          buttonLabel: "Réessayer",
+          buttonVariant: "black",
+        });
       },
     });
 
@@ -64,8 +74,8 @@ const MultiStepFormComponent = () => {
           skipped: skipped,
         };
       }),
-      // fake: true,
-      // error: true,
+      fake: true,
+      error: true,
     });
   };
 
@@ -76,7 +86,6 @@ const MultiStepFormComponent = () => {
   if (!useMSF.submission.isFormSubmitted)
     return (
       <div className="w-full flex flex-col gap-8 items-center animate-in-down">
-        <TodoList />
         <FormTracker canOnlyGoBack={false} />
         <CurrentStepForm />
         <StopFlowModal />
@@ -89,7 +98,7 @@ const MultiStepFormComponent = () => {
       <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
         <FormTracker canOnlyGoBack={false} />
         <Recap />
-        <FinalizeQuestionnaire
+        <SubmitQuestionnaire
           handleSubmit={handleSubmit}
           isError={isError}
           isSuccess={isSuccess}
@@ -106,25 +115,7 @@ const MultiStepFormComponent = () => {
   );
 };
 
-const LoadingScreen = () => (
-  <div className="flex-grow flex flex-col gap-8 justify-center items-center animate-in-down">
-    <Logo className="w-20 h-20" />
-    <div className="flex flex-col gap-2 justify-center items-center">
-      <p className="text-center text-lg font-semibold">
-        Envoie du questionnaire...
-      </p>
-      <p className="max-w-sm text-center">
-        <Balancer>
-          Merci de patienter un instant, nous sommes en train de finaliser
-          l&apos;envoie de vos réponses.
-        </Balancer>
-      </p>
-    </div>
-    <Loading />
-  </div>
-);
-
-const FinalizeQuestionnaire = ({
+const SubmitQuestionnaire = ({
   handleSubmit,
   isLoading,
   isSuccess,
@@ -161,59 +152,3 @@ const FinalizeQuestionnaire = ({
     </Button>
   </div>
 );
-
-const errorToast = (submitForm: () => void) => {
-  toast(
-    <div className="flex flex-col gap-2">
-      <div className="flex flex-col gap-1">
-        <p className="text-base font-semibold">
-          Erreur lors de l&apos;envoie du questionnaire
-        </p>
-        <p className="text-sm ">
-          Veuillez réessayer. Si le problème persiste, veuillez nous contacter
-          par email.
-        </p>
-      </div>
-      <Button onClick={submitForm} variant="destructive" className="w-full">
-        Réesayer
-      </Button>
-    </div>
-  );
-};
-
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { Loading } from "../../../components/utilities/loading";
-import { CurrentStepForm } from "./current-step-form";
-import { Logo } from "@/components/logos/logo";
-import Balancer from "react-wrap-balancer";
-import { Separator } from "@/components/ui/separator";
-import { ChevronRight } from "lucide-react";
-import { is } from "drizzle-orm";
-
-const todo = [
-  "submission flow",
-  "recap to pdf",
-  "backend database",
-  "no need to create the form builder for now, maybe last",
-];
-
-const TodoList = () => {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">To do?</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <ul className="flex flex-col gap-2 pl-4 list-disc">
-          {todo.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
-      </PopoverContent>
-    </Popover>
-  );
-};
