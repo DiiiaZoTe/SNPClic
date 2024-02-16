@@ -69,7 +69,7 @@ export const CurrentStepForm = () => {
                     <Button
                       type="submit"
                       variant="default"
-                      className="w-fit max-w-full ml-auto"
+                      className="w-fit max-w-full ml-auto group"
                     >
                       <span className="truncate min-w-0">
                         {useMSF.data.currentStep.continueLabel ?? "Terminer"}

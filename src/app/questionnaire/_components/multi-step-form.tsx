@@ -1,9 +1,8 @@
 "use client";
 
-import { ReactNode, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import * as MSF from "../types";
 
-import { Button } from "@/components/ui/button";
 import { LoadingScreen } from "./loading-screen";
 import { ChevronRight, Download } from "lucide-react";
 import { toast } from "sonner";
@@ -20,8 +19,9 @@ import { StopFlowModal } from "./stop-flow-modal";
 import { CurrentStepForm } from "./current-step-form";
 import { Recap } from "./recap";
 import { errorToast } from "@/components/utilities/toasts";
-import { DotAnimation } from "./other";
+import { DotAnimation, ExtraSection } from "./other";
 import { DownloadButton } from "@/components/utilities/downloadButton";
+import { Button } from "@/components/ui/button";
 
 export const MultiStepForm = ({ form }: { form: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);
@@ -150,14 +150,14 @@ const MultiStepFormComponent = () => {
       <LoadingScreen
         isLoading={isLoading}
         title={
-          <>
+          <Balancer>
             {submitForm.isLoading
               ? "Envoie du questionnaire et génération du PDF"
               : pdfGeneration.isLoading
               ? "Génération du PDF"
-              : ""}
+              : "Traitement en cours"}
             <DotAnimation />
-          </>
+          </Balancer>
         }
         description={
           <Balancer>
@@ -185,7 +185,7 @@ const MultiStepFormComponent = () => {
         {!successInsert && <FormTracker canOnlyGoBack={false} />}
         <Recap />
         {!successInsert ? (
-          <BottomSection
+          <ExtraSection
             handleSubmit={handleSubmit}
             isError={submitForm.isError}
             isLoading={submitForm.isLoading}
@@ -197,7 +197,7 @@ const MultiStepFormComponent = () => {
           />
         ) : (
           // generate PDF Section
-          <BottomSection
+          <ExtraSection
             handleSubmit={() => handleGeneratePDF(submissionID)}
             isError={pdfGeneration.isError}
             isLoading={pdfGeneration.isLoading}
@@ -215,63 +215,30 @@ const MultiStepFormComponent = () => {
   // * form is fully submitted
   return (
     <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
-      <Recap />
-      <BottomSection
-        handleSubmit={() => handleGeneratePDF(submissionID)}
+      <ExtraSection
         title="Télécharger le PDF"
         description="Vous pouvez télécharger le PDF de votre questionnaire pour le conserver ou le partager."
       >
         <DownloadButton
-          className="w-fit max-w-full ml-auto group"
+          className="w-full xs:w-40 max-w-full ml-auto group"
           filename={submissionID}
         >
           Télécharger
           <Download className="h-4 w-4 ml-2" />
         </DownloadButton>
-      </BottomSection>
+      </ExtraSection>
+      <ExtraSection
+        title="Nouvelle soumission"
+        description="Voulez-vous soummettre une nouvelle réponse à ce questionnaire ?"
+      >
+        <Button
+          variant="black"
+          className="w-full xs:w-40 max-w-full ml-auto group"
+        >
+          Continuer
+          <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
+        </Button>
+      </ExtraSection>
     </div>
   );
 };
-
-const BottomSection = ({
-  handleSubmit,
-  isLoading,
-  isSuccess,
-  isError,
-  title,
-  description,
-  error,
-  buttonLabel,
-  children,
-}: {
-  handleSubmit: () => void;
-  isLoading?: boolean;
-  isSuccess?: boolean;
-  isError?: boolean;
-  title: string;
-  description: string;
-  error?: string;
-  buttonLabel?: string;
-  children?: ReactNode;
-}) => (
-  <div className="flex flex-col gap-4 w-full">
-    <p className="text-xl font-bold leading-none tracking-tight">{title}</p>
-    <p className="text-sm text-muted-foreground">{description}</p>
-    {isError && (
-      <p className="text-destructive text-sm font-medium">
-        {error ||
-          "Une erreur est survenue. Veuillez réessayer dans quelques secondes."}
-      </p>
-    )}
-    {children ?? (
-      <Button
-        onClick={handleSubmit}
-        className="w-fit max-w-full ml-auto group"
-        disabled={isSuccess || isLoading}
-      >
-        <span className="truncate min-w-0">{buttonLabel ?? "Continuer"}</span>
-        <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
-      </Button>
-    )}
-  </div>
-);

@@ -17,7 +17,7 @@ export const LoadingScreen = ({
 }) => (
   <FullDialog open={isLoading}>
     <FullDialogContent>
-      <div className="flex-grow flex flex-col gap-8 justify-center items-center animate-in-down">
+      <div className="flex-grow flex flex-col gap-8 justify-center items-center animate-in-down p-4">
         <Logo className="w-20 h-20" />
         <div className="flex flex-col gap-2 justify-center items-center">
           <p className="text-center text-lg font-semibold">{title}</p>

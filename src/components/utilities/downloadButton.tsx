@@ -22,7 +22,7 @@ export const DownloadButton = ({
   const fileUrlRef = useRef<string | undefined>();
 
   if (!filename) return (
-    <span>Aucun fichier<FileX2 className="ml-2 w-4 h-4"/></span>
+    <div className="flex items-center gap-2">Aucun fichier<FileX2 className="w-4 h-4"/></div>
   );
 
   const handleDownload = async () => {
