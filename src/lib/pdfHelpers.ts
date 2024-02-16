@@ -1,6 +1,11 @@
 import chromium from 'chrome-aws-lambda'
 import { logError } from './logger'
-import * as puppeteer from 'puppeteer'
+
+export const pdfGetHtmlString = async (element: JSX.Element) => {
+  const { renderToString: jsxToHtmlString } = await import("react-dom/server");
+  const pdfHtml = jsxToHtmlString(element);
+  return pdfHtml;
+};
 
 export async function getBrowserInstance() {
   const executablePath = await chromium.executablePath
@@ -31,14 +36,14 @@ export async function getBrowserInstance() {
   })
 }
 
-export async function getPDFBuffer(html: string) {
+async function getPDFBuffer(html: string) {
   let browser = undefined;
-  let pdf = undefined;
+  let pdf: Buffer | undefined = undefined;
   try {
     browser = await getBrowserInstance()
     const page = await browser.newPage()
     await page.setContent(html)
-    pdf = await page.pdf({ 
+    pdf = await page.pdf({
       // path: `test-${performance.now()}.pdf`, 
       format: 'A4'
     })
@@ -50,4 +55,12 @@ export async function getPDFBuffer(html: string) {
     if (browser) await browser.close()
     return pdf;
   }
+}
+
+export async function generatePDF(element: JSX.Element) {
+  const pdfHtml = await pdfGetHtmlString(element);
+  if(!pdfHtml) return undefined;
+  const pdf = await getPDFBuffer(pdfHtml);
+  if (!pdf) return undefined;
+  return pdf;
 }

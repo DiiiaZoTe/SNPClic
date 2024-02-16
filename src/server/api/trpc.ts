@@ -27,6 +27,7 @@ import { db } from "@/server/db";
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   // const session = // get server auth session here
+  //! here you can log the request, or do other things with the headers
 
   return {
     db,

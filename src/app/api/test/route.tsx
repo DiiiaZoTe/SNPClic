@@ -42,7 +42,11 @@ export async function POST(request: NextRequest) {
 
     return new Response("Success", { status: 200 });
   } catch (err: any) {
-    logError({ request, error: err.message || err, location: `/api/test` });
+    logError({
+      request,
+      error: err.message || err,
+      location: `/api/test`,
+    });
     return new Response("Error", { status: 500 });
   }
 }

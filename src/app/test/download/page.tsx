@@ -1,4 +1,4 @@
-import { DownloadButton } from "./downloadButton";
+import { DownloadButton } from "../../../components/utilities/downloadButton";
 
 export const metadata = {
   title: "Test",

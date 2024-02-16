@@ -29,8 +29,7 @@ export const form = mysqlTable("form", {
   // closing_time
 }, (table) => ({
   uuid_ix: uniqueIndex("uuid_ix").on(table.uuid),
-})
-);
+}));
 
 // Form Submission table
 export const form_submission = mysqlTable("form_submission", {
@@ -42,8 +41,7 @@ export const form_submission = mysqlTable("form_submission", {
   stop_reason_question_id: varchar('stop_reason_question_key', { length: 36 }),
 }, (table) => ({
   uuid_ix: uniqueIndex("uuid_ix").on(table.uuid),
-})
-);
+}));
 
 // Form Answer table
 export const submission_answer = mysqlTable("submission_answer", {
@@ -54,7 +52,9 @@ export const submission_answer = mysqlTable("submission_answer", {
   boolean_answer: boolean("boolean_answer"),
   string_answer: text("string_answer"),
   skipped: boolean("skipped").default(false),
-});
+}, (table) => ({
+  submission_id_ix: index("submission_id_ix").on(table.submission_id)
+}));
 
 // Form Answer String Array table
 export const submission_answer_string_array = mysqlTable("submission_answer_string_array", {
@@ -66,5 +66,4 @@ export const submission_answer_string_array = mysqlTable("submission_answer_stri
 
 }, (table) => ({
   answer_id_ix: index("answer_id_ix").on(table.answer_id),
-})
-);
+}));
