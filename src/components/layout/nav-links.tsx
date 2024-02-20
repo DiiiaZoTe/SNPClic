@@ -40,7 +40,7 @@ export const NavLinks = (props: NavLinkProps) => {
             <SheetClose asChild>
               <MyLink
                 key={name}
-                href={href}
+                href={href ?? ""}
                 prefetch={prefetch}
                 className={
                   routingEnabled && pathName === href
@@ -54,7 +54,7 @@ export const NavLinks = (props: NavLinkProps) => {
           ) : (
             <MyLink
               key={name}
-              href={href}
+              href={href ?? ""}
               prefetch={prefetch}
               className={
                 routingEnabled && pathName === href

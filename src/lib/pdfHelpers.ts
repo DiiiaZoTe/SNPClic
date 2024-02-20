@@ -4,7 +4,6 @@ import { logError } from './logger'
 export const pdfGetHtmlString = async (element: JSX.Element) => {
   const { renderToStaticMarkup: jsxToHtmlString } = await import("react-dom/server");
   const pdfHtml = jsxToHtmlString(element);
-  console.log(pdfHtml);
   return pdfHtml;
 };
 
