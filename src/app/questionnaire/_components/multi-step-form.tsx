@@ -22,6 +22,7 @@ import { errorToast } from "@/components/utilities/toasts";
 import { DotAnimation, ExtraSection } from "./other";
 import { DownloadButton } from "@/components/utilities/downloadButton";
 import { Button } from "@/components/ui/button";
+import MyLink from "@/components/utilities/link";
 
 export const MultiStepForm = ({ form }: { form: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);
@@ -94,6 +95,7 @@ const MultiStepFormComponent = () => {
     submitForm.mutate({
       formID: useMSF.id,
       stopReason: useMSF.controlFlow.stopped.formStoppedReason,
+      skippedSteps: useMSF.stepper.listSkippedSteps(),
       answers: useMSF.data.flattenForm.map((question) => {
         const answer = useMSF.answers.question(question.id);
         const skipped =
@@ -231,11 +233,13 @@ const MultiStepFormComponent = () => {
         title="Nouvelle soumission"
         description="Voulez-vous soummettre une nouvelle réponse à ce questionnaire ?"
       >
+
         <Button
           variant="black"
           className="w-full xs:w-40 max-w-full ml-auto group"
+          onClick={() => window.location.reload()}
         >
-          Continuer
+            Continuer
           <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
         </Button>
       </ExtraSection>

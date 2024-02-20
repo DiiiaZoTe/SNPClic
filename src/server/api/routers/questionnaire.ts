@@ -4,7 +4,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { form_submission, submission_answer, submission_answer_string_array } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { Form } from "@/app/questionnaire/types";
 
 import { FORM_DATA } from "@/app/questionnaire/content";
@@ -46,6 +46,7 @@ export const questionnaireRouter = createTRPCRouter({
         }),
         z.undefined(),
       ]),
+      skippedSteps: z.array(z.number()),
       answers: z.array(z.object({
         questionID: z.string().min(1),
         answerType: z.enum(["boolean", "string", "string_array"]),
@@ -83,8 +84,26 @@ export const questionnaireRouter = createTRPCRouter({
 
       const submissionUUID = generateUUID();
 
+      const pdfTemplateInput = {
+        formData: FORM_DATA,
+        submissionData: {
+          uuid: submissionUUID,
+          submitted_at: new Date(),
+          stop_reason: input.stopReason?.reason == "" ? null : input.stopReason?.reason,
+          stop_reason_question_id: input.stopReason?.questionID,
+          skipped_steps: input.skippedSteps,
+        },
+        answers: input.answers.map((answer) => ({
+          question_id: answer.questionID,
+          answer_type: answer.answerType,
+          boolean_answer: answer.answerType === "boolean" ? answer.answer as boolean : null,
+          string_answer: answer.answerType === "string" ? answer.answer as string : null,
+          string_array_answer: answer.answerType === "string_array" ? answer.answer as string[] : null,
+          skipped: answer.skipped,
+        }))
+      };
       // * start pdf generation
-      const pdfPromise = generatePDF(PDFTemplate());
+      const pdfPromise = generatePDF(PDFTemplate(pdfTemplateInput));
 
       // * start form submission
       const insertPromise = ctx.db.transaction(async (tx) => {
@@ -99,6 +118,7 @@ export const questionnaireRouter = createTRPCRouter({
           }
         }
 
+        // * change this to get the entire form later from the db and put it outside the transaction above the pdf generation
         // get the form id from the uuid
         // const selectFormId = await tx.select({ id: form.id }).from(form).where(eq(form.uuid, input.formID));
         // const formID = selectFormId[0]?.id;
@@ -111,6 +131,7 @@ export const questionnaireRouter = createTRPCRouter({
           form_id: formID,
           stop_reason: input.stopReason?.reason == "" ? null : input.stopReason?.reason,
           stop_reason_question_id: input.stopReason?.questionID,
+          skipped_steps: input.skippedSteps,
         });
         const submissionID = formSubmissionData.insertId;
         if (!submissionID) rollback("form submission");
@@ -152,7 +173,7 @@ export const questionnaireRouter = createTRPCRouter({
         logError({ request: ctx.headers, error: "Unsuccessful form submission", location: `/api/trpc/questionnaire.submitForm`, otherData: { input } });
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Unsuccessful form submission", cause: "Save" });
       }
-      if (!pdf) {
+      if (!pdf || pdf.length === 0) {
         logError({ request: ctx.headers, error: `Unsuccessful PDF generation - ${submissionUUID}`, location: `/api/trpc/questionnaire.submitForm`, otherData: { input } });
         return { successInsert: true, successPDF: false, submissionID: submissionUUID };
       }
@@ -183,25 +204,60 @@ export const questionnaireRouter = createTRPCRouter({
 
       const time1 = performance.now();
 
-      // // * get the submission, answers and the form (here just config but normally from db)
-      // const submissionData = await ctx.db.select().from(form_submission).where(eq(form_submission.uuid, submissionUUID));
-      // const submissionID = submissionData[0]?.id;
-      // const formID = submissionData[0]?.form_id;
-      // if (!submissionID || !formID) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No form submission found" });
-      // const answersData = await ctx.db
-      //   .select().from(submission_answer)
-      //   .leftJoin(submission_answer_string_array, eq(submission_answer.id, submission_answer_string_array.answer_id))
-      //   .where(eq(submission_answer.submission_id, submissionID));
-      // if (!answersData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No answer found" });
-      // // const formData = await ctx.db.select({ id: form.id }).from(form).where(eq(form.id, formID));
-      // const formData = FORM_DATA;
-      // if (!formData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Unsuccessful form retrieval" });
+      // * get the submission, answers and the form (here just config but normally from db)
+      const submissionData = await ctx.db.select().from(form_submission).where(eq(form_submission.uuid, submissionUUID));
+      const submissionID = submissionData[0]?.id;
+      const formID = submissionData[0]?.form_id;
+      if (!submissionID || !formID) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No form submission found" });
+      const answersData = await ctx.db
+        .select().from(submission_answer)
+        .where(eq(submission_answer.submission_id, submissionID));
+      if (!answersData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No answer found" });
+      const stringArrayAnswersID = answersData.filter((answer) => answer.answer_type === "string_array").map((answer) => answer.id);
+      let stringArrayAnswersData: {
+        answer_id: bigint,
+        value: string
+      }[] = [];
+      if (stringArrayAnswersID.length) {
+        stringArrayAnswersData = await ctx.db
+          .select({
+            answer_id: submission_answer_string_array.answer_id,
+            value: submission_answer_string_array.value
+          }).from(submission_answer_string_array)
+          .where(inArray(submission_answer_string_array.answer_id, stringArrayAnswersID));
+        if (!stringArrayAnswersData.length) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Should have retrieved string array answer" })
+      }
+      // const formData = await ctx.db.select({ id: form.id }).from(form).where(eq(form.id, formID));
+      const formData = FORM_DATA;
+      if (!formData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Unsuccessful form retrieval" });
 
+      const pdfTemplateInput = {
+        formData,
+        submissionData: {
+          uuid: submissionUUID,
+          submitted_at: submissionData[0]!.submitted_at,
+          stop_reason: submissionData[0]?.stop_reason,
+          stop_reason_question_id: submissionData[0]?.stop_reason_question_id,
+          skipped_steps: submissionData[0]!.skipped_steps,
+        },
+        answers: answersData.map((answer) => ({
+          question_id: answer.question_id,
+          answer_type: answer.answer_type,
+          boolean_answer: answer.boolean_answer,
+          string_answer: answer.string_answer,
+          string_array_answer: answer.answer_type === "string_array" ? stringArrayAnswersData.filter((stringArrayAnswer) => stringArrayAnswer.answer_id === answer.id).map((stringArrayAnswer) => stringArrayAnswer.value) : null,
+          skipped: answer.skipped,
+        }))
+      };
       // * generate the pdf
-      const pdf = await generatePDF(PDFTemplate());
+      const pdf = await generatePDF(PDFTemplate(pdfTemplateInput));
+      if (!pdf || pdf.length === 0) {
+        logError({ request: ctx.headers, error: "Error generating pdf", location: `/api/trpc/questionnaire.generatePDF`, otherData: { submissionUUID } });
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error generating pdf" });
+      }
 
+      //* upload to R2
       try {
-        //* upload to R2 like this
         await r2.send(new PutObjectCommand({
           Bucket: process.env.R2_BUCKET_NAME,
           Key: `${submissionUUID}.pdf`,
@@ -209,8 +265,8 @@ export const questionnaireRouter = createTRPCRouter({
           ContentType: 'application/pdf'
         }));
       } catch (err: any) {
-        logError({ request: ctx.headers, error: "Error generating pdf", location: `/api/trpc/questionnaire.generatePDF`, otherData: { submissionUUID } });
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error generating pdf" });
+        logError({ request: ctx.headers, error: "Error uploading pdf", location: `/api/trpc/questionnaire.generatePDF`, otherData: { submissionUUID } });
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error uploading pdf" });
       }
 
       const time2 = performance.now();

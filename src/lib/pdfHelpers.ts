@@ -2,8 +2,9 @@ import chromium from 'chrome-aws-lambda'
 import { logError } from './logger'
 
 export const pdfGetHtmlString = async (element: JSX.Element) => {
-  const { renderToString: jsxToHtmlString } = await import("react-dom/server");
+  const { renderToStaticMarkup: jsxToHtmlString } = await import("react-dom/server");
   const pdfHtml = jsxToHtmlString(element);
+  console.log(pdfHtml);
   return pdfHtml;
 };
 
@@ -17,8 +18,8 @@ export async function getBrowserInstance() {
       args: chromium.args,
       headless: true,
       defaultViewport: {
-        width: 1280,
-        height: 720
+        width: 1920,
+        height: 1080
       },
       ignoreHTTPSErrors: true
     })
@@ -27,8 +28,8 @@ export async function getBrowserInstance() {
   return chromium.puppeteer.launch({
     args: chromium.args,
     defaultViewport: {
-      width: 1280,
-      height: 720
+      width: 1920,
+      height: 1080
     },
     executablePath,
     headless: chromium.headless,
@@ -42,10 +43,11 @@ async function getPDFBuffer(html: string) {
   try {
     browser = await getBrowserInstance()
     const page = await browser.newPage()
-    await page.setContent(html)
+    await page.setContent(html);
     pdf = await page.pdf({
-      // path: `test-${performance.now()}.pdf`, 
-      format: 'A4'
+      format: 'A4',
+      printBackground: true,
+      preferCSSPageSize: true
     })
 
   } catch (error) {
@@ -59,7 +61,7 @@ async function getPDFBuffer(html: string) {
 
 export async function generatePDF(element: JSX.Element) {
   const pdfHtml = await pdfGetHtmlString(element);
-  if(!pdfHtml) return undefined;
+  if (!pdfHtml) return undefined;
   const pdf = await getPDFBuffer(pdfHtml);
   if (!pdf) return undefined;
   return pdf;

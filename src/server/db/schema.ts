@@ -39,11 +39,14 @@ export const form_submission = mysqlTable("form_submission", {
   submitted_at: timestamp("submitted_at").notNull().defaultNow(),
   stop_reason: text("stop_reason"),
   stop_reason_question_id: varchar('stop_reason_question_key', { length: 36 }),
+  skipped_steps: json("skipped_steps").$type<number[]>().notNull().default([]),
 }, (table) => ({
   uuid_ix: uniqueIndex("uuid_ix").on(table.uuid),
 }));
 
-// Form Answer table
+
+
+// Submission Answer table
 export const submission_answer = mysqlTable("submission_answer", {
   id: bigint("id", { mode: "bigint", unsigned: true }).primaryKey().autoincrement(),
   submission_id: bigint("submission_id", { mode: "bigint", unsigned: true }).notNull().references(() => form_submission.id, { onDelete: "cascade", onUpdate: "cascade" }),
@@ -56,7 +59,7 @@ export const submission_answer = mysqlTable("submission_answer", {
   submission_id_ix: index("submission_id_ix").on(table.submission_id)
 }));
 
-// Form Answer String Array table
+// Submission Answer String Array table
 export const submission_answer_string_array = mysqlTable("submission_answer_string_array", {
   id: bigint("id", { mode: "bigint", unsigned: true }).primaryKey().autoincrement(),
   answer_id: bigint("answer_id", { mode: "bigint", unsigned: true }).notNull().references(() => submission_answer.id, { onDelete: "cascade", onUpdate: "cascade" }),

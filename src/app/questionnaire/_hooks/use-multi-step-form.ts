@@ -765,6 +765,7 @@ export const useMultiStepForm = (formData: Form, containerRef: RefObject<HTMLDiv
       validSteps,
       visitedSteps,
       skippedSteps,
+      listSkippedSteps: () => getListSkippedSteps(skippedSteps),
       scrollToView: () => scrollToViewIfNeeded(containerRef),
       goTo: {
         next: goToNextStep,
@@ -925,4 +926,11 @@ export const shouldGoToFirstInvalidStep = (currentValidSteps: boolean[], upToSte
   const firstInvalidStep = stepsToCheck.findIndex((valid) => !valid);
   if (firstInvalidStep !== -1) return firstInvalidStep + 1;
   return null;
+}
+
+export const getListSkippedSteps = (skippedSteps: boolean[]) => {
+  return skippedSteps.reduce((acc, skipped, index) => {
+    if (skipped) acc.push(index + 1);
+    return acc;
+  }, [] as number[]);
 }
