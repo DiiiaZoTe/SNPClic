@@ -166,7 +166,6 @@ li {
 .stepLabel {
   font-weight: var(--font-semibold);
   font-size: var(--font-size-base);
-  letter-spacing: -0.025em;
 }
 
 /* ------------------ Question Section ------------------ */

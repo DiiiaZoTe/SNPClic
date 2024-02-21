@@ -80,8 +80,6 @@ export const questionnaireRouter = createTRPCRouter({
         return { successInsert: true, successPDF: false, submissionID: generateUUID() };
       }
 
-      const time1 = performance.now();
-
       const submissionUUID = generateUUID();
 
       const pdfTemplateInput = {
@@ -107,8 +105,6 @@ export const questionnaireRouter = createTRPCRouter({
 
       // * start form submission
       const insertPromise = ctx.db.transaction(async (tx) => {
-        const timeInsert1 = performance.now();
-
         const rollback = (where: string) => {
           try {
             tx.rollback();
@@ -159,15 +155,11 @@ export const questionnaireRouter = createTRPCRouter({
             };
           }
         }
-        const timeInsert2 = performance.now();
-        console.log(`Time to insert: ${timeInsert2 - timeInsert1}ms`);
         return true;
       });
 
       // * await pdf generation and form submission
       const [pdf, successInsert] = await Promise.all([pdfPromise, insertPromise]);
-      const time2 = performance.now();
-      console.log(`Time to generate pdf + insert: ${time2 - time1}ms`);
 
       if (!successInsert) {
         logError({ request: ctx.headers, error: "Unsuccessful form submission", location: `/api/trpc/questionnaire.submitForm`, otherData: { input } });
@@ -191,8 +183,6 @@ export const questionnaireRouter = createTRPCRouter({
         return { successInsert: true, successPDF: false, submissionID: submissionUUID };
       }
 
-      const time3 = performance.now();
-      console.log(`Time to finish: ${time3 - time1}ms`);
       return { successInsert: true, submissionID: submissionUUID, successPDF: true };
     }),
 
@@ -201,8 +191,6 @@ export const questionnaireRouter = createTRPCRouter({
     .input(z.string().min(1)) // uuid
     .mutation(async ({ ctx, input }) => {
       const submissionUUID = input;
-
-      const time1 = performance.now();
 
       // * get the submission, answers and the form (here just config but normally from db)
       const submissionData = await ctx.db.select().from(form_submission).where(eq(form_submission.uuid, submissionUUID));
@@ -268,9 +256,6 @@ export const questionnaireRouter = createTRPCRouter({
         logError({ request: ctx.headers, error: "Error uploading pdf", location: `/api/trpc/questionnaire.generatePDF`, otherData: { submissionUUID } });
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error uploading pdf" });
       }
-
-      const time2 = performance.now();
-      console.log(`Time to generate and upload pdf: ${time2 - time1}ms`);
 
       return { success: true, filename: submissionUUID };
     })

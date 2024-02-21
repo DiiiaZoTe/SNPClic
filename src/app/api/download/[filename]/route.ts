@@ -4,15 +4,13 @@ import { r2 } from '@/lib/r2'
 import { NextRequest } from 'next/server';
 import { logError } from '@/lib/logger';
 
-export async function GET(
+export async function POST(
   request: NextRequest,
   { params: { filename } }: { params: { filename: string } }
 ) {
   if (!filename) return new Response("File name is required.", { status: 400 });
 
   try {
-    console.log(`Retrieving ${filename} from R2!`);
-
     const pdf = await r2.send(
       new GetObjectCommand({
         Bucket: process.env.R2_BUCKET_NAME,

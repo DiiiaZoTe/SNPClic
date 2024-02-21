@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import * as MSF from "../types";
 
 import { LoadingScreen } from "./loading-screen";
-import { ChevronRight, Download } from "lucide-react";
+import { ChevronRight, Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Balancer from "react-wrap-balancer";
 import { api } from "@/trpc/react";
@@ -224,6 +224,7 @@ const MultiStepFormComponent = () => {
         <DownloadButton
           className="w-full xs:w-40 max-w-full ml-auto group"
           filename={submissionID}
+          loadingChildren={<Loader2 className="animate-spin h-4 w-4" />}
         >
           Télécharger
           <Download className="h-4 w-4 ml-2" />
@@ -233,13 +234,12 @@ const MultiStepFormComponent = () => {
         title="Nouvelle soumission"
         description="Voulez-vous soummettre une nouvelle réponse à ce questionnaire ?"
       >
-
         <Button
           variant="black"
           className="w-full xs:w-40 max-w-full ml-auto group"
           onClick={() => window.location.reload()}
         >
-            Continuer
+          Continuer
           <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
         </Button>
       </ExtraSection>
