@@ -11,7 +11,8 @@ export const siteConfig = {
     : env.NEXT_PUBLIC_ENVIRONMENT == 'preview'
       ? "https://preview.snpclic.fr"
       : `http://localhost:${process.env.PORT ?? 3000}`,
-  ogImage: "/og.png",
+  ogImage: "https://res.cloudinary.com/dimdlqjzv/image/upload/v1708814602/SNPClic/og-snpclic.png",
+  ogImageOnSite: undefined,
   description:
     "SNPClic est un outil indépendant d’aide à l’orientation des patients en demande de soins non programmés par les secrétaires",
   authors: ["Katarina Vencel", "Alexander Vencel"],

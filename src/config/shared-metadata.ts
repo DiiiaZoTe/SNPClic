@@ -1,5 +1,7 @@
 import { siteConfig } from "./site";
 
+const ogImageUrl = siteConfig.ogImageOnSite ? siteConfig.url + siteConfig.ogImage : siteConfig.ogImage;
+
 /**
  *  @example
     const METADATA = {
@@ -33,7 +35,7 @@ export const getSharedMetadata = (title?: string, description?: string, url?: st
       siteName: siteConfig.name,
       images: [
         {
-          url: siteConfig.url + siteConfig.ogImage,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: title ? `${title} - ${siteConfig.name}` : siteConfig.name,
@@ -44,7 +46,7 @@ export const getSharedMetadata = (title?: string, description?: string, url?: st
       card: "summary_large_image",
       title: title ? `${title} - ${siteConfig.name}` : siteConfig.name,
       description: description ?? siteConfig.description,
-      images: [siteConfig.ogImage],
+      images: [ogImageUrl],
     },
     icons: {
       icon: "/favicon/favicon.ico",
