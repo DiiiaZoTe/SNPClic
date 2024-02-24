@@ -1,8 +1,8 @@
 import { GetObjectCommand } from '@aws-sdk/client-s3'
 
-import { r2 } from '@/lib/r2'
+import { r2 } from '@/server/storage/r2'
 import { NextRequest } from 'next/server';
-import { logError } from '@/lib/logger';
+import { logError } from '@/lib/utilities/logger';
 
 export async function POST(
   request: NextRequest,

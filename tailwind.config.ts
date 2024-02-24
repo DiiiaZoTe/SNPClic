@@ -1,5 +1,3 @@
-const plugin = require('tailwindcss/plugin');
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -98,48 +96,6 @@ module.exports = {
     },
   },
   plugins: [
-    require("tailwindcss-animate"),
-    plugin(function ({ addUtilities, theme, e, variants }: any) {
-      // Base styles for the scrollbar customization
-      const baseScrollbarStyles = {
-        '.scrollbar': {
-          '--scrollbar-width': '0.25rem', // Default width value
-          '&::-webkit-scrollbar': {
-            width: 'var(--scrollbar-width)',
-            background: 'transparent',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            borderRadius: 'var(--scrollbar-radius, 0.25rem)',
-          },
-        },
-      };
-
-      // Generate scrollbar width utilities
-      const scrollbarWidthUtilities = Object.entries(theme('spacing')).map(([key, value]) => {
-        return {
-          [`.scrollbar-w-${e(key)}`]: {
-            '--scrollbar-width': value,
-          },
-        };
-      });
-
-      // Generate scrollbar radius utilities
-      const scrollbarRadiusUtilities = Object.entries(theme('borderRadius')).map(([key, value]) => {
-        return {
-          [`.scrollbar-radius-${e(key)}`]: {
-            '--scrollbar-radius': value,
-          },
-        };
-      });
-
-      // Combine and add all utilities
-      addUtilities([
-        baseScrollbarStyles,
-        ...Object.values(scrollbarWidthUtilities),
-        ...Object.values(scrollbarRadiusUtilities),
-      ], {
-        variants: ['responsive'], // Apply the responsive variant to all custom utilities
-      });
-    }),
-  ],
+    require("tailwindcss-animate")
+  ]
 }

@@ -8,14 +8,14 @@ import { eq, inArray } from "drizzle-orm";
 import { Form } from "@/app/questionnaire/types";
 
 import { FORM_DATA } from "@/app/questionnaire/content";
-import { generateUUID } from "@/lib/uuid";
+import { generateUUID } from "@/lib/utilities/uuid";
 import { TRPCError } from "@trpc/server";
-import { logError } from "@/lib/logger";
+import { logError } from "@/lib/utilities/logger";
 
-import { PDFTemplate } from "@/components/utilities/pdfTemplate";
-import { generatePDF } from "@/lib/pdfHelpers";
+import { PDFTemplate } from "@/lib/storage/pdfTemplate";
+import { generatePDF } from "@/lib/storage/pdfHelpers";
 
-import { r2 } from "@/lib/r2";
+import { r2 } from "@/server/storage/r2";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 export const questionnaireRouter = createTRPCRouter({

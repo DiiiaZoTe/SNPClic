@@ -1,5 +1,5 @@
 import chromium from 'chrome-aws-lambda'
-import { logError } from './logger'
+import { logError } from '../utilities/logger'
 
 export const pdfGetHtmlString = async (element: JSX.Element) => {
   const { renderToStaticMarkup: jsxToHtmlString } = await import("react-dom/server");

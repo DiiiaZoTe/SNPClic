@@ -3,7 +3,7 @@
 import { sql, eq, inArray } from "drizzle-orm";
 import { db } from "./index";
 import { form, form_submission, submission_answer, submission_answer_string_array } from "./schema";
-import { generateUUID } from "@/lib/uuid";
+import { generateUUID } from "@/lib/utilities/uuid";
 import { api } from "@/trpc/server";
 
 // * Insert form data

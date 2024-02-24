@@ -7,7 +7,7 @@ import {
 } from "../types";
 import { ChevronRight } from "lucide-react";
 import { useMultiStepFormContext } from "../_hooks/multi-step-form-context";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

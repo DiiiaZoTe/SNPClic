@@ -8,9 +8,6 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    ENVIRONMENT: z
-      .enum(["development", "preview", "production"])
-      .default("development"),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -22,6 +19,7 @@ export const env = createEnv({
     R2_SECRET_ACCESS_KEY: z.string().min(1),
     R2_BUCKET_NAME: z.string().min(1),
     R2_ACCOUNT_ID: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1),
   },
 
   /**
@@ -31,6 +29,9 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_ENVIRONMENT: z
+      .enum(["development", "preview", "production"])
+      .default("development"),
   },
 
   /**
@@ -38,7 +39,6 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    ENVIRONMENT: process.env.ENVIRONMENT,
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_HOST: process.env.DATABASE_HOST,
     DATABASE_USERNAME: process.env.DATABASE_USERNAME,
@@ -48,6 +48,9 @@ export const env = createEnv({
     R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
     R2_BUCKET_NAME: process.env.R2_BUCKET_NAME,
     R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+
+    NEXT_PUBLIC_ENVIRONMENT: process.env.NEXT_PUBLIC_ENVIRONMENT,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
