@@ -9,11 +9,78 @@ import {
   mysqlEnum,
   uniqueIndex,
   index,
+  int,
+  datetime,
 } from "drizzle-orm/mysql-core";
 
 //* Rational on the schema:
 // - id columns are unsigned bigint autoincrement
 // - we don't expose the id column, instead we add a varchar(36) uuid column (uuid)
+
+// User table
+export const user = mysqlTable(
+  "user",
+  {
+    id: varchar("id", { length: 21 }).primaryKey(),
+    email: varchar("email", { length: 255 }).unique().notNull(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    hashedPassword: varchar("hashed_password", { length: 255 }),
+    // avatar: varchar("avatar", { length: 255 }),
+    role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").onUpdateNow(),
+  },
+  (table) => ({
+    emailIx: index("email_ix").on(table.email),
+  }),
+);
+
+export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
+
+// Session table
+export const session = mysqlTable(
+  "session",
+  {
+    id: varchar("id", { length: 255 }).primaryKey(),
+    userId: varchar("user_id", { length: 21 }).notNull().references(() => user.id, { onDelete: "cascade" }),
+    expiresAt: datetime("expires_at").notNull(),
+  },
+  (table) => ({
+    userIx: index("user_ix").on(table.userId),
+  }),
+);
+
+export type Session = typeof session.$inferSelect;
+
+// Email verification code table
+export const emailVerificationCode = mysqlTable(
+  "email_verification_code",
+  {
+    id: int("id").primaryKey().autoincrement(),
+    userId: varchar("user_id", { length: 21 }).unique().notNull().references(() => user.id, { onDelete: "cascade" }),
+    email: varchar("email", { length: 255 }).notNull(),
+    code: varchar("code", { length: 8 }).notNull(),
+    expiresAt: datetime("expires_at").notNull(),
+  },
+  (table) => ({
+    userIx: index("user_ix").on(table.userId),
+    emailIx: index("email_ix").on(table.email),
+  }),
+);
+
+// Password reset token table
+export const passwordResetToken = mysqlTable(
+  "password_reset_token",
+  {
+    id: varchar("id", { length: 40 }).primaryKey(),
+    userId: varchar("user_id", { length: 21 }).notNull().references(() => user.id, { onDelete: "cascade" }),
+    expiresAt: datetime("expires_at").notNull(),
+  },
+  (table) => ({
+    userIx: index("user_ix").on(table.expiresAt),
+  }),
+);
 
 // Form table
 export const form = mysqlTable("form", {
@@ -21,52 +88,51 @@ export const form = mysqlTable("form", {
   uuid: varchar('uuid', { length: 36 }).notNull(),
   name: text("name").notNull(),
   config: json("config").notNull(),
-  created_at: timestamp("submitted_at").notNull().defaultNow(),
+  createdAt: timestamp("submitted_at").notNull().defaultNow(),
   // Add other fields as necessary
   // creator
   // version 
   // is_open 
   // closing_time
 }, (table) => ({
-  uuid_ix: uniqueIndex("uuid_ix").on(table.uuid),
+  uuidIx: uniqueIndex("uuid_ix").on(table.uuid),
 }));
 
 // Form Submission table
-export const form_submission = mysqlTable("form_submission", {
+export const formSubmission = mysqlTable("form_submission", {
   id: bigint("id", { mode: "bigint", unsigned: true }).primaryKey().autoincrement(),
   uuid: varchar('uuid', { length: 36 }).notNull(),
-  form_id: bigint("form_id", { mode: "bigint", unsigned: true }).references(() => form.id, { onDelete: "set null", onUpdate: "cascade" }),
-  submitted_at: timestamp("submitted_at").notNull().defaultNow(),
-  stop_reason: text("stop_reason"),
-  stop_reason_question_id: varchar('stop_reason_question_key', { length: 36 }),
-  skipped_steps: json("skipped_steps").$type<number[]>().notNull().default([]),
+  formId: bigint("form_id", { mode: "bigint", unsigned: true }).references(() => form.id, { onDelete: "set null", onUpdate: "cascade" }),
+  submittedAt: timestamp("submitted_at").notNull().defaultNow(),
+  stopReason: text("stop_reason"),
+  stopReasonQuestionId: varchar('stop_reason_question_key', { length: 36 }),
+  skippedSteps: json("skipped_steps").$type<number[]>().notNull().default([]),
 }, (table) => ({
-  uuid_ix: uniqueIndex("uuid_ix").on(table.uuid),
+  uuidIx: uniqueIndex("uuid_ix").on(table.uuid),
 }));
 
 
 
 // Submission Answer table
-export const submission_answer = mysqlTable("submission_answer", {
+export const submissionAnswer = mysqlTable("submission_answer", {
   id: bigint("id", { mode: "bigint", unsigned: true }).primaryKey().autoincrement(),
-  submission_id: bigint("submission_id", { mode: "bigint", unsigned: true }).notNull().references(() => form_submission.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  question_id: varchar('question_id', { length: 36 }).notNull(),
-  answer_type: mysqlEnum("answer_type", ["boolean", "string", "string_array"]).notNull(),
-  boolean_answer: boolean("boolean_answer"),
-  string_answer: text("string_answer"),
+  submissionId: bigint("submission_id", { mode: "bigint", unsigned: true }).notNull().references(() => formSubmission.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  questionId: varchar('question_id', { length: 36 }).notNull(),
+  answerType: mysqlEnum("answer_type", ["boolean", "string", "string_array"]).notNull(),
+  booleanAnswer: boolean("boolean_answer"),
+  stringAnswer: text("string_answer"),
   skipped: boolean("skipped").default(false),
 }, (table) => ({
-  submission_id_ix: index("submission_id_ix").on(table.submission_id)
+  submissionIdIx: index("submission_id_ix").on(table.submissionId)
 }));
 
 // Submission Answer String Array table
-export const submission_answer_string_array = mysqlTable("submission_answer_string_array", {
+export const submissionAnswerStringArray = mysqlTable("submission_answer_string_array", {
   id: bigint("id", { mode: "bigint", unsigned: true }).primaryKey().autoincrement(),
-  answer_id: bigint("answer_id", { mode: "bigint", unsigned: true }).notNull().references(() => submission_answer.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  answerId: bigint("answer_id", { mode: "bigint", unsigned: true }).notNull().references(() => submissionAnswer.id, { onDelete: "cascade", onUpdate: "cascade" }),
   // value string from "1" to "999999". Each question with value/label will have value from 1 to 999999 -> 999999 possible values
   // we may eventually change this to a uuid for infinite values
   value: varchar('value', { length: 6 }).notNull()
-
 }, (table) => ({
-  answer_id_ix: index("answer_id_ix").on(table.answer_id),
+  answerIdIx: index("answer_id_ix").on(table.answerId),
 }));

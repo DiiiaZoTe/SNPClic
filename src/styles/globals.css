@@ -10,7 +10,7 @@
     --card-foreground: 0 0% 15%;
     --popover: 0 0% 98%;
     --popover-foreground: 0 0% 15%;
-    --primary: 142 83% 36%;
+    --primary: 142 83% 36%; /* #10a847 */
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 85%;
     --secondary-foreground: 0 0% 23%;
@@ -96,7 +96,6 @@
   .bulletList {
     @apply list-disc list-inside pl-4;
   }
-
 }
 
 @media (max-width: 640px) {

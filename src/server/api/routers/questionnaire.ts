@@ -3,7 +3,7 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "@/server/api/trpc";
-import { form_submission, submission_answer, submission_answer_string_array } from "@/server/db/schema";
+import { formSubmission, submissionAnswer, submissionAnswerStringArray } from "@/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { Form } from "@/app/questionnaire/types";
 
@@ -86,17 +86,17 @@ export const questionnaireRouter = createTRPCRouter({
         formData: FORM_DATA,
         submissionData: {
           uuid: submissionUUID,
-          submitted_at: new Date(),
-          stop_reason: input.stopReason?.reason == "" ? null : input.stopReason?.reason,
-          stop_reason_question_id: input.stopReason?.questionID,
-          skipped_steps: input.skippedSteps,
+          submittedAt: new Date(),
+          stopReason: input.stopReason?.reason == "" ? null : input.stopReason?.reason,
+          stopReasonQuestionId: input.stopReason?.questionID,
+          skippedSteps: input.skippedSteps,
         },
         answers: input.answers.map((answer) => ({
-          question_id: answer.questionID,
-          answer_type: answer.answerType,
-          boolean_answer: answer.answerType === "boolean" ? answer.answer as boolean : null,
-          string_answer: answer.answerType === "string" ? answer.answer as string : null,
-          string_array_answer: answer.answerType === "string_array" ? answer.answer as string[] : null,
+          questionId: answer.questionID,
+          answerType: answer.answerType,
+          booleanAnswer: answer.answerType === "boolean" ? answer.answer as boolean : null,
+          stringAnswer: answer.answerType === "string" ? answer.answer as string : null,
+          stringArrayAnswer: answer.answerType === "string_array" ? answer.answer as string[] : null,
           skipped: answer.skipped,
         }))
       };
@@ -122,24 +122,24 @@ export const questionnaireRouter = createTRPCRouter({
         const formID = BigInt(1);
 
         // * insert the form submission
-        const formSubmissionData = await tx.insert(form_submission).values({
+        const formSubmissionData = await tx.insert(formSubmission).values({
           uuid: submissionUUID,
-          form_id: formID,
-          stop_reason: input.stopReason?.reason == "" ? null : input.stopReason?.reason,
-          stop_reason_question_id: input.stopReason?.questionID,
-          skipped_steps: input.skippedSteps,
+          formId: formID,
+          stopReason: input.stopReason?.reason == "" ? null : input.stopReason?.reason,
+          stopReasonQuestionId: input.stopReason?.questionID,
+          skippedSteps: input.skippedSteps,
         });
         const submissionID = formSubmissionData.insertId;
         if (!submissionID) rollback("form submission");
 
         // * insert the form answers. Can't be concurrent because tx does not support concurrent operations
         for (const answer of input.answers) {
-          const submissionAnswerData = await tx.insert(submission_answer).values({
-            submission_id: submissionID as any,
-            question_id: answer.questionID,
-            answer_type: answer.answerType,
-            boolean_answer: answer.answerType === "boolean" ? answer.answer as boolean : null,
-            string_answer: answer.answerType === "string" ? answer.answer as string : null,
+          const submissionAnswerData = await tx.insert(submissionAnswer).values({
+            submissionId: submissionID as any,
+            questionId: answer.questionID,
+            answerType: answer.answerType,
+            booleanAnswer: answer.answerType === "boolean" ? answer.answer as boolean : null,
+            stringAnswer: answer.answerType === "string" ? answer.answer as string : null,
             skipped: answer.skipped,
           });
           // * insert string array answers concurrently
@@ -147,8 +147,8 @@ export const questionnaireRouter = createTRPCRouter({
             const answerID = submissionAnswerData.insertId;
             if (!answerID) rollback("form answer");
             for (const value of answer.answer) {
-              const stringArrayData = await tx.insert(submission_answer_string_array).values({
-                answer_id: answerID as any,
+              const stringArrayData = await tx.insert(submissionAnswerStringArray).values({
+                answerId: answerID as any,
                 value,
               });
               if (!stringArrayData.insertId) rollback("form answer string array");
@@ -193,26 +193,26 @@ export const questionnaireRouter = createTRPCRouter({
       const submissionUUID = input;
 
       // * get the submission, answers and the form (here just config but normally from db)
-      const submissionData = await ctx.db.select().from(form_submission).where(eq(form_submission.uuid, submissionUUID));
+      const submissionData = await ctx.db.select().from(formSubmission).where(eq(formSubmission.uuid, submissionUUID));
       const submissionID = submissionData[0]?.id;
-      const formID = submissionData[0]?.form_id;
+      const formID = submissionData[0]?.formId;
       if (!submissionID || !formID) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No form submission found" });
       const answersData = await ctx.db
-        .select().from(submission_answer)
-        .where(eq(submission_answer.submission_id, submissionID));
+        .select().from(submissionAnswer)
+        .where(eq(submissionAnswer.submissionId, submissionID));
       if (!answersData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No answer found" });
-      const stringArrayAnswersID = answersData.filter((answer) => answer.answer_type === "string_array").map((answer) => answer.id);
+      const stringArrayAnswersID = answersData.filter((answer) => answer.answerType === "string_array").map((answer) => answer.id);
       let stringArrayAnswersData: {
-        answer_id: bigint,
+        answerId: bigint,
         value: string
       }[] = [];
       if (stringArrayAnswersID.length) {
         stringArrayAnswersData = await ctx.db
           .select({
-            answer_id: submission_answer_string_array.answer_id,
-            value: submission_answer_string_array.value
-          }).from(submission_answer_string_array)
-          .where(inArray(submission_answer_string_array.answer_id, stringArrayAnswersID));
+            answerId: submissionAnswerStringArray.answerId,
+            value: submissionAnswerStringArray.value
+          }).from(submissionAnswerStringArray)
+          .where(inArray(submissionAnswerStringArray.answerId, stringArrayAnswersID));
         if (!stringArrayAnswersData.length) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Should have retrieved string array answer" })
       }
       // const formData = await ctx.db.select({ id: form.id }).from(form).where(eq(form.id, formID));
@@ -223,17 +223,17 @@ export const questionnaireRouter = createTRPCRouter({
         formData,
         submissionData: {
           uuid: submissionUUID,
-          submitted_at: submissionData[0]!.submitted_at,
-          stop_reason: submissionData[0]?.stop_reason,
-          stop_reason_question_id: submissionData[0]?.stop_reason_question_id,
-          skipped_steps: submissionData[0]!.skipped_steps,
+          submittedAt: submissionData[0]!.submittedAt,
+          stopReason: submissionData[0]?.stopReason,
+          stopReasonQuestionId: submissionData[0]?.stopReasonQuestionId,
+          skippedSteps: submissionData[0]!.skippedSteps,
         },
         answers: answersData.map((answer) => ({
-          question_id: answer.question_id,
-          answer_type: answer.answer_type,
-          boolean_answer: answer.boolean_answer,
-          string_answer: answer.string_answer,
-          string_array_answer: answer.answer_type === "string_array" ? stringArrayAnswersData.filter((stringArrayAnswer) => stringArrayAnswer.answer_id === answer.id).map((stringArrayAnswer) => stringArrayAnswer.value) : null,
+          questionId: answer.questionId,
+          answerType: answer.answerType,
+          booleanAnswer: answer.booleanAnswer,
+          stringAnswer: answer.stringAnswer,
+          stringArrayAnswer: answer.answerType === "string_array" ? stringArrayAnswersData.filter((stringArrayAnswer) => stringArrayAnswer.answerId === answer.id).map((stringArrayAnswer) => stringArrayAnswer.value) : null,
           skipped: answer.skipped,
         }))
       };

@@ -2,9 +2,6 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 
 import { siteConfig } from "@/config/site";
-
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
 import { getSharedMetadata } from "@/config/shared-metadata";
 import Providers from "./providers";
 
@@ -105,11 +102,7 @@ export default function RootLayout({
       </head>
       <body className="flex flex-col min-h-screen bg-background font-sans antialiased">
         <Providers>
-          <Navbar />
-          <main className="container flex flex-col flex-1 py-10">
             {children}
-          </main>
-          <Footer />
         </Providers>
       </body>
     </html>

@@ -4,21 +4,28 @@ import { ButtonVariantsType } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
-export const errorToast = ({
-  action,
-  title,
-  description,
-  buttonLabel,
-  buttonVariant,
-}: {
-  action?: () => void;
+type WithoutAction = {
   title?: string;
   description?: string;
+};
+
+type WithAction = {
+  action: () => void;
   buttonLabel: string;
-  buttonVariant?: ButtonVariantsType;
-}) => {
+  buttonVariant: ButtonVariantsType;
+};
+
+type ErrorToastProps = WithoutAction &
+  ({ actionButton?: never } | { actionButton?: WithAction });
+
+export const errorToast = ({
+  title,
+  description,
+  actionButton,
+}: ErrorToastProps) => {
+  const { action, buttonLabel, buttonVariant } = actionButton || {};
   toast.custom((t) => (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-1">
         <p className="text-base mb-1 font-medium tracking-tight">
           {title || "Une erreur est survenue"}

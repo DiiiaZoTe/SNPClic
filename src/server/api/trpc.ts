@@ -12,6 +12,8 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
+import { uncachedValidateRequest } from "@/server/auth/validate-request";
+import { logError } from "@/lib/utilities/logger";
 
 /**
  * 1. CONTEXT
@@ -26,12 +28,13 @@ import { db } from "@/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  // const session = // get server auth session here
+  const { session, user } = await uncachedValidateRequest();
   //! here you can log the request, or do other things with the headers
 
   return {
     db,
-    // session,
+    session,
+    user,
     ...opts,
   };
 };
@@ -90,13 +93,19 @@ export const publicProcedure = t.procedure;
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   // ! you can use this middleware to protect a procedure
-  // if (!ctx.session || !ctx.session.user) {
-  //   throw new TRPCError({ code: "UNAUTHORIZED" });
-  // }
+  if (!ctx.session || !ctx.user) {
+    logError({
+      error: "Unauthorized access to protected procedure",
+      request: ctx.headers,
+      location: "/api/trpc/adminProcedure",
+    });
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Vous devez être connecté pour accéder à cette ressource."});
+  }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      // session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session },
+      user: { ...ctx.user },
     },
   });
 });
@@ -112,13 +121,19 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
 export const adminProcedure = t.procedure.use(({ ctx, next }) => {
   // ! you can use this middleware to protect a procedure
   // ! need to check for an admin role
-  // if (!ctx.session || !ctx.session.user) {
-  //   throw new TRPCError({ code: "UNAUTHORIZED" });
-  // }
+  if (!ctx.session || !ctx.user || ctx.user.role !== "admin") {
+    logError({
+      error: "Unauthorized access to admin procedure",
+      request: ctx.headers,
+      location: "/api/trpc/adminProcedure",
+    });
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Vous ne pouvez pas utiliser cette ressource." });
+  }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      // session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session },
+      user: { ...ctx.user },
     },
   });
 });

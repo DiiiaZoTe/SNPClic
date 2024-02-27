@@ -22,7 +22,6 @@ import { errorToast } from "@/components/utilities/toasts";
 import { DotAnimation, ExtraSection } from "./other";
 import { DownloadButton } from "@/components/utilities/downloadButton";
 import { Button } from "@/components/ui/button";
-import MyLink from "@/components/utilities/link";
 
 export const MultiStepForm = ({ form }: { form: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);

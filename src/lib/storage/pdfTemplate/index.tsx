@@ -11,18 +11,18 @@ const NO_ANSWER = "Pas de réponse";
 
 type submissionDataProps = {
   uuid: string;
-  submitted_at: Date;
-  stop_reason?: string | null;
-  stop_reason_question_id?: string | null;
-  skipped_steps: number[];
+  submittedAt: Date;
+  stopReason?: string | null;
+  stopReasonQuestionId?: string | null;
+  skippedSteps: number[];
 };
 
 type answersProps = {
-  question_id: string;
-  answer_type: "string" | "boolean" | "string_array";
-  boolean_answer?: boolean | null;
-  string_answer?: string | null;
-  string_array_answer?: string[] | null;
+  questionId: string;
+  answerType: "string" | "boolean" | "string_array";
+  booleanAnswer?: boolean | null;
+  stringAnswer?: string | null;
+  stringArrayAnswer?: string[] | null;
   skipped?: boolean | null;
 };
 
@@ -45,15 +45,15 @@ export const PDFTemplate = ({
           <Logo />
           <p>
             {`Le ${formatDate(
-              submissionData.submitted_at
-            )} à ${submissionData.submitted_at.toLocaleTimeString("fr-FR", {
+              submissionData.submittedAt
+            )} à ${submissionData.submittedAt.toLocaleTimeString("fr-FR", {
               timeZone: "Europe/Paris",
             })} GMT+1`}
           </p>
         </header>
         <div style={styles.stepSection}>
           {formData.config.map((step, stepIndex) => {
-            const stepSkipped = submissionData.skipped_steps.includes(
+            const stepSkipped = submissionData.skippedSteps.includes(
               stepIndex + 1
             );
             return (
@@ -67,7 +67,7 @@ export const PDFTemplate = ({
                 {!stepSkipped &&
                   step.questions.map((question, questionIndex) => {
                     const answer = answers.find(
-                      (a) => a.question_id === question.id
+                      (a) => a.questionId === question.id
                     );
                     if (!answer) return null;
                     return (
@@ -79,12 +79,12 @@ export const PDFTemplate = ({
               </div>
             );
           })}
-          {submissionData.stop_reason && (
+          {submissionData.stopReason && (
             <div style={styles.stopReason}>
               <span style={styles.stepLabel}>
                 Raison de l&apos;arrêt du questionnaire:
               </span>
-              <p style={styles.stopReasonP}>{submissionData.stop_reason}</p>
+              <p style={styles.stopReasonP}>{submissionData.stopReason}</p>
             </div>
           )}
         </div>
@@ -142,24 +142,24 @@ const AnswerSwitch = ({
           answer={answer}
           style={styles.questionRow}
         >
-          <span>{answer.boolean_answer ? <CheckMark /> : <XMark />}</span>
+          <span>{answer.booleanAnswer ? <CheckMark /> : <XMark />}</span>
         </QuestionAnswerWrapper>
       );
     case "text":
     case "textarea":
-      if (!answer.string_answer) return renderNoAnswer();
+      if (!answer.stringAnswer) return renderNoAnswer();
       return (
         <QuestionAnswerWrapper
           question={question}
           answer={answer}
           style={styles.questionCol}
         >
-          <span style={{ whiteSpace: "pre-wrap" }}>{answer.string_answer}</span>
+          <span style={{ whiteSpace: "pre-wrap" }}>{answer.stringAnswer}</span>
         </QuestionAnswerWrapper>
       );
     case "select":
       const selectedOption = question.options.find(
-        (option) => option.value === answer.string_answer
+        (option) => option.value === answer.stringAnswer
       );
       if (!selectedOption) return renderNoAnswer();
       return (
@@ -172,7 +172,7 @@ const AnswerSwitch = ({
         </QuestionAnswerWrapper>
       );
     case "multiChoice":
-      const stringValues = answer.string_array_answer;
+      const stringValues = answer.stringArrayAnswer;
       if (
         stringValues === null ||
         stringValues === undefined ||
@@ -202,7 +202,7 @@ const AnswerSwitch = ({
       );
     case "multiSelect":
       const selectedOptions = question.options.filter((option) =>
-        answer.string_array_answer?.includes(option.value)
+        answer.stringArrayAnswer?.includes(option.value)
       );
       if (!selectedOptions.length) return renderNoAnswer();
       return (
@@ -221,8 +221,8 @@ const AnswerSwitch = ({
         </QuestionAnswerWrapper>
       );
     case "body":
-      if (!answer.string_answer) return renderNoAnswer();
-      const bodyPart = answer.string_answer as PathId;
+      if (!answer.stringAnswer) return renderNoAnswer();
+      const bodyPart = answer.stringAnswer as PathId;
       const bodyValues = question.options[bodyPart];
       return (
         <QuestionAnswerWrapper

@@ -6,11 +6,18 @@ type myLinkProps = Omit<
 > &
   LinkProps & {
     prefetch?: boolean;
+    nextLink?: boolean;
   } & React.RefAttributes<HTMLAnchorElement>;
 
-const MyLink = ({prefetch = false, ...props}: myLinkProps) => {
+const MyLink = ({
+  prefetch = false,
+  nextLink = true,
+  ...props
+}: myLinkProps) => {
   // defaults prefetch to false if `prefetch` is not true
-  return <Link {...props} prefetch={prefetch} />;
-}
+  if (nextLink) return <Link {...props} prefetch={prefetch} />;
+  const { href, ...rest } = props;
+  return <a href={href as string} {...rest} />;
+};
 
 export default MyLink;

@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 import MyLink from "@/components/utilities/link";
 
 export default function Home() {
-
   return (
     <div className="flex flex-col gap-16 max-w-xl items-center self-center grow">
-      <div className="flex flex-col gap-8 justify-center items-center">
+      <div className="flex flex-col gap-8 justify-center items-start">
         <h1 className="text-2xl text-left">
           <Balancer
             dangerouslySetInnerHTML={{ __html: HOME_CONTENT.title }}

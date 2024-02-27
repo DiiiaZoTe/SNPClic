@@ -2,9 +2,8 @@
 
 import { sql, eq, inArray } from "drizzle-orm";
 import { db } from "./index";
-import { form, form_submission, submission_answer, submission_answer_string_array } from "./schema";
+import { form, formSubmission, submissionAnswer, submissionAnswerStringArray } from "./schema";
 import { generateUUID } from "@/lib/utilities/uuid";
-import { api } from "@/trpc/server";
 
 // * Insert form data
 // import { FORM_DATA } from "@/app/questionnaire/content";
@@ -27,19 +26,19 @@ import { api } from "@/trpc/server";
 
 // * Get submission data
 // const submissionUUID = "2c3e94b4-70a2-4042-b09b-a9d568d03f22";
-// db.select().from(form_submission).where(eq(form_submission.uuid, submissionUUID))
+// db.select().from(formSubmission).where(eq(formSubmission.uuid, submissionUUID))
 //   .then((submissionData) => {
 //     const submissionID = submissionData[0]?.id;
 //     const formID = submissionData[0]?.form_id;
 //     if (!submissionID || !formID) throw new Error("No form submission found");
 //     console.log(submissionData)
-//     db.select().from(submission_answer)
-//       .where(eq(submission_answer.submission_id, submissionID))
+//     db.select().from(submissionAnswer)
+//       .where(eq(submissionAnswer.submission_id, submissionID))
 //       .then((answersData) => {
 //         console.log(answersData)
 //         const stringArrayAnswersID = answersData.filter((answer) => answer.answer_type === "string_array").map((answer) => answer.id);
-//         db.select().from(submission_answer_string_array)
-//           .where(inArray(submission_answer_string_array.answer_id, stringArrayAnswersID))
+//         db.select().from(submissionAnswerStringArray)
+//           .where(inArray(submissionAnswerStringArray.answer_id, stringArrayAnswersID))
 //           .then((stringArrayAnswersData) => {
 //             console.log(stringArrayAnswersData)
 //         })
