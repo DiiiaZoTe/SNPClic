@@ -2,8 +2,12 @@
 /* eslint-disable @next/next/no-head-element */
 /* eslint-disable @next/next/no-page-custom-font */
 /* eslint-disable @next/next/google-font-display */
-import type { Form, Question, QuestionType } from "@/app/questionnaire/types";
-import type { PathId } from "@/app/questionnaire/_components/body";
+import type {
+  Form,
+  Question,
+  QuestionType,
+} from "@/app/(app)/questionnaire/types";
+import type { PathId } from "@/app/(app)/questionnaire/_components/body";
 import { Check, ChevronsRight, X } from "lucide-react";
 import * as styles from "./styles";
 
