@@ -56,33 +56,39 @@ const MultiStepFormComponent = () => {
       }
       if (!successInsert)
         return errorToast({
-          action: handleSubmit,
           title: "Erreur lors de la sauvegarde du questionnaire",
           description:
             "Une erreur est survenue lors de la sauvegarde du questionnaire. Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
-          buttonLabel: "Réessayer",
-          buttonVariant: "black",
+          actionButton: {
+            action: handleSubmit,
+            buttonLabel: "Réessayer",
+            buttonVariant: "black",
+          },
         });
       setSuccessInsert(true);
       if (!successPDF)
         return errorToast({
-          action: () => handleGeneratePDF(subID),
           title: "Erreur lors de la génération du PDF",
           description:
             "Vos données ont été sauvegardées avec succès, mais la génération du PDF a échoué. Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
-          buttonLabel: "Réessayer",
-          buttonVariant: "black",
+          actionButton: {
+            action: () => handleGeneratePDF(subID),
+            buttonLabel: "Réessayer",
+            buttonVariant: "black",
+          },
         });
       setSuccessPDF(true);
     },
     onError: () => {
       errorToast({
-        action: handleSubmit,
         title: "Erreur lors de la sauvegarde du questionnaire",
         description:
           "Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
-        buttonLabel: "Réessayer",
-        buttonVariant: "black",
+        actionButton: {
+          action: handleSubmit,
+          buttonLabel: "Réessayer",
+          buttonVariant: "black",
+        },
       });
       useMSF.other.scrollToView(false);
     },
@@ -126,12 +132,14 @@ const MultiStepFormComponent = () => {
     onError: () => {
       setSuccessPDF(false);
       errorToast({
-        action: () => handleGeneratePDF(submissionID),
         title: "Erreur lors de la génération du PDF",
         description:
           "Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
-        buttonLabel: "Réessayer",
-        buttonVariant: "black",
+        actionButton: {
+          action: () => handleGeneratePDF(submissionID),
+          buttonLabel: "Réessayer",
+          buttonVariant: "black",
+        },
       });
       useMSF.other.scrollToView(false);
     },

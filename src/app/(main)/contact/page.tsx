@@ -68,7 +68,7 @@ const CustomCard = ({
             <MyLink
               href={subContent.url}
               key={subContent.value}
-              className="text-primary underline underline-offset-2 w-fit"
+              className="text-primary underline underline-offset-4 w-fit"
             >
               {subContent.value}
             </MyLink>

@@ -65,7 +65,7 @@ export const Footer = () => {
               <div key={title} className="flex flex-col">
                 <p className="font-semibold">{title}</p>
                 {links.map(({ linkName, href }) => (
-                  <MyLink key={linkName} href={href} className="hover:underline">
+                  <MyLink key={linkName} href={href} className="hover:underline underline-offset-4">
                     {linkName}
                   </MyLink>
                 ))}

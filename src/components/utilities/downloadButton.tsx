@@ -59,9 +59,11 @@ export const DownloadButton = ({
         title: "Erreur lors du téléchargement",
         description:
           "Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
-        buttonLabel: "Réessayer",
-        buttonVariant: "black",
-        action: handleDownload,
+        actionButton: {
+          action: handleDownload,
+          buttonLabel: "Réessayer",
+          buttonVariant: "black",
+        },
       });
     }
   };

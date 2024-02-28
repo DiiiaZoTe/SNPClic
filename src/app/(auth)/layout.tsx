@@ -6,7 +6,6 @@ import { Logo } from "@/components/logos/logo";
 export default function Layout({ children }: { children: React.ReactNode }) {
   // check if referer is from the same domain
   const referer = headers().get("referer") || "";
-  console.log(referer);
   const backLink =
     referer.startsWith(siteConfig.url + "/login") ||
     referer.startsWith(siteConfig.url + "/signup")
