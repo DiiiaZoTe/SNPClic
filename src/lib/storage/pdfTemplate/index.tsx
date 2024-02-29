@@ -6,8 +6,8 @@ import type {
   Form,
   Question,
   QuestionType,
-} from "@/app/(app)/questionnaire/types";
-import type { PathId } from "@/app/(app)/questionnaire/_components/body";
+} from "@/app/(app)/(protected)/questionnaire/types";
+import type { PathId } from "@/app/(app)/(protected)/questionnaire/_components/body";
 import { Check, ChevronsRight, X } from "lucide-react";
 import * as styles from "./styles";
 

@@ -1,5 +1,8 @@
 export const redirects = {
-  afterLogin: "/",
-  afterSignup: "/",
-  afterLogout: "/",
+  afterLogin: "/dashboard",
+  afterSignup: "/dashboard",
+  afterLogout: "/login",
+  
+  toNonProtected: "/login",
+  toProtected: "/dashboard",
 }

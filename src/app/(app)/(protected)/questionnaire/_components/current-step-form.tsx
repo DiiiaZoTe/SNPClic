@@ -16,7 +16,7 @@ import { QuestionSwitch } from "./questions";
 export const CurrentStepForm = () => {
   const useMSF = useMultiStepFormContext();
   return (
-    <div className="flex flex-col items-center gap-8 w-screen px-4 sm:w-[calc(100svw-10px)] relative overflow-x-hidden grow overflow-y-hidden">
+    <div className="flex flex-col items-center gap-8 w-full relative overflow-x-hidden grow overflow-y-hidden">
       <AnimatePresence
         initial={false}
         mode="popLayout"

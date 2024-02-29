@@ -21,7 +21,9 @@ export default function Home() {
         ))}
       </div>
       <Button asChild variant="default">
-        <MyLink href="/questionnaire">Accéder au questionnaire</MyLink>
+        <MyLink href="/questionnaire" nextLink={false}>
+          Accéder au questionnaire
+        </MyLink>
       </Button>
     </div>
   );

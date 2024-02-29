@@ -6,7 +6,7 @@ import { form, formSubmission, submissionAnswer, submissionAnswerStringArray } f
 import { generateUUID } from "@/lib/utilities/uuid";
 
 // * Insert form data
-// import { FORM_DATA } from "@/app/(app)/questionnaire/content";
+// import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 // db.insert(form).values({
 //   uuid: generateUUID(),
 //   name: "Questionnaire SNPClic",

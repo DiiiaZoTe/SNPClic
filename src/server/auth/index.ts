@@ -1,6 +1,5 @@
 import { Lucia, TimeSpan } from "lucia";
 import { DrizzleMySQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { env } from "@/env.js";
 import { db } from "@/server/db";
 import { session, user, type User as DbUser, type Session as DBSession } from "@/server/db/schema";
 
@@ -25,12 +24,12 @@ export const lucia = new Lucia(adapter, {
       // avatar: attributes.avatar,
     };
   },
-  sessionExpiresIn: new TimeSpan(30, "d"),
+  sessionExpiresIn: new TimeSpan(12, "h"),
   sessionCookie: {
     name: "session",
     expires: false, // session cookies have very long lifespan (2 years)
     attributes: {
-      secure: env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production",
     },
   },
 });

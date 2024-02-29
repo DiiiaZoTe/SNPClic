@@ -5,9 +5,9 @@ import {
 } from "@/server/api/trpc";
 import { formSubmission, submissionAnswer, submissionAnswerStringArray } from "@/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
-import { Form } from "@/app/(app)/questionnaire/types";
+import { Form } from "@/app/(app)/(protected)/questionnaire/types";
 
-import { FORM_DATA } from "@/app/(app)/questionnaire/content";
+import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 import { generateUUID } from "@/lib/utilities/uuid";
 import { TRPCError } from "@trpc/server";
 import { logError } from "@/lib/utilities/logger";

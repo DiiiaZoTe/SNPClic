@@ -2,8 +2,30 @@ import { headers } from "next/headers";
 import { BackButton } from "./back-button";
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/logos/logo";
+import { ContentWrapper } from "./content-wrapper";
+import { LoginForm } from "./form";
+import { getSharedMetadata } from "@/config/shared-metadata";
+import { validateRequest } from "@/server/auth/validate-request";
+import { redirect } from "next/navigation";
+import { redirects } from "@/lib/auth/redirects";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+const METADATA = {
+  title: "Login",
+  description: "Page de connexion SNPClic",
+  url: siteConfig.url + "/login",
+};
+
+export const metadata = {
+  title: METADATA.title,
+  description: METADATA.description,
+  ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
+};
+
+export default async function Page() {
+
+  const { user } = await validateRequest();
+  if (user) redirect(redirects.toProtected);
+
   // check if referer is from the same domain
   const referer = headers().get("referer") || "";
   const backLink =
@@ -18,7 +40,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex-1 w-full grid grid-cols-5 relative">
       <div className="relative w-full flex flex-col col-span-5 lg:col-span-3 p-4 sm:p-8">
         <BackButton backLink={backLink} />
-        {children}
+        <ContentWrapper
+          text={{
+            title: "Bienvenue!",
+            description: "Connectez-vous pour accéder à votre compte.",
+          }}
+        >
+          <LoginForm />
+        </ContentWrapper>
       </div>
 
       <div className="hidden w-full col-span-2 lg:flex h-full max-h-screen items-center sticky top-0">

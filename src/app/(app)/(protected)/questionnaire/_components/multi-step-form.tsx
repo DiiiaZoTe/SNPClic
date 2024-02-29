@@ -27,7 +27,7 @@ export const MultiStepForm = ({ form }: { form: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);
   return (
     <div
-      className="self-center w-full flex flex-col gap-8 items-center min-h-[calc(100dvh-6rem)]"
+      className="self-center w-full flex flex-col gap-8 items-center"
       ref={topFormRef}
     >
       <MultiStepFormProvider form={form} containerRef={topFormRef}>

@@ -24,6 +24,8 @@
     --input: 0 0% 92%;
     --ring: 142 83% 36%;
     --radius: 0.5rem;
+
+    --scrollbar-size: 10px;
   }
 
   .dark {
@@ -65,8 +67,8 @@
   /* ----------- Scrollbar ----------- */
   /* width */
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
     background-color: transparent;
   }
   /* Track */
@@ -75,7 +77,7 @@
   }
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
+    border-radius: var(--scrollbar-size);
     /* background: theme("colors.neutral.300"); */
     background: hsl(0 0% 80%);
   }
@@ -84,6 +86,7 @@
     /* background: theme("colors.neutral.400"); */
     background: hsl(0 0% 60%);
   }
+  .scrollbar {}
 
   /* ----------- Highlight content ----------- */
   ::selection {

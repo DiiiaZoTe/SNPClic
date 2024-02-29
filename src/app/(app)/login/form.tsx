@@ -39,9 +39,8 @@ export const LoginForm = () => {
       router.replace(redirect);
     },
     onError: (error) => {
-      console.log(error.message);
       form.setError("root", {
-        type: "ma",
+        type: "manual",
         message:
           error.message ?? "Une erreur est survenue. Veuillez réessayer.",
       });
