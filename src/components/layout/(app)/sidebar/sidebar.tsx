@@ -30,7 +30,7 @@ export const Sidebar = ({
   return (
     <aside
       className={cn(
-        "relative z-50 h-full md bg-background border-r border-muted flex flex-col gap-4 [--scrollbar-size:5px] transition-[width] duration-1000",
+        "relative z-50 h-full md bg-background border-r border-muted flex flex-col gap-4 [--scrollbar-size:5px] transition-[width] duration-500",
         isSidebarOpen ? "w-60 lg:w-72 xl:w-80" : "w-[4.5rem]",
         isTablet ? "absolute" : ""
       )}
@@ -82,7 +82,7 @@ export const Sidebar = ({
             <ThemeToggle triggerClassName="min-w-10 min-h-10 w-10 px-2.5 py-2" />
             <span
               className={cn(
-                "min-w-0 truncate transition-[width] duration-1000",
+                "min-w-0 truncate transition-[width] duration-500",
                 isSidebarOpen ? "w-full" : "w-0"
               )}
             >
@@ -103,7 +103,7 @@ const SidebarNavSection = ({ section, items }: SidebarNavSectionProps) => {
       {section && (
         <h2
           className={cn(
-            "text-sm text-foreground/60 font-medium min-w-0 truncate transition-[width] duration-1000",
+            "text-sm text-foreground/60 font-medium min-w-0 truncate transition-[width] duration-500",
             isSidebarOpen ? "w-full" : "w-10"
           )}
         >
@@ -139,7 +139,7 @@ const SidebarNavItem = ({
       asChild
       variant="ghost"
       className={cn(
-        "justify-start text-base font-normal gap-4 px-2.5 transition-[width] duration-1000",
+        "justify-start text-base font-normal gap-4 px-2.5 transition-[width] duration-500",
         className,
         active &&
           "bg-primary/5 text-primary hover:bg-primary/5 hover:text-primary ",
