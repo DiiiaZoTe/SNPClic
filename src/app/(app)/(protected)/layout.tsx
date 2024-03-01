@@ -1,8 +1,12 @@
-import { Logo } from "@/components/logos/logo";
 import { getFakeSession } from "../get-fake-session";
 
+import { Logo } from "@/components/logos/logo";
 import { LogoText } from "@/components/logos/logo-text";
-import { Sidebar } from "./sidebar";
+
+import { Sidebar } from "@/components/layout/(app)/sidebar/sidebar";
+import { SidebarProvider } from "@/components/layout/(app)/sidebar/use-sidebar";
+
+import { sidebarItems } from "@/app/(app)/(protected)/nav-content";
 
 export default async function Layout({
   children,
@@ -15,9 +19,13 @@ export default async function Layout({
   return (
     <div className="flex w-full flex-col h-[100dvh] overflow-clip">
       <TopHeader />
-      <div className="flex flex-1 min-h-0 w-full border-t border-muted ">
-        <Sidebar />
-        <main className="flex-1 overflow-auto">{children}</main>
+      <div className="relative flex flex-1 min-h-0 w-full border-t border-muted ">
+        <SidebarProvider>
+          <Sidebar sidebarItems={sidebarItems} />
+        </SidebarProvider>
+        <main className="flex-1 overflow-auto sm:ml-[4.5rem] md:ml-0">
+          {children}
+        </main>
       </div>
     </div>
   );
