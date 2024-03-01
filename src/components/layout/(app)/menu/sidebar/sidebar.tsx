@@ -14,23 +14,21 @@ import { githubConfig } from "@/config/site";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSidebar } from "./use-sidebar";
 import { Separator } from "@/components/ui/separator";
-import { SidebarNavItemProps, SidebarNavSectionProps } from "./types";
+import { NavItemProps, NavSectionProps } from "../types";
+import Logout from "@/components/utilities/logout";
 
 export const Sidebar = ({
   sidebarItems,
 }: {
-  sidebarItems: SidebarNavSectionProps[];
+  sidebarItems: NavSectionProps[];
 }) => {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
-  const isMobile = useMediaQuery("(max-width: 639px)");
   const isTablet = useMediaQuery("(max-width: 767px)");
-
-  if (isMobile) return null;
 
   return (
     <aside
       className={cn(
-        "relative z-50 h-full md bg-background border-r border-muted flex flex-col gap-4 [--scrollbar-size:5px] transition-[width] duration-500",
+        "hidden relative z-50 h-full md bg-background border-r border-muted sm:flex flex-col gap-4 [--scrollbar-size:5px] transition-[width] duration-500",
         isSidebarOpen ? "w-60 lg:w-72 xl:w-80" : "w-[4.5rem]",
         isTablet ? "absolute" : ""
       )}
@@ -68,6 +66,21 @@ export const Sidebar = ({
               Icon: LogOut,
               className:
                 "text-destructive hover:text-destructive hover:bg-destructive/10",
+
+              Component: (
+                <Logout>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "justify-start text-base font-normal gap-4 px-2.5 transition-[width] duration-500 text-destructive hover:text-destructive hover:bg-destructive/10",
+                      isSidebarOpen ? "w-full" : "w-10 h-10"
+                    )}
+                  >
+                    <LogOut className="w-5 h-5 min-w-fit" />
+                    <span className="min-w-0 truncate">Déconnexion</span>
+                  </Button>
+                </Logout>
+              ),
             },
           ]}
         />
@@ -79,7 +92,10 @@ export const Sidebar = ({
             Icon={GitHubLogo}
           />
           <div className="flex gap-2 items-center">
-            <ThemeToggle triggerClassName="min-w-10 min-h-10 w-10 px-2.5 py-2" />
+            <ThemeToggle
+              triggerClassName="min-w-10 min-h-10 w-10 px-2.5 py-2"
+              align="start"
+            />
             <span
               className={cn(
                 "min-w-0 truncate transition-[width] duration-500",
@@ -95,7 +111,7 @@ export const Sidebar = ({
   );
 };
 
-const SidebarNavSection = ({ section, items }: SidebarNavSectionProps) => {
+const SidebarNavSection = ({ section, items }: NavSectionProps) => {
   const currentPath = usePathname();
   const { isSidebarOpen } = useSidebar();
   return (
@@ -111,7 +127,7 @@ const SidebarNavSection = ({ section, items }: SidebarNavSectionProps) => {
         </h2>
       )}
       <div className="flex flex-col">
-        {items.map(({ label, href, Icon, className }) => (
+        {items.map(({ label, href, Icon, className, Component }) => (
           <SidebarNavItem
             key={label}
             label={label}
@@ -119,6 +135,7 @@ const SidebarNavSection = ({ section, items }: SidebarNavSectionProps) => {
             Icon={Icon}
             className={className}
             active={currentPath === href}
+            Component={Component}
           />
         ))}
       </div>
@@ -132,8 +149,10 @@ const SidebarNavItem = ({
   Icon,
   className,
   active,
-}: SidebarNavItemProps) => {
+  Component,
+}: NavItemProps) => {
   const { isSidebarOpen } = useSidebar();
+  if (Component) return <>{Component}</>;
   return (
     <Button
       asChild

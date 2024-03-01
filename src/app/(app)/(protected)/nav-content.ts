@@ -1,10 +1,10 @@
 
 "use client";
 
-import { SidebarNavSectionProps } from "@/components/layout/(app)/sidebar/types";
+import { NavSectionProps } from "@/components/layout/(app)/menu/types";
 import { BookPlus, LayoutDashboard, Send } from "lucide-react";
 
-export const sidebarItems: SidebarNavSectionProps[] = [
+export const navItems: NavSectionProps[] = [
   {
     section: "Navigation",
     items: [{ label: "Dashboard", href: "/dashboard", Icon: LayoutDashboard }],

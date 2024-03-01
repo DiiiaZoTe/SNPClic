@@ -72,7 +72,7 @@ const MobileNavbar = ({ links }: { links: string[][] }) => {
               <GitHubLogo className="w-4 h-4" />
               <span className="sr-only">GitHub</span>
             </MyLink>
-            <ThemeToggle />
+            <ThemeToggle align="end"/>
           </div>
         </div>
       </SheetContent>

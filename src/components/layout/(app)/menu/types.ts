@@ -1,14 +1,16 @@
 import { LucideIcon } from "lucide-react";
+import { ReactNode } from "react";
 
-export type SidebarNavItemProps = {
+export type NavItemProps = {
   label: string;
   href: string;
   Icon: LucideIcon | any;
   className?: string;
   active?: boolean;
+  Component?: ReactNode;
 };
 
-export type SidebarNavSectionProps = {
+export type NavSectionProps = {
   section: string;
-  items: SidebarNavItemProps[];
+  items: NavItemProps[];
 };
