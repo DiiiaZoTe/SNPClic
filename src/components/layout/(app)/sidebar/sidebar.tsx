@@ -30,7 +30,7 @@ export const Sidebar = ({
   return (
     <aside
       className={cn(
-        "relative z-50 h-full md bg-background border-r border-muted flex flex-col gap-4 [--scrollbar-size:5px] transition-[width]",
+        "relative z-50 h-full md bg-background border-r border-muted flex flex-col gap-4 [--scrollbar-size:5px] transition-[width] duration-1000",
         isSidebarOpen ? "w-60 lg:w-72 xl:w-80" : "w-[4.5rem]",
         isTablet ? "absolute" : ""
       )}
@@ -78,9 +78,16 @@ export const Sidebar = ({
             href={githubConfig.repo}
             Icon={GitHubLogo}
           />
-          <div className="flex gap-1.5 items-center">
-            <ThemeToggle />
-            {isSidebarOpen && <span>Thème</span>}
+          <div className="flex gap-2 items-center">
+            <ThemeToggle triggerClassName="min-w-10 min-h-10 w-10 px-2.5 py-2" />
+            <span
+              className={cn(
+                "min-w-0 truncate transition-[width] duration-1000",
+                isSidebarOpen ? "w-full" : "w-0"
+              )}
+            >
+              Thème
+            </span>
           </div>
         </div>
       </div>
@@ -96,8 +103,8 @@ const SidebarNavSection = ({ section, items }: SidebarNavSectionProps) => {
       {section && (
         <h2
           className={cn(
-            "text-sm text-foreground/60 font-medium min-w-0 truncate transition-[width]",
-            !isSidebarOpen && "w-10"
+            "text-sm text-foreground/60 font-medium min-w-0 truncate transition-[width] duration-1000",
+            isSidebarOpen ? "w-full" : "w-10"
           )}
         >
           {section}
@@ -132,17 +139,17 @@ const SidebarNavItem = ({
       asChild
       variant="ghost"
       className={cn(
-        "justify-start text-base font-normal gap-4 px-2.5",
+        "justify-start text-base font-normal gap-4 px-2.5 transition-[width] duration-1000",
         className,
         active &&
-          "bg-primary/5 text-primary hover:bg-primary/5 hover:text-primary transition-[width]",
-        !isSidebarOpen && "w-10 h-10"
+          "bg-primary/5 text-primary hover:bg-primary/5 hover:text-primary ",
+        isSidebarOpen ? "w-full" : "w-10 h-10"
       )}
       disabled={active}
     >
       <MyLink href={href}>
         <Icon className="w-5 h-5 min-w-fit" />
-        {isSidebarOpen && <span className="min-w-0 truncate">{label}</span>}
+        <span className="min-w-0 truncate">{label}</span>
       </MyLink>
     </Button>
   );
