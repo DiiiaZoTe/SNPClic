@@ -15,6 +15,8 @@ const LINKS = [
   ["Contact", "/contact"],
 ];
 
+const TO_APP_LINK = "/dashboard";
+
 export const Navbar = async () => {
   return (
     <header className="container">
@@ -72,7 +74,7 @@ const MobileNavbar = ({ links }: { links: string[][] }) => {
               <GitHubLogo className="w-4 h-4" />
               <span className="sr-only">GitHub</span>
             </MyLink>
-            <ThemeToggle align="end"/>
+            <ThemeToggle align="end" />
           </div>
         </div>
       </SheetContent>
@@ -82,7 +84,7 @@ const MobileNavbar = ({ links }: { links: string[][] }) => {
 
 const ToAppButton = ({ className }: { className?: string }) => (
   <Button variant="black" asChild>
-    <MyLink href="/login" className={className} nextLink={false}>
+    <MyLink href={TO_APP_LINK} className={className} nextLink={false}>
       Accéder à l&apos;app
     </MyLink>
   </Button>

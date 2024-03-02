@@ -4,11 +4,9 @@ import type { Session, User } from "lucia";
 import { lucia } from "@/server/auth";
 import { logError } from "@/lib/utilities/logger";
 
-
 export const uncachedValidateRequest = async (): Promise<
   { user: User; session: Session } | { user: null; session: null }
 > => {
-
   console.log("calling uncachedValidateRequest");
 
   const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;

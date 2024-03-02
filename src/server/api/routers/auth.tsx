@@ -5,6 +5,7 @@ import { logError } from "@/lib/utilities/logger";
 import {
   createTRPCRouter,
   protectedProcedure,
+  publicNoSessionProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
@@ -163,9 +164,9 @@ export const authRouter = createTRPCRouter({
     }),
 
   // ! this can become a form with action since it's very straightforward
-  logout: publicProcedure.mutation(async ({ ctx }) => {
-    const { session } = await validateRequest();
-    if (!session) {
+  logout: publicNoSessionProcedure.mutation(async ({ ctx }) => {
+    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+    if (!sessionId) {
       logError({
         request: ctx.headers,
         error: `No session found to log out`,
@@ -176,14 +177,28 @@ export const authRouter = createTRPCRouter({
         message: `Vous n'êtes pas connecté.`,
       });
     }
-    await lucia.invalidateSession(session.id);
-    const sessionCookie = lucia.createBlankSessionCookie();
-    cookies().set(
-      sessionCookie.name,
-      sessionCookie.value,
-      sessionCookie.attributes
-    );
-    return { success: true, redirect: redirects.afterLogout };
+    try {
+      await lucia.invalidateSession(sessionId);
+      const sessionCookie = lucia.createBlankSessionCookie();
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes
+      );
+    } catch (error) {
+      logError({
+        request: ctx.headers,
+        error: `Failed to log out`,
+        location: `logout server action (src/lib/auth/actions.ts)`,
+        otherData: { error },
+      });
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Échec de la déconnexion.`,
+      });
+    } finally {
+      return { success: true, redirect: redirects.afterLogout };
+    }
   }),
 
   resendVerificationEmail: protectedProcedure.mutation(async ({ ctx }) => {
@@ -396,7 +411,7 @@ export const authRouter = createTRPCRouter({
       return { success: true, message: "Mot de passe réinitialisé." };
     }),
 
-    test: publicProcedure
+  test: publicProcedure
     .input(
       z.object({
         email: z.string().email("Veuillez entrer une adresse e-mail valide."),

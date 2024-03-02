@@ -28,13 +28,10 @@ import { logError } from "@/lib/utilities/logger";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const { session, user } = await uncachedValidateRequest();
   //! here you can log the request, or do other things with the headers
 
   return {
     db,
-    session,
-    user,
     ...opts,
   };
 };
@@ -81,7 +78,24 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(async ({ ctx, next }) => {
+  const { session, user } = await uncachedValidateRequest();
+  return next({
+    ctx: {
+      session: session,
+      user: user,
+    },
+  });
+})
+
+/**
+ * Public (unauthenticated) procedure with no session call
+ *
+ * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
+ * guarantee that a user querying is authorized, but you can still access user session data if they
+ * are logged in.
+ */
+export const publicNoSessionProcedure = t.procedure
 
 /**
  * Protected (authenticated) procedure
@@ -91,21 +105,22 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
+  const { session, user } = await uncachedValidateRequest();
   // ! you can use this middleware to protect a procedure
-  if (!ctx.session || !ctx.user) {
+  if (!session || !user) {
     logError({
       error: "Unauthorized access to protected procedure",
       request: ctx.headers,
       location: "/api/trpc/adminProcedure",
     });
-    throw new TRPCError({ code: "UNAUTHORIZED", message: "Vous devez être connecté pour accéder à cette ressource."});
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Vous devez être connecté pour accéder à cette ressource." });
   }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session },
-      user: { ...ctx.user },
+      session: { ...session },
+      user: { ...user },
     },
   });
 });
@@ -118,10 +133,11 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const adminProcedure = t.procedure.use(({ ctx, next }) => {
+export const adminProcedure = t.procedure.use(async ({ ctx, next }) => {
+  const { session, user } = await uncachedValidateRequest();
   // ! you can use this middleware to protect a procedure
   // ! need to check for an admin role
-  if (!ctx.session || !ctx.user || ctx.user.role !== "admin") {
+  if (!session || !user || user.role !== "admin") {
     logError({
       error: "Unauthorized access to admin procedure",
       request: ctx.headers,
@@ -132,8 +148,8 @@ export const adminProcedure = t.procedure.use(({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session },
-      user: { ...ctx.user },
+      session: { ...session },
+      user: { ...user },
     },
   });
 });

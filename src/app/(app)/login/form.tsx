@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth/session-context";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +25,9 @@ import { api } from "@/trpc/react";
 export const LoginForm = () => {
   const router = useRouter();
 
+  const { user } = useSession();
+  if (user) router.refresh();
+
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -33,10 +37,9 @@ export const LoginForm = () => {
   });
 
   const { mutate, isLoading, isSuccess } = api.auth.login.useMutation({
-    onSuccess: ({ redirect }) => {
+    onSuccess: () => {
       // redirect to dashboard
-      console.log("success");
-      router.replace(redirect);
+      router.refresh();
     },
     onError: (error) => {
       form.setError("root", {

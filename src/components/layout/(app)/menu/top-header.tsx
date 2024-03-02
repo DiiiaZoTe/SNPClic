@@ -10,10 +10,10 @@ export const TopHeader = ({ navItems }: { navItems: NavSectionProps[] }) => {
   // if (!user || !session) redirect(redirects.toNonProtected);
   const { user } = getFakeSession();
   return (
-    <header className="p-4 flex justify-between items-center gap-4">
+    <header className="p-4 flex justify-between items-center gap-4 h-[4.5rem]">
       <div className="flex items-center gap-4 flex-nowrap">
-        <LogoText className="text-2xl" />
-        <Logo className="w-6 h-6" />
+        <LogoText className="text-3xl" />
+        <Logo className="w-7 h-7" />
       </div>
       <HeaderMenu email={user.email} navItems={navItems} />
     </header>

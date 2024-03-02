@@ -2,6 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth/session-context";
 
 import { ChevronLeft, ChevronRight, LogOut, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,6 +26,10 @@ export const Sidebar = ({
 }) => {
   const { isSidebarOpen, toggleSidebar } = useSidebar();
   const isTablet = useMediaQuery("(max-width: 767px)");
+
+  const router = useRouter();
+  const { user } = useSession();
+  if (!user) router.refresh();
 
   return (
     <aside

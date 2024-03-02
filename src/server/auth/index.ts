@@ -26,7 +26,7 @@ export const lucia = new Lucia(adapter, {
   },
   sessionExpiresIn: new TimeSpan(12, "h"),
   sessionCookie: {
-    name: "session",
+    name: "auth-session",
     expires: false, // session cookies have very long lifespan (2 years)
     attributes: {
       secure: process.env.NODE_ENV === "production",

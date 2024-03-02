@@ -2,6 +2,9 @@ import { SessionProvider } from "@/lib/auth/session-context";
 import { validateRequest } from "@/server/auth/validate-request";
 import { getFakeSession } from "./get-fake-session";
 
+// make this page dynamic
+export const dynamic = "force-dynamic";
+
 export default async function Layout({
   children,
 }: {
@@ -9,7 +12,7 @@ export default async function Layout({
 }) {
   // Get the user and session from the request
   // This will be cached for subsequent requests during same render
-  // const session = await validateRequest();
-  const session = getFakeSession();
+  const session = await validateRequest();
+  // const session = getFakeSession();
   return <SessionProvider value={session}>{children}</SessionProvider>;
 }

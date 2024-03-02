@@ -13,6 +13,8 @@ const SKIP_MIDDLEWARE = [
 ]
 
 export async function middleware(request: NextRequest) {
+  console.log(request.url);
+
   // Skip middleware for certain paths
   if (skipMiddleware(request)) return NextResponse.next();
   // Check if the request is from the same origin

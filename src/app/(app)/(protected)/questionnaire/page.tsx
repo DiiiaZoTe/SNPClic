@@ -22,7 +22,7 @@ export default async function Page() {
   const form = FORM_DATA;
   if (!form) return <div>Formulaire non trouvé</div>;
   return (
-    <div className="flex flex-col grow p-4">
+    <div className="flex flex-col grow px-4 py-8">
       <Provider>
         <MultiStepForm form={form} />
       </Provider>
