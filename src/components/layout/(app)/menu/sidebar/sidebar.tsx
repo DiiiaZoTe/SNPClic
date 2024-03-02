@@ -39,6 +39,7 @@ export const Sidebar = ({
         isTablet ? "absolute" : ""
       )}
     >
+      {/* collapse button */}
       <button
         className="absolute z-[999] bg-background top-1/2 right-0 translate-x-1/2 -translate-y-1/2 p-1 border border-muted rounded-full"
         onClick={() => toggleSidebar()}
@@ -48,7 +49,10 @@ export const Sidebar = ({
         ) : (
           <ChevronRight className="w-4 h-4 translate-x-[1px]" />
         )}
+        <span className="sr-only">Toggle sidebar</span>
       </button>
+
+      {/* top section with content links */}
       <ScrollArea className="px-4 relative">
         <nav className="flex flex-col gap-4 flex-1 pt-4 mb-2">
           {sidebarItems.map(({ section, items }, index) => (
@@ -57,6 +61,8 @@ export const Sidebar = ({
         </nav>
         <div className="absolute bottom-0 w-full h-4 bg-gradient-to-b from-transparent to-background" />
       </ScrollArea>
+
+      {/* bottom section with account settings */}
       <div className="mt-auto px-4 pb-4 flex flex-col gap-2">
         <SidebarNavSection
           section="Mon compte"
@@ -90,7 +96,10 @@ export const Sidebar = ({
             },
           ]}
         />
+
         <Separator />
+
+        {/* bottom extras */}
         <div className="flex flex-col">
           <SidebarNavItem
             label="GitHub"
