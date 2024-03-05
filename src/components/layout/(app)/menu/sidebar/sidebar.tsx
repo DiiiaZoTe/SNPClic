@@ -5,7 +5,13 @@ import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth/session-context";
 
-import { ChevronLeft, ChevronRight, LogOut, Settings } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  LogOut,
+  Settings,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +24,7 @@ import { useSidebar } from "./use-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { NavItemProps, NavSectionProps } from "../types";
 import Logout from "@/components/utilities/logout";
+import { SubmitButton } from "@/components/utilities/submitButton";
 
 export const Sidebar = ({
   sidebarItems,
@@ -81,16 +88,19 @@ export const Sidebar = ({
 
               Component: (
                 <Logout>
-                  <Button
+                  <SubmitButton
                     variant="ghost"
                     className={cn(
                       "justify-start text-base font-normal gap-4 px-2.5 transition-[width] duration-500 text-destructive hover:text-destructive hover:bg-destructive/10",
                       isSidebarOpen ? "w-full" : "w-10 h-10"
                     )}
+                    loader={
+                      <Loader2 className="min-w-fit animate-spin" />
+                    }
                   >
                     <LogOut className="w-5 h-5 min-w-fit" />
                     <span className="min-w-0 truncate">Déconnexion</span>
-                  </Button>
+                  </SubmitButton>
                 </Logout>
               ),
             },

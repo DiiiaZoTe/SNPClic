@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {
   createTRPCRouter,
-  publicProcedure,
+  protectedProcedure,
 } from "@/server/api/trpc";
 import { formSubmission, submissionAnswer, submissionAnswerStringArray } from "@/server/db/schema";
 import { eq, inArray } from "drizzle-orm";
@@ -17,9 +17,10 @@ import { generatePDF } from "@/lib/storage/pdfHelpers";
 
 import { r2 } from "@/server/storage/r2";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { revalidatePath } from "next/cache";
 
 export const questionnaireRouter = createTRPCRouter({
-  getDefaultForm: publicProcedure
+  getDefaultForm: protectedProcedure
     .query(async () => {
       return {
         form: FORM_DATA as Form,
@@ -36,7 +37,7 @@ export const questionnaireRouter = createTRPCRouter({
       // };
     }),
 
-  submitFormAndPDF: publicProcedure
+  submitFormAndPDF: protectedProcedure
     .input(z.object({
       formID: z.string().min(1), // uuid
       stopReason: z.union([
@@ -125,6 +126,7 @@ export const questionnaireRouter = createTRPCRouter({
         const formSubmissionData = await tx.insert(formSubmission).values({
           uuid: submissionUUID,
           formId: formID,
+          submittedBy: ctx.user.id,
           stopReason: input.stopReason?.reason == "" ? null : input.stopReason?.reason,
           stopReasonQuestionId: input.stopReason?.questionID,
           skippedSteps: input.skippedSteps,
@@ -165,6 +167,9 @@ export const questionnaireRouter = createTRPCRouter({
         logError({ request: ctx.headers, error: "Unsuccessful form submission", location: `/api/trpc/questionnaire.submitForm`, otherData: { input } });
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Unsuccessful form submission", cause: "Save" });
       }
+
+      revalidatePath("/soumissions");
+
       if (!pdf || pdf.length === 0) {
         logError({ request: ctx.headers, error: `Unsuccessful PDF generation - ${submissionUUID}`, location: `/api/trpc/questionnaire.submitForm`, otherData: { input } });
         return { successInsert: true, successPDF: false, submissionID: submissionUUID };
@@ -187,7 +192,7 @@ export const questionnaireRouter = createTRPCRouter({
     }),
 
 
-  generatePDF: publicProcedure
+  generatePDF: protectedProcedure
     .input(z.string().min(1)) // uuid
     .mutation(async ({ ctx, input }) => {
       const submissionUUID = input;

@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useContext, ReactNode, RefObject } from "react";
-import { validateRequest } from "../../server/auth/validate-request";
+import { createContext, useContext, ReactNode } from "react";
+import { validateRequestSSR } from "@/server/auth/validate-request";
 
-type ContextType = Awaited<ReturnType<typeof validateRequest>>;
+type ContextType = Awaited<ReturnType<typeof validateRequestSSR>>;
 
 export const SessionContext = createContext<ContextType>({
   session: null,

@@ -1,33 +1,28 @@
 "use client";
 
-import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
 import { errorToast } from "@/components/utilities/toasts";
+import { logoutAction } from "@/server/auth/actions";
+import { useEffect } from "react";
+// @ts-ignore
+import { useFormState } from "react-dom";
 
 interface LogoutProps extends React.HTMLProps<HTMLFormElement> {}
 export default function Logout({ children, ...props }: LogoutProps) {
-  const router = useRouter();
+  const [state, formAction] = useFormState(logoutAction, null);
 
-  const { mutate, isLoading } = api.auth.logout.useMutation({
-    onSuccess: () => {
-      router.refresh();
-    },
-    onError: (error) => {
+  useEffect(() => {
+    if (state?.logoutError) {
       errorToast({
         title: "Erreur de déconnexion",
-        description: error.message ?? "Une erreur est survenue lors de la déconnexion."
+        description:
+          state.logoutError ??
+          "Une erreur est survenue lors de la déconnexion.",
       });
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (isLoading) return;
-    mutate();
-  };
+    }
+  }, [state]);
 
   return (
-    <form onSubmit={handleSubmit} {...props}>
+    <form action={formAction} {...props}>
       {children}
     </form>
   );

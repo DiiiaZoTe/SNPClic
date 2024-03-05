@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Logout from "@/components/utilities/logout";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings, User2 } from "lucide-react";
+import { Loader2, LogOut, Settings, User2 } from "lucide-react";
 import { NavSectionProps } from "@/components/layout/(app)/menu/types";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GitHubLogo } from "@/components/logos/githubLogo";
 import MyLink from "@/components/utilities/link";
 import { githubConfig } from "@/config/site";
+import { SubmitButton } from "@/components/utilities/submitButton";
 
 export const HeaderMenu = ({
   email,
@@ -60,7 +61,7 @@ export const HeaderMenu = ({
 
             <DropdownMenuLabel>Liens externes</DropdownMenuLabel>
             <DropdownMenuItem asChild>
-              <MyLink href={githubConfig.repo}>
+              <MyLink href={githubConfig.repo} nextLink={false}>
                 <GitHubLogo className="h-4 w-4 mr-2" />
                 Source GitHub
               </MyLink>
@@ -76,13 +77,14 @@ export const HeaderMenu = ({
               </MyLink>
             </DropdownMenuItem>
             <Logout className="w-full h-full">
-              <button
-                type="submit"
+              <SubmitButton
+                variant="unstyled"
                 className="w-full h-full px-2 py-1.5 text-destructive text-left text-sm cursor-default flex items-center hover:bg-destructive/10 relative select-none rounded-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground"
+                loader={<Loader2 className="h-4 w-4 animate-spin" />}
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Se déconnecter
-              </button>
+              </SubmitButton>
             </Logout>
           </DropdownMenuContent>
         </DropdownMenu>

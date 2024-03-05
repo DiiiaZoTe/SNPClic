@@ -231,7 +231,7 @@ const MultiStepFormComponent = () => {
         <DownloadButton
           className="w-full xs:w-40 max-w-full ml-auto group"
           filename={submissionID}
-          loadingChildren={<Loader2 className="animate-spin h-4 w-4" />}
+          loader={<Loader2 className="animate-spin h-4 w-4" />}
         >
           Télécharger
           <Download className="h-4 w-4 ml-2" />

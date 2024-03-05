@@ -103,12 +103,14 @@ export const formSubmission = mysqlTable("form_submission", {
   id: bigint("id", { mode: "bigint", unsigned: true }).primaryKey().autoincrement(),
   uuid: varchar('uuid', { length: 36 }).notNull(),
   formId: bigint("form_id", { mode: "bigint", unsigned: true }).references(() => form.id, { onDelete: "set null", onUpdate: "cascade" }),
+  submittedBy: varchar('submitted_by', { length: 21 }).references(() => user.id, { onDelete: "set null", onUpdate: "cascade" }),
   submittedAt: timestamp("submitted_at").notNull().defaultNow(),
   stopReason: text("stop_reason"),
   stopReasonQuestionId: varchar('stop_reason_question_key', { length: 36 }),
   skippedSteps: json("skipped_steps").$type<number[]>().notNull().default([]),
 }, (table) => ({
   uuidIx: uniqueIndex("uuid_ix").on(table.uuid),
+  submissionByIx: index("submitted_by_ix").on(table.submittedBy),
 }));
 
 

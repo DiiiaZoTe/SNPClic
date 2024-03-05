@@ -12,7 +12,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { uncachedValidateRequest } from "@/server/auth/validate-request";
+import { uncachedValidateRequestTRPC } from "@/server/auth/validate-request";
 import { logError } from "@/lib/utilities/logger";
 
 /**
@@ -79,7 +79,7 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(async ({ ctx, next }) => {
-  const { session, user } = await uncachedValidateRequest();
+  const { session, user } = await uncachedValidateRequestTRPC();
   return next({
     ctx: {
       session: session,
@@ -106,8 +106,7 @@ export const publicNoSessionProcedure = t.procedure
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
-  const { session, user } = await uncachedValidateRequest();
-  // ! you can use this middleware to protect a procedure
+  const { session, user } = await uncachedValidateRequestTRPC();
   if (!session || !user) {
     logError({
       error: "Unauthorized access to protected procedure",
@@ -134,9 +133,7 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const adminProcedure = t.procedure.use(async ({ ctx, next }) => {
-  const { session, user } = await uncachedValidateRequest();
-  // ! you can use this middleware to protect a procedure
-  // ! need to check for an admin role
+  const { session, user } = await uncachedValidateRequestTRPC();
   if (!session || !user || user.role !== "admin") {
     logError({
       error: "Unauthorized access to admin procedure",

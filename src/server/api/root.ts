@@ -9,7 +9,7 @@ import { authRouter } from "@/server/api/routers/auth";
  */
 export const appRouter = createTRPCRouter({
   questionnaire: questionnaireRouter,
-  auth: authRouter
+  auth: authRouter,
 });
 
 // export type definition of API

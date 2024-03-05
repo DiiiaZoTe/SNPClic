@@ -22,6 +22,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         linkForeground: "text-foreground underline-offset-4 hover:underline",
         black: "bg-foreground text-background hover:bg-foreground/90",
+        unstyled: "",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -45,7 +46,8 @@ export type ButtonVariantsType =
   | "ghost"
   | "link"
   | "linkForeground"
-  | "black";
+  | "black"
+  | "unstyled";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -58,7 +60,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={
+          variant !== "unstyled"
+            ? cn(buttonVariants({ variant, size, className }))
+            : className
+        }
         ref={ref}
         {...props}
       />

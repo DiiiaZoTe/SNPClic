@@ -5,7 +5,7 @@ import { Logo } from "@/components/logos/logo";
 import { ContentWrapper } from "./content-wrapper";
 import { LoginForm } from "./form";
 import { getSharedMetadata } from "@/config/shared-metadata";
-import { validateRequest } from "@/server/auth/validate-request";
+import { validateRequestSSR } from "@/server/auth/validate-request";
 import { redirect } from "next/navigation";
 import { redirects } from "@/lib/auth/redirects";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -23,7 +23,7 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const { user } = await validateRequest();
+  const { user } = await validateRequestSSR();
   if (user) redirect(redirects.toProtected);
 
   // check if referer is from the same domain

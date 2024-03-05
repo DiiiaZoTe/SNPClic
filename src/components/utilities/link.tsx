@@ -1,6 +1,7 @@
 import Link, { LinkProps } from "next/link";
+import React from "react";
 
-type myLinkProps = Omit<
+type MyLinkProps = Omit<
   React.AnchorHTMLAttributes<HTMLAnchorElement>,
   keyof LinkProps
 > &
@@ -9,15 +10,16 @@ type myLinkProps = Omit<
     nextLink?: boolean;
   } & React.RefAttributes<HTMLAnchorElement>;
 
-const MyLink = ({
-  prefetch = false,
-  nextLink = true,
-  ...props
-}: myLinkProps) => {
-  // defaults prefetch to false if `prefetch` is not true
-  if (nextLink) return <Link {...props} prefetch={prefetch} />;
-  const { href, ...rest } = props;
-  return <a href={href as string} {...rest} />;
-};
+const MyLink = React.forwardRef<HTMLAnchorElement, MyLinkProps>(
+  ({ prefetch = false, nextLink = true, ...props }, ref) => {
+    if (nextLink) return <Link {...props} prefetch={prefetch} ref={ref} />;
+
+    const { href, ...rest } = props;
+    return <a href={href as string} ref={ref} {...rest} />;
+  }
+);
+
+// Set displayName for debugging purposes
+MyLink.displayName = "MyLink";
 
 export default MyLink;

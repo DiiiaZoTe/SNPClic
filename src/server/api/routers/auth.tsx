@@ -17,7 +17,6 @@ import {
 
 import { Scrypt, generateId } from "lucia";
 import { lucia } from "@/server/auth";
-import { validateRequest } from "@/server/auth/validate-request";
 
 import { cookies } from "next/headers";
 
@@ -37,52 +36,6 @@ import { siteConfig } from "@/config/site";
 import ResetPasswordEmail from "emails/reset-password";
 
 export const authRouter = createTRPCRouter({
-  login: publicProcedure
-    .input(loginSchema) // email and password
-    .mutation(async ({ ctx, input }) => {
-      const existingUser = await ctx.db.query.user.findFirst({
-        where: (table, { eq }) => eq(table.email, input.email),
-      });
-
-      if (!existingUser || !existingUser.hashedPassword) {
-        logError({
-          request: ctx.headers,
-          error: `No user found with email ${input.email} or no password hash found`,
-          location: `/api/trpc/auth.login`,
-          otherData: { existingUser },
-        });
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: `Email ou mot de passe incorrect.`,
-        });
-      }
-
-      const validPassword = await new Scrypt().verify(
-        existingUser.hashedPassword,
-        input.password
-      );
-      if (!validPassword) {
-        logError({
-          request: ctx.headers,
-          error: `Invalid login password for ${input.email}`,
-          location: `/api/trpc/auth.login`,
-        });
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: `Email ou mot de passe incorrect.`,
-        });
-      }
-
-      const session = await lucia.createSession(existingUser.id, {});
-      const sessionCookie = lucia.createSessionCookie(session.id);
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes
-      );
-      return { success: true, redirect: redirects.afterLogin };
-    }),
-
   signup: publicProcedure
     .input(
       z.object({
@@ -162,44 +115,6 @@ export const authRouter = createTRPCRouter({
       );
       return { success: true, redirect: redirects.afterSignup };
     }),
-
-  // ! this can become a form with action since it's very straightforward
-  logout: publicNoSessionProcedure.mutation(async ({ ctx }) => {
-    const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
-    if (!sessionId) {
-      logError({
-        request: ctx.headers,
-        error: `No session found to log out`,
-        location: `/api/trpc/auth.logout`,
-      });
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: `Vous n'êtes pas connecté.`,
-      });
-    }
-    try {
-      await lucia.invalidateSession(sessionId);
-      const sessionCookie = lucia.createBlankSessionCookie();
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes
-      );
-    } catch (error) {
-      logError({
-        request: ctx.headers,
-        error: `Failed to log out`,
-        location: `logout server action (src/lib/auth/actions.ts)`,
-        otherData: { error },
-      });
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: `Échec de la déconnexion.`,
-      });
-    } finally {
-      return { success: true, redirect: redirects.afterLogout };
-    }
-  }),
 
   resendVerificationEmail: protectedProcedure.mutation(async ({ ctx }) => {
     const user = ctx.user;
