@@ -83,7 +83,7 @@ export const SubmissionTable = ({
             Identifiant
           </TableHead>
           <TableHead className="text-foreground font-semibold">Date</TableHead>
-          <TableHead className="text-foreground font-semibold">Heure</TableHead>
+          <TableHead className="text-foreground font-semibold">Heure (GMT+1)</TableHead>
           <TableHead className="text-foreground font-semibold min-w-[30ch]">
             Raison d&apos;arrêt
           </TableHead>
@@ -94,9 +94,14 @@ export const SubmissionTable = ({
       </TableHeader>
       <TableBody>
         {submissions.map((submission, index) => {
+          // format the date and time in GMT+1
+          // const date = new Date(submission.submittedAt);
+          // const formattedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+          // const formattedTime = `${date.getHours()}h${date.getMinutes()}`;
           const date = new Date(submission.submittedAt);
-          const formattedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
-          const formattedTime = `${date.getHours()}h${date.getMinutes()}`;
+          const formattedDate = date.toLocaleDateString("fr-FR");
+          const formattedTimeFull = date.toLocaleTimeString("fr-FR");
+          const formattedTime = formattedTimeFull.split(":").slice(0, 2).join("h");
           return (
             <TableRow key={submission.uuid}>
               <TableCell

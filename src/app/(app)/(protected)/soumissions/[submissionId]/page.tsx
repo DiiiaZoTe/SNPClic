@@ -59,7 +59,7 @@ const Submission = async ({ submissionId }: { submissionId: string }) => {
           Informations générales:
         </h2>
         <p>
-          Soumis le {formattedDate} à {formattedTime}
+          Soumis le {formattedDate} à {formattedTime} (GMT+1 Paris)
         </p>
         <div className="flex flex-col xs:flex-row justify-between gap-2">
           <DownloadButton
