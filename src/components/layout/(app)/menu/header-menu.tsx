@@ -47,9 +47,12 @@ export const HeaderMenu = ({
             {navItems.map(({ section, items }, index) => (
               <div key={index}>
                 <DropdownMenuLabel>{section}</DropdownMenuLabel>
-                {items.map(({ label, href, Icon }) => (
+                {items.map(({ label, href, Icon, nextLink }) => (
                   <DropdownMenuItem key={label} asChild>
-                    <MyLink href={href}>
+                    <MyLink
+                      href={href}
+                      nextLink={nextLink === undefined ? true : nextLink}
+                    >
                       <Icon className="h-4 w-4 mr-2" />
                       {label}
                     </MyLink>

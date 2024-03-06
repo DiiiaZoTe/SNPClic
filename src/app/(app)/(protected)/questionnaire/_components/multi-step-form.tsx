@@ -22,6 +22,7 @@ import { errorToast } from "@/components/utilities/toasts";
 import { DotAnimation, ExtraSection } from "./other";
 import { DownloadButton } from "@/components/utilities/downloadButton";
 import { Button } from "@/components/ui/button";
+import MyLink from "@/components/utilities/link";
 
 export const MultiStepForm = ({ form }: { form: MSF.Form }) => {
   const topFormRef = useRef<HTMLDivElement>(null);
@@ -116,8 +117,6 @@ const MultiStepFormComponent = () => {
           skipped: skipped,
         };
       }),
-      // fake: true,
-      // error: true,
     });
   };
 
@@ -225,18 +224,31 @@ const MultiStepFormComponent = () => {
   return (
     <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
       <ExtraSection
+        title="Voir ma soumission"
+        description="Vous pouvez voir votre soumission pour vérifier que tout est correct."
+      >
+        <Button className="w-full xs:w-40 max-w-full ml-auto group" asChild>
+          <MyLink href={`/soumissions/${submissionID}`}>
+            Voir
+            <ChevronRight className="h-4 w-4 ml-2 transition-all group-hover:translate-x-1" />
+          </MyLink>
+        </Button>
+      </ExtraSection>
+
+      <ExtraSection
         title="Télécharger le PDF"
         description="Vous pouvez télécharger le PDF de votre questionnaire pour le conserver ou le partager."
       >
         <DownloadButton
           className="w-full xs:w-40 max-w-full ml-auto group"
-          filename={submissionID}
+          filename={submissionID || ""}
           loader={<Loader2 className="animate-spin h-4 w-4" />}
         >
           Télécharger
           <Download className="h-4 w-4 ml-2" />
         </DownloadButton>
       </ExtraSection>
+
       <ExtraSection
         title="Nouvelle soumission"
         description="Voulez-vous soummettre une nouvelle réponse à ce questionnaire ?"

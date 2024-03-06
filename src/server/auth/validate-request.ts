@@ -73,12 +73,14 @@ export const uncachedValidateRequestSSR = async () => {
     const result = await checkSessionValid();
     if (!result.session) return result;
 
+    // session was found and not refreshed (normal case), return the result
+    if (!result.session.fresh) return result;
+
     // session was found and refreshed, bypass that and invalidate the session since we cannot set cookies
     if (result.session.fresh) {
       await lucia.invalidateSession(result.session.id);
-      redirect(redirects.afterLogout);
+      return { user: null, session: null };
     }
-    return result;
 
   } catch (e) { // unexpected error
     logError({
@@ -88,6 +90,9 @@ export const uncachedValidateRequestSSR = async () => {
     })
     return { user: null, session: null };
   }
+  // if we reach this point... we definitely have no session
+  // we let the caller handle the redirect
+  return { user: null, session: null };
 }
 
 export const validateRequestSSR = cache(uncachedValidateRequestSSR);

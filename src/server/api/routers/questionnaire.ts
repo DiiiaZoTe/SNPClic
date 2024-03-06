@@ -202,10 +202,14 @@ export const questionnaireRouter = createTRPCRouter({
       const submissionID = submissionData[0]?.id;
       const formID = submissionData[0]?.formId;
       if (!submissionID || !formID) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No form submission found" });
+
+      //* get answers
       const answersData = await ctx.db
         .select().from(submissionAnswer)
         .where(eq(submissionAnswer.submissionId, submissionID));
       if (!answersData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No answer found" });
+
+      //* get string array answers
       const stringArrayAnswersID = answersData.filter((answer) => answer.answerType === "string_array").map((answer) => answer.id);
       let stringArrayAnswersData: {
         answerId: bigint,
@@ -218,7 +222,6 @@ export const questionnaireRouter = createTRPCRouter({
             value: submissionAnswerStringArray.value
           }).from(submissionAnswerStringArray)
           .where(inArray(submissionAnswerStringArray.answerId, stringArrayAnswersID));
-        if (!stringArrayAnswersData.length) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Should have retrieved string array answer" })
       }
       // const formData = await ctx.db.select({ id: form.id }).from(form).where(eq(form.id, formID));
       const formData = FORM_DATA;

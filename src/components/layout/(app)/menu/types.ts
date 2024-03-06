@@ -8,6 +8,7 @@ export type NavItemProps = {
   className?: string;
   active?: boolean;
   Component?: ReactNode;
+  nextLink?: boolean;
 };
 
 export type NavSectionProps = {

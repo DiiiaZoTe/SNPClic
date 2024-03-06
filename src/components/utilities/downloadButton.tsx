@@ -4,9 +4,11 @@ import { Button, ButtonProps } from "@/components/ui/button";
 import { forwardRef, useRef, useState } from "react";
 import { errorToast } from "@/components/utilities/toasts";
 import { FileX2 } from "lucide-react";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 interface DownloadButtonProps extends ButtonProps {
-  filename?: string;
+  filename: string;
   retryDelay?: number;
   loader?: React.ReactNode;
 }
@@ -16,7 +18,30 @@ const DownloadButton = forwardRef<HTMLButtonElement, DownloadButtonProps>(
     const [isDownloading, setIsDownloading] = useState(false);
     const fileUrlRef = useRef<string | undefined>();
 
-    if (!filename)
+    const {
+      mutate: generateFile,
+      isLoading: isGenerating,
+      isSuccess: isGenerateSuccess,
+      isIdle: isGenerateIdle,
+    } = api.questionnaire.generatePDF.useMutation({
+      onSuccess: () => {
+        toast.success("Le fichier a été généré avec succès");
+      },
+      onError: () => {
+        errorToast({
+          title: "Erreur lors de la génération du fichier",
+          description:
+            "Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
+          actionButton: {
+            action: () => generateFile(filename),
+            buttonLabel: "Réessayer",
+            buttonVariant: "black",
+          },
+        });
+      },
+    });
+
+    if (filename === "" || filename === undefined || filename === null)
       return (
         <div className="flex items-center gap-2">
           <FileX2 className="w-4 h-4" />
@@ -53,24 +78,30 @@ const DownloadButton = forwardRef<HTMLButtonElement, DownloadButtonProps>(
         errorToast({
           title: "Erreur lors du téléchargement",
           description:
-            "Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter.",
+            "Essayer de regénérer le fichier. Si le problème persiste, veuillez nous contacter.",
           actionButton: {
-            action: handleDownload,
-            buttonLabel: "Réessayer",
+            action: () => generateFile(filename),
+            buttonLabel: "Régénérer",
             buttonVariant: "black",
           },
         });
       }
     };
 
+    const isLoading = isGenerating || isDownloading;
+    const canDownload = isGenerateIdle || isGenerateSuccess;
+    const btnFunction = canDownload
+      ? handleDownload
+      : () => generateFile(filename);
+
     return (
       <Button
         ref={ref}
         {...props}
-        onClick={handleDownload}
+        onClick={btnFunction}
         disabled={isDownloading}
       >
-        {isDownloading && loader ? loader : children || "Télécharger"}
+        {isLoading && loader ? loader : children || "Télécharger"}
       </Button>
     );
   }

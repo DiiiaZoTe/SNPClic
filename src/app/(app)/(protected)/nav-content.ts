@@ -17,7 +17,7 @@ export const navItems: NavSectionProps[] = [
         href: "/questionnaire",
         Icon: BookPlus,
       },
-      { label: "Mes soumissions", href: "/soumissions", Icon: Send },
+      { label: "Mes soumissions", href: "/soumissions", Icon: Send, nextLink: false },
     ],
   },
 ];

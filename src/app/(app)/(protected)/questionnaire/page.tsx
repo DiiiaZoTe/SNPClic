@@ -3,7 +3,6 @@ import { Provider } from "jotai";
 import { getSharedMetadata } from "@/config/shared-metadata";
 import { siteConfig } from "@/config/site";
 import { FORM_DATA } from "./content";
-// import { api } from "@/trpc/server";
 
 const METADATA = {
   title: "Questionnaire",

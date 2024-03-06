@@ -94,9 +94,7 @@ export const Sidebar = ({
                       "justify-start text-base font-normal gap-4 px-2.5 transition-[width] duration-500 text-destructive hover:text-destructive hover:bg-destructive/10",
                       isSidebarOpen ? "w-full" : "w-10 h-10"
                     )}
-                    loader={
-                      <Loader2 className="min-w-fit animate-spin" />
-                    }
+                    loader={<Loader2 className="min-w-fit animate-spin" />}
                   >
                     <LogOut className="w-5 h-5 min-w-fit" />
                     <span className="min-w-0 truncate">Déconnexion</span>
@@ -175,6 +173,7 @@ const SidebarNavItem = ({
   className,
   active,
   Component,
+  nextLink,
 }: NavItemProps) => {
   const { isSidebarOpen } = useSidebar();
   if (Component) return <>{Component}</>;
@@ -191,7 +190,7 @@ const SidebarNavItem = ({
       )}
       disabled={active}
     >
-      <MyLink href={href}>
+      <MyLink href={href} nextLink={nextLink === undefined ? true : nextLink}>
         <Icon className="w-5 h-5 min-w-fit" />
         <span className="min-w-0 truncate">{label}</span>
       </MyLink>

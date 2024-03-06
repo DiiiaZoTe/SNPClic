@@ -2,7 +2,7 @@
 
 import { db } from "@/server/db";
 
-import { eq, desc, count } from "drizzle-orm";
+import { eq, and, desc, count } from "drizzle-orm";
 import { MySqlSelect } from "drizzle-orm/mysql-core";
 import { formSubmission } from "@/server/db/schema";
 
@@ -47,4 +47,22 @@ export const getCountSubmissionByUser = async ({ userId }: { userId: string }) =
     .select({ value: count(formSubmission.uuid) })
     .from(formSubmission)
     .where(eq(formSubmission.submittedBy, userId));
+}
+
+export const deleteSubmissionById = async ({
+  submissionId,
+  userId,
+}: {
+  submissionId: string;
+  userId: string;
+}) => {
+  // we don't delete the submission, we just remove the submittedBy
+  return db
+    .update(formSubmission)
+    .set({
+      submittedBy: null,
+    }).where(and(eq(formSubmission.uuid, submissionId), eq(formSubmission.submittedBy, userId)));
+  // return db
+  //   .delete(formSubmission)
+  //   .where(and(eq(formSubmission.uuid, submissionId), eq(formSubmission.submittedBy, userId)));
 }
