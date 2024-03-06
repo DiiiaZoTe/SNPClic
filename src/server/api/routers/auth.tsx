@@ -1,3 +1,7 @@
+// NOTE: TRPC cannot set cookies or redirect,
+//       therefore this router only includes logic
+//       that does not require cookies or redirects.
+
 import { z } from "zod";
 
 import { logError } from "@/lib/utilities/logger";
@@ -5,7 +9,6 @@ import { logError } from "@/lib/utilities/logger";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicNoSessionProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
@@ -26,7 +29,6 @@ import {
   generatePasswordResetToken,
   timeFromNow,
 } from "@/server/auth/utilities";
-import { loginSchema } from "@/lib/auth/schemas";
 
 import { sendEmail } from "@/server/emails/send";
 import VerificationCodeEmail from "@/../emails/email-verification";
@@ -324,26 +326,5 @@ export const authRouter = createTRPCRouter({
         sessionCookie.attributes
       );
       return { success: true, message: "Mot de passe réinitialisé." };
-    }),
-
-  test: publicProcedure
-    .input(
-      z.object({
-        email: z.string().email("Veuillez entrer une adresse e-mail valide."),
-        password: z
-          .string()
-          .min(1, "Veuillez entrer un mot de passe.")
-          .max(255),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const sessionCookie = lucia.createSessionCookie("test");
-      console.log(sessionCookie);
-      cookies().set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes
-      );
-      return { success: true, redirect: redirects.afterSignup };
     }),
 });
