@@ -68,7 +68,6 @@ export const submissionRouter = createTRPCRouter({
         value: string
       }[] = [];
 
-      console.log(stringArrayAnswersID)
       if (stringArrayAnswersID.length) {
         stringArrayAnswersData = await ctx.db
           .select({

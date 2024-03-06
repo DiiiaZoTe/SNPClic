@@ -8,6 +8,8 @@ import { SidebarProvider } from "@/components/layout/(app)/menu/sidebar/use-side
 import { navItems } from "@/app/(app)/(protected)/nav-content";
 import { TopHeader } from "@/components/layout/(app)/menu/top-header";
 
+export const dynamic = "force-dynamic";
+
 export default async function Layout({
   children,
 }: {

@@ -8,6 +8,7 @@ import { redirects } from "@/lib/auth/redirects";
 import { LoginSchema, loginSchema } from "@/lib/auth/schemas";
 import { Scrypt } from "lucia";
 import { db } from "@/server/db";
+import { revalidatePath } from "next/cache";
 
 
 export async function logoutAction() {
@@ -35,6 +36,7 @@ export async function logoutAction() {
     }
   }
   // redirect to the page after logout
+  revalidatePath("/");
   redirect(redirects.afterLogout);
 }
 

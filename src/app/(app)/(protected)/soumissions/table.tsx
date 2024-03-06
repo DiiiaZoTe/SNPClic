@@ -36,13 +36,14 @@ import { useState } from "react";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { errorToast } from "@/components/utilities/toasts";
+import { useRouter } from "next/navigation";
 
 export const SubmissionTable = ({
   submissions,
 }: {
   submissions: Submission[];
 }) => {
-  const [submissionsState, setSubmissionsState] = useState(submissions);
+  const router = useRouter();
 
   // trpc api at api.submission.deleteSubmissionById
   // create the mutation that optimistically updates the UI
@@ -57,9 +58,7 @@ export const SubmissionTable = ({
       onSuccess: ({ submissionId }) => {
         toast.dismiss();
         toast.success("La soumission a été supprimée avec succès.");
-        setSubmissionsState((prev) =>
-          prev.filter((submission) => submission.uuid !== submissionId)
-        );
+        router.refresh();
       },
       onError: (error) => {
         toast.dismiss();
@@ -94,7 +93,7 @@ export const SubmissionTable = ({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {submissionsState.map((submission, index) => {
+        {submissions.map((submission, index) => {
           const date = new Date(submission.submittedAt);
           const formattedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
           const formattedTime = `${date.getHours()}h${date.getMinutes()}`;
@@ -102,7 +101,7 @@ export const SubmissionTable = ({
             <TableRow key={submission.uuid}>
               <TableCell
                 className={cn(
-                  index == submissionsState.length - 1 ? "rounded-bl-md" : ""
+                  index == submissions.length - 1 ? "rounded-bl-md" : ""
                 )}
               >
                 <Button asChild variant="linkForeground">
@@ -119,7 +118,7 @@ export const SubmissionTable = ({
               <TableCell
                 className={cn(
                   "text-right",
-                  index == submissionsState.length - 1 ? "rounded-br-md" : ""
+                  index == submissions.length - 1 ? "rounded-br-md" : ""
                 )}
               >
                 <ActionDropdown

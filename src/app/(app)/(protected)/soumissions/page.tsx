@@ -13,6 +13,9 @@ import { redirects } from "@/lib/auth/redirects";
 
 import { SubmissionTable } from "@/app/(app)/(protected)/soumissions/table";
 import { SubmissionPagination } from "@/app/(app)/(protected)/soumissions/pagination";
+import { Button } from "@/components/ui/button";
+import MyLink from "@/components/utilities/link";
+import { Plus } from "lucide-react";
 
 const METADATA = {
   title: "Soumissions",
@@ -25,6 +28,8 @@ export const metadata = {
   description: METADATA.description,
   ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
 };
+
+export const dynamic = "force-dynamic";
 
 export type Submission = ReturnType<
   typeof getAllSubmissionByUser
@@ -68,6 +73,12 @@ export default async function Page({
     return (
       <div className="h-full flex flex-col justify-center items-center gap-8">
         Vous n&apos;avez aucune soumissions.
+        <Button variant="black" asChild>
+          <MyLink href="/questionnaire">
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter une soumission
+          </MyLink>
+        </Button>
       </div>
     );
   }

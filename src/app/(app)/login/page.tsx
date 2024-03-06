@@ -22,6 +22,8 @@ export const metadata = {
   ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const { user } = await validateRequestSSR();
   if (user) redirect(redirects.toProtected);
@@ -48,7 +50,11 @@ export default async function Page() {
         >
           <LoginForm />
         </ContentWrapper>
-        <ThemeToggle triggerClassName="absolute bottom-4 left-4" buttonVariant="linkForeground" align="start"/>
+        <ThemeToggle
+          triggerClassName="absolute bottom-4 left-4"
+          buttonVariant="linkForeground"
+          align="start"
+        />
       </div>
 
       <div className="hidden w-full col-span-2 lg:flex h-full max-h-screen items-center sticky top-0">

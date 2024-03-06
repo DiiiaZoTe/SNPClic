@@ -150,7 +150,7 @@ const SidebarNavSection = ({ section, items }: NavSectionProps) => {
         </h2>
       )}
       <div className="flex flex-col">
-        {items.map(({ label, href, Icon, className, Component }) => (
+        {items.map(({ label, href, Icon, className, nextLink, Component }) => (
           <SidebarNavItem
             key={label}
             label={label}
@@ -159,6 +159,7 @@ const SidebarNavSection = ({ section, items }: NavSectionProps) => {
             className={className}
             active={currentPath === href}
             Component={Component}
+            nextLink={nextLink}
           />
         ))}
       </div>

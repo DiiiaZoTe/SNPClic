@@ -12,9 +12,7 @@ export const TopHeader = async ({
 }: {
   navItems: NavSectionProps[];
 }) => {
-  console.log("----------- validateRequest from TopHeader -----------");
   const { user, session } = await validateRequestSSR();
-  console.log("----------- validateRequest from TopHeader -----------");
   if (!user || !session) redirect(redirects.toNonProtected);
   return (
     <header className="p-4 flex justify-between items-center gap-4 h-[4.5rem]">

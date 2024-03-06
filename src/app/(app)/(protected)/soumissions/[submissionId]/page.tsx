@@ -22,6 +22,8 @@ export const metadata = {
   ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   params,
 }: {
