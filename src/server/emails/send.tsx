@@ -2,9 +2,13 @@
 
 import {
   Resend,
+  // CreateEmailOptions as OriginalCreateEmailOptions,
+  // CreateEmailRequestOptions,
+} from "resend";
+import {
   CreateEmailOptions as OriginalCreateEmailOptions,
   CreateEmailRequestOptions,
-} from "resend";
+} from "./resend-type";
 
 import { emailConfig } from "@/config/email";
 
