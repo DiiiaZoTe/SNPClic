@@ -3,7 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import {
   getAllSubmissionByUser,
   getCountSubmissionByUser,
-} from "@/lib/db/queries/submission";
+} from "@/server/db/queries/submission";
 import { validateRequestSSR } from "@/server/auth/validate-request";
 
 import { siteConfig } from "@/config/site";

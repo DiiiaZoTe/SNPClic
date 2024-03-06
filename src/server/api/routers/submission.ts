@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { logError } from "@/lib/utilities/logger";
-import { deleteSubmissionById } from "@/lib/db/queries/submission";
+import { deleteSubmissionById } from "@/server/db/queries/submission";
 
 import { formSubmission, submissionAnswer, submissionAnswerStringArray } from "@/server/db/schema";
 import { inArray, eq, and } from "drizzle-orm";

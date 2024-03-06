@@ -14,7 +14,7 @@ interface Props {
   password: string;
 }
 
-export const AccountCreatedTempPassEmail = ({ password }: Props) => {
+export const EmailAccountCreatedTempPass = ({ password }: Props) => {
   return (
     <Html>
       <Head />
@@ -46,8 +46,8 @@ export const AccountCreatedTempPassEmail = ({ password }: Props) => {
   );
 };
 
-AccountCreatedTempPassEmail.PreviewProps = {
+EmailAccountCreatedTempPass.PreviewProps = {
   password: "1324567890abcdef",
 };
 
-export default AccountCreatedTempPassEmail;
+export default EmailAccountCreatedTempPass;
