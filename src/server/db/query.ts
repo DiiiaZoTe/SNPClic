@@ -4,6 +4,7 @@ import { sql, eq, inArray } from "drizzle-orm";
 import { db } from "./index";
 import { form, formSubmission, submissionAnswer, submissionAnswerStringArray } from "./schema";
 import { generateUUID } from "@/lib/utilities/uuid";
+// import { insertNewAccount } from "@/server/auth/utilities";
 
 // * Insert form data
 // import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
@@ -44,3 +45,11 @@ import { generateUUID } from "@/lib/utilities/uuid";
 //         })
 //       })
 //   })
+
+// insertNewAccount("alex.vencel.96@gmail.com", "Test1234")
+//   .then((result) => {
+//     console.log(result)
+//   })
+//   .catch((error) => {
+//     console.error(error)
+//   });

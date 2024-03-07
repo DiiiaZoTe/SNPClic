@@ -122,7 +122,7 @@ export const questionnaireRouter = createTRPCRouter({
         const formID = BigInt(1);
 
         // * insert the form submission
-        const formSubmissionData = await tx.insert(formSubmission).values({
+        const [formSubmissionData] = await tx.insert(formSubmission).values({
           uuid: submissionUUID,
           formId: formID,
           submittedBy: ctx.user.id,
@@ -130,12 +130,12 @@ export const questionnaireRouter = createTRPCRouter({
           stopReasonQuestionId: input.stopReason?.questionID,
           skippedSteps: input.skippedSteps,
         });
+        if (formSubmissionData.affectedRows == 0) rollback("form submission");
         const submissionID = formSubmissionData.insertId;
-        if (!submissionID) rollback("form submission");
 
         // * insert the form answers. Can't be concurrent because tx does not support concurrent operations
         for (const answer of input.answers) {
-          const submissionAnswerData = await tx.insert(submissionAnswer).values({
+          const [submissionAnswerData] = await tx.insert(submissionAnswer).values({
             submissionId: submissionID as any,
             questionId: answer.questionID,
             answerType: answer.answerType,
@@ -143,16 +143,16 @@ export const questionnaireRouter = createTRPCRouter({
             stringAnswer: answer.answerType === "string" ? answer.answer as string : null,
             skipped: answer.skipped,
           });
+          if (submissionAnswerData.affectedRows == 0) rollback("form answer");
+          const answerID = submissionAnswerData.insertId;
           // * insert string array answers concurrently
           if (answer.answerType === "string_array" && Array.isArray(answer.answer)) {
-            const answerID = submissionAnswerData.insertId;
-            if (!answerID) rollback("form answer");
             for (const value of answer.answer) {
-              const stringArrayData = await tx.insert(submissionAnswerStringArray).values({
+              const [stringArrayData] = await tx.insert(submissionAnswerStringArray).values({
                 answerId: answerID as any,
                 value,
               });
-              if (!stringArrayData.insertId) rollback("form answer string array");
+              if (stringArrayData.affectedRows == 0) rollback("form answer string array");
             };
           }
         }

@@ -1,12 +1,10 @@
-import { drizzle } from "drizzle-orm/planetscale-serverless";
-import { Client } from "@planetscale/database";
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 
 import * as schema from "./schema";
-import { db_config } from "./config";
+import { DB_CONFIG } from "./config";
 
-export const db = drizzle(
-  new Client({
-    url: db_config.url,
-  }),
-  { schema }
-);
+const connection = mysql.createPool({
+  uri: DB_CONFIG.url,
+});
+export const db = drizzle(connection, { schema, mode: "default" });

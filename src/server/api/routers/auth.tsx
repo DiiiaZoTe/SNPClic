@@ -68,12 +68,12 @@ export const authRouter = createTRPCRouter({
 
       const userId = generateId(21);
       const hashedPassword = await new Scrypt().hash(input.password);
-      const insertNewUser = await ctx.db.insert(user).values({
+      const [insertNewUser] = await ctx.db.insert(user).values({
         id: userId,
         email: input.email,
         hashedPassword,
       });
-      if (!insertNewUser.insertId) {
+      if (insertNewUser.affectedRows == 0) {
         logError({
           request: ctx.headers,
           error: `Failed inserting new user`,
@@ -205,11 +205,11 @@ export const authRouter = createTRPCRouter({
       }
 
       await lucia.invalidateUserSessions(ctxUser.id);
-      const updateUser = await ctx.db
+      const [updateUser] = await ctx.db
         .update(user)
         .set({ emailVerified: true })
         .where(eq(user.id, user.id));
-      if (!updateUser.rowsAffected) {
+      if (!updateUser.affectedRows) {
         logError({
           request: ctx.headers,
           error: `Failed updating user email verification status`,

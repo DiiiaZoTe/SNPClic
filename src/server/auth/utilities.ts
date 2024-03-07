@@ -31,12 +31,12 @@ export async function insertNewAccount(email: string, password: string) {
 
     const userId = generateId(21);
     const hashedPassword = await new Scrypt().hash(password);
-    const insertNewUser = await db.insert(user).values({
+    const [insertNewUser] = await db.insert(user).values({
       id: userId,
       email: email,
       hashedPassword,
     });
-    if (!insertNewUser.insertId) {
+    if (!insertNewUser.affectedRows) {
       logError({
         request: headers(),
         error: `Failed to insert new user ${email}`,
@@ -67,7 +67,6 @@ export async function insertNewAccountWithTemporaryPassword(email: string) {
 /** Generates a temporary 16 charachet password */
 export function generateTemporaryPassword() {
   return generateRandomString(16, alphabet("0-9", "a-z", "A-Z"));
-
 }
 
 /** Generate a new email verification code for user */
