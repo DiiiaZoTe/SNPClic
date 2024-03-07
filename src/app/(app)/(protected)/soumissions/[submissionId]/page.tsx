@@ -9,6 +9,7 @@ import { DownloadButton } from "@/components/utilities/downloadButton";
 import { Download, Loader2 } from "lucide-react";
 import { Loading } from "@/components/utilities/loading";
 import { DeleteButton } from "./delete";
+import { formatDate } from "@/lib/utilities/format-date";
 
 const METADATA = {
   title: "Soumissions",
@@ -49,8 +50,7 @@ const Submission = async ({ submissionId }: { submissionId: string }) => {
   });
 
   const date = new Date(submission.submissionData.submittedAt);
-  const formattedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
-  const formattedTime = `${date.getHours()}h${date.getMinutes()}`;
+  const { formattedDate, formattedTime } = formatDate(date);
 
   return (
     <div className="flex flex-col gap-8 pb-8">
