@@ -74,7 +74,7 @@ export default async function Page({
   }
 
   return (
-    <div className="flex flex-col gap-8 py-8">
+    <div className="flex flex-col gap-8">
       <h1 className="text-2xl font-bold">Soumissions</h1>
       <SubmissionTable submissions={submissions} />
       <SubmissionPagination total={count} page={page} pageSize={pageSize} />

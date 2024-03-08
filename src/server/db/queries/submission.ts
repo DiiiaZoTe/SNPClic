@@ -31,20 +31,29 @@ export const getAllSubmission = async ({
   pagination?: { page?: number; pageSize?: number };
   noLimit?: boolean;
 }) => {
-  const query = db
-    .select({
-      uuid: formSubmission.uuid,
-      formId: formSubmission.formId,
-      submittedAt: formSubmission.submittedAt,
-      stopReason: formSubmission.stopReason,
-      stopReasonQuestionId: formSubmission.stopReasonQuestionId,
-      skippedSteps: formSubmission.skippedSteps,
+  try {
+    const query = db
+      .select({
+        uuid: formSubmission.uuid,
+        formId: formSubmission.formId,
+        submittedAt: formSubmission.submittedAt,
+        stopReason: formSubmission.stopReason,
+        stopReasonQuestionId: formSubmission.stopReasonQuestionId,
+        skippedSteps: formSubmission.skippedSteps,
+      })
+      .from(formSubmission)
+      .orderBy(desc(formSubmission.submittedAt))
+      .$dynamic();
+    if (noLimit) return await query;
+    return withPagination(query, pagination.page, pagination.pageSize);
+  } catch (e) {
+    logError({
+      error: "Error getting all submission",
+      location: "getAllSubmission",
+      otherData: { e },
     })
-    .from(formSubmission)
-    .orderBy(desc(formSubmission.submittedAt))
-    .$dynamic();
-  if (noLimit) return await query;
-  return withPagination(query, pagination.page, pagination.pageSize);
+    return [];
+  }
 }
 
 /** getAll the submission by user, paginated limit 10 by default.
@@ -62,37 +71,65 @@ export const getAllSubmissionByUser = async ({
   pagination?: { page?: number; pageSize?: number };
   noLimit?: boolean;
 }) => {
-  const query = db
-    .select({
-      uuid: formSubmission.uuid,
-      formId: formSubmission.formId,
-      submittedAt: formSubmission.submittedAt,
-      stopReason: formSubmission.stopReason,
-      stopReasonQuestionId: formSubmission.stopReasonQuestionId,
-      skippedSteps: formSubmission.skippedSteps,
+  try {
+    const query = db
+      .select({
+        uuid: formSubmission.uuid,
+        formId: formSubmission.formId,
+        submittedAt: formSubmission.submittedAt,
+        stopReason: formSubmission.stopReason,
+        stopReasonQuestionId: formSubmission.stopReasonQuestionId,
+        skippedSteps: formSubmission.skippedSteps,
+      })
+      .from(formSubmission)
+      .where(eq(formSubmission.submittedBy, userId))
+      .orderBy(desc(formSubmission.submittedAt))
+      .$dynamic();
+    if (noLimit) return await query;
+    return withPagination(query, pagination.page, pagination.pageSize);
+  }
+  catch (e) {
+    logError({
+      error: "Error getting submission by user",
+      location: "getAllSubmissionByUser",
+      otherData: { e },
     })
-    .from(formSubmission)
-    .where(eq(formSubmission.submittedBy, userId))
-    .orderBy(desc(formSubmission.submittedAt))
-    .$dynamic();
-  if (noLimit) return await query;
-  return withPagination(query, pagination.page, pagination.pageSize);
+    return [];
+  }
 }
 
 /** get the number of submission from a user */
 export const getCountSubmission = async () => {
-  return db
-    .select({ value: count(formSubmission.uuid) })
-    .from(formSubmission)
+  try {
+    return db
+      .select({ value: count(formSubmission.uuid) })
+      .from(formSubmission)
+  } catch (e) {
+    logError({
+      error: "Error getting submission count",
+      location: "getCountSubmission",
+      otherData: { e },
+    })
+    return [];
+  }
 }
 
 /** get the number of submission from a user */
 export const getCountSubmissionByUser = async ({ userId }: { userId: string }) => {
-  if (!userId) return [];
-  return db
-    .select({ value: count(formSubmission.uuid) })
-    .from(formSubmission)
-    .where(eq(formSubmission.submittedBy, userId));
+  try {
+    if (!userId) return [];
+    return db
+      .select({ value: count(formSubmission.uuid) })
+      .from(formSubmission)
+      .where(eq(formSubmission.submittedBy, userId));
+  } catch (e) {
+    logError({
+      error: "Error getting submission count by user",
+      location: "getCountSubmissionByUser",
+      otherData: { e },
+    })
+    return [];
+  }
 }
 
 /** Delete a submission by a user */
@@ -103,16 +140,26 @@ export const deleteSubmissionById = async ({
   submissionId: string;
   user: User;
 }) => {
-  if (!submissionId || !user.id) return;
-  // we don't delete the submission, we just remove the submittedBy
-  return db
-    .update(formSubmission)
-    .set({
-      submittedBy: null,
-    }).where(and(eq(formSubmission.uuid, submissionId), eq(formSubmission.submittedBy, user.id)));
-  // return db
-  //   .delete(formSubmission)
-  //   .where(and(eq(formSubmission.uuid, submissionId), eq(formSubmission.submittedBy, userId)));
+  try {
+
+    if (!submissionId || !user.id) return;
+    // we don't delete the submission, we just remove the submittedBy
+    return db
+      .update(formSubmission)
+      .set({
+        submittedBy: null,
+      }).where(and(eq(formSubmission.uuid, submissionId), eq(formSubmission.submittedBy, user.id)));
+    // return db
+    //   .delete(formSubmission)
+    //   .where(and(eq(formSubmission.uuid, submissionId), eq(formSubmission.submittedBy, userId)));
+  } catch (e) {
+    logError({
+      error: "Error deleting submission",
+      location: "deleteSubmissionById",
+      otherData: { e },
+    })
+  }
+  return undefined;
 }
 
 /** get the full submission details (form, submission, answers) */
