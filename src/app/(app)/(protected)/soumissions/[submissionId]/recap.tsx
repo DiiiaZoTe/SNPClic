@@ -10,13 +10,12 @@ import {
 } from "@/app/(app)/(protected)/questionnaire/types";
 
 import { Badge } from "@/components/ui/badge";
-import { api } from "@/trpc/server";
+import { getSubmissionDetails } from "@/server/db/queries/submission";
 
-type Submission = ReturnType<
-  typeof api.submission.getSubmissionDetailById.query
-> extends Promise<infer T>
-  ? T
-  : never;
+type Submission = Omit<
+  Exclude<Awaited<ReturnType<typeof getSubmissionDetails>>, { error: string }>,
+  "error"
+>;
 
 const NO_ANSWER = "Aucune réponse";
 

@@ -22,6 +22,8 @@ export const SubmissionPagination = ({
   const next = page + 1 <= totalPages ? page + 1 : null;
   const last = totalPages;
 
+  if (totalPages <= 1) return null;
+
   return (
     <Pagination>
       <PaginationContent>

@@ -1,8 +1,8 @@
 import { unstable_noStore as noStore } from "next/cache";
 
 import {
-  getAllSubmissionByUser,
-  getCountSubmissionByUser,
+  getAllSubmission,
+  getCountSubmission,
 } from "@/server/db/queries/submission";
 import { validateRequestSSR } from "@/server/auth/validate-request";
 
@@ -13,14 +13,11 @@ import { redirects } from "@/lib/auth/redirects";
 
 import { SubmissionTable } from "@/app/(app)/(protected)/soumissions/table";
 import { SubmissionPagination } from "@/app/(app)/(protected)/soumissions/pagination";
-import { Button } from "@/components/ui/button";
-import MyLink from "@/components/utilities/link";
-import { Plus } from "lucide-react";
 
 const METADATA = {
-  title: "Soumissions",
-  description: "Vos soumissions de questionnaires SNPClic",
-  url: siteConfig.url + "/soumissions",
+  title: "Admin - Soumissions",
+  description: "Toutesl les soumissions de questionnaires SNPClic",
+  url: siteConfig.url + "/admin/soumissions",
 };
 
 export const metadata = {
@@ -31,9 +28,9 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-export type Submission = ReturnType<
-  typeof getAllSubmissionByUser
-> extends Promise<(infer R)[]>
+export type Submission = ReturnType<typeof getAllSubmission> extends Promise<
+  (infer R)[]
+>
   ? R
   : never;
 
@@ -57,14 +54,13 @@ export default async function Page({
 
   // get data
   const [submissions, submissionCount] = await Promise.all([
-    getAllSubmissionByUser({
-      userId: user.id,
+    getAllSubmission({
       pagination: {
         page: page,
         pageSize: pageSize,
       },
     }),
-    getCountSubmissionByUser({ userId: user.id }),
+    getCountSubmission(),
   ]);
 
   const count = submissionCount[0]?.value ?? 0;
@@ -72,19 +68,13 @@ export default async function Page({
   if (!submissions.length) {
     return (
       <div className="h-full flex flex-col justify-center items-center gap-8">
-        Vous n&apos;avez aucune soumissions.
-        <Button variant="black" asChild>
-          <MyLink href="/questionnaire">
-            <Plus className="w-4 h-4 mr-2" />
-            Ajouter une soumission
-          </MyLink>
-        </Button>
+        Il n&apos;y a aucune soumissions.
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 py-8">
       <h1 className="text-2xl font-bold">Soumissions</h1>
       <SubmissionTable submissions={submissions} />
       <SubmissionPagination total={count} page={page} pageSize={pageSize} />

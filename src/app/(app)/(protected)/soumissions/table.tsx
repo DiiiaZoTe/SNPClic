@@ -77,68 +77,72 @@ export const SubmissionTable = ({
   };
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="text-foreground font-semibold min-w-[20ch] rounded-tl-md">
-            Identifiant
-          </TableHead>
-          <TableHead className="text-foreground font-semibold">Date</TableHead>
-          <TableHead className="text-foreground font-semibold">
-            Heure (GMT+1)
-          </TableHead>
-          <TableHead className="text-foreground font-semibold min-w-[30ch]">
-            Raison d&apos;arrêt
-          </TableHead>
-          <TableHead className="text-foreground font-semibold text-right rounded-tr-md">
-            Action
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {submissions.map((submission, index) => {
-          // format the date and time in GMT+1
-          // const date = new Date(submission.submittedAt);
-          // const formattedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
-          // const formattedTime = `${date.getHours()}h${date.getMinutes()}`;
-          const date = new Date(submission.submittedAt);
-          const { formattedDate, formattedTime } = formatDate(date);
+    <div className="[--scrollbar-size:3px] w-full">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-foreground font-semibold min-w-[20ch] rounded-tl-md">
+              Identifiant
+            </TableHead>
+            <TableHead className="text-foreground font-semibold">
+              Date
+            </TableHead>
+            <TableHead className="text-foreground font-semibold">
+              Heure (GMT+1)
+            </TableHead>
+            <TableHead className="text-foreground font-semibold min-w-[30ch]">
+              Raison d&apos;arrêt
+            </TableHead>
+            <TableHead className="text-foreground font-semibold text-right rounded-tr-md">
+              Action
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {submissions.map((submission, index) => {
+            // format the date and time in GMT+1
+            // const date = new Date(submission.submittedAt);
+            // const formattedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
+            // const formattedTime = `${date.getHours()}h${date.getMinutes()}`;
+            const date = new Date(submission.submittedAt);
+            const { formattedDate, formattedTime } = formatDate(date);
 
-          return (
-            <TableRow key={submission.uuid}>
-              <TableCell
-                className={cn(
-                  index == submissions.length - 1 ? "rounded-bl-md" : ""
-                )}
-              >
-                <Button asChild variant="linkForeground">
-                  <MyLink href={`/soumissions/${submission.uuid}`}>
-                    {submission.uuid}
-                  </MyLink>
-                </Button>
-              </TableCell>
-              <TableCell>{formattedDate}</TableCell>
-              <TableCell>{formattedTime}</TableCell>
-              <TableCell>
-                {submission.stopReason ?? "Aucune, fin du questionnaire."}
-              </TableCell>
-              <TableCell
-                className={cn(
-                  "text-right",
-                  index == submissions.length - 1 ? "rounded-br-md" : ""
-                )}
-              >
-                <ActionDropdown
-                  submissionId={submission.uuid}
-                  handleDelete={handleDelete}
-                  isDeleting={isLoading}
-                />
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+            return (
+              <TableRow key={submission.uuid}>
+                <TableCell
+                  className={cn(
+                    index == submissions.length - 1 ? "rounded-bl-md" : ""
+                  )}
+                >
+                  <Button asChild variant="linkForeground">
+                    <MyLink href={`/soumissions/${submission.uuid}`}>
+                      {submission.uuid}
+                    </MyLink>
+                  </Button>
+                </TableCell>
+                <TableCell>{formattedDate}</TableCell>
+                <TableCell>{formattedTime}</TableCell>
+                <TableCell>
+                  {submission.stopReason ?? "Aucune, fin du questionnaire."}
+                </TableCell>
+                <TableCell
+                  className={cn(
+                    "text-right",
+                    index == submissions.length - 1 ? "rounded-br-md" : ""
+                  )}
+                >
+                  <ActionDropdown
+                    submissionId={submission.uuid}
+                    handleDelete={handleDelete}
+                    isDeleting={isLoading}
+                  />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

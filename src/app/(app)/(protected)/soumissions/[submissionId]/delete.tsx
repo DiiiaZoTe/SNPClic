@@ -53,7 +53,7 @@ export const DeleteButton = ({ submissionId }: { submissionId: string }) => {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="w-fit">
+      <AlertDialogTrigger className="w-fit" asChild>
         <Button variant="destructive" className="min-w-36 text-center w-fit">
           {isLoading ? (
             <Loader2 className="w-4 h-4" />

@@ -21,10 +21,8 @@ export default async function Page() {
   const form = FORM_DATA;
   if (!form) return <div>Formulaire non trouvé</div>;
   return (
-    <div className="py-8">
-      <Provider>
-        <MultiStepForm form={form} />
-      </Provider>
-    </div>
+    <Provider>
+      <MultiStepForm form={form} />
+    </Provider>
   );
 }

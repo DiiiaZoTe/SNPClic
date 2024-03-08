@@ -18,6 +18,8 @@ import { generatePDF } from "@/lib/storage/pdfHelpers";
 import { r2 } from "@/server/storage/r2";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
+import { getSubmissionDetails } from "@/server/db/queries/submission";
+
 export const questionnaireRouter = createTRPCRouter({
   getDefaultForm: protectedProcedure
     .query(async () => {
@@ -194,53 +196,21 @@ export const questionnaireRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const submissionUUID = input;
 
-      // * get the submission, answers and the form (here just config but normally from db)
-      const submissionData = await ctx.db.select().from(formSubmission).where(eq(formSubmission.uuid, submissionUUID));
-      const submissionID = submissionData[0]?.id;
-      const formID = submissionData[0]?.formId;
-      if (!submissionID || !formID) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No form submission found" });
+      const submission = await getSubmissionDetails({
+        submissionId: submissionUUID,
+        user: ctx.user,
+      });
 
-      //* get answers
-      const answersData = await ctx.db
-        .select().from(submissionAnswer)
-        .where(eq(submissionAnswer.submissionId, submissionID));
-      if (!answersData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "No answer found" });
-
-      //* get string array answers
-      const stringArrayAnswersID = answersData.filter((answer) => answer.answerType === "string_array").map((answer) => answer.id);
-      let stringArrayAnswersData: {
-        answerId: bigint,
-        value: string
-      }[] = [];
-      if (stringArrayAnswersID.length) {
-        stringArrayAnswersData = await ctx.db
-          .select({
-            answerId: submissionAnswerStringArray.answerId,
-            value: submissionAnswerStringArray.value
-          }).from(submissionAnswerStringArray)
-          .where(inArray(submissionAnswerStringArray.answerId, stringArrayAnswersID));
+      if (submission.error !== undefined) {
+        logError({ request: ctx.headers, error: "Error getting submission details", location: `/api/trpc/questionnaire.generatePDF`, otherData: { submissionUUID, error: submission.error } });
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Error getting submission details" });
       }
-      // const formData = await ctx.db.select({ id: form.id }).from(form).where(eq(form.id, formID));
-      const formData = FORM_DATA;
-      if (!formData) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Unsuccessful form retrieval" });
+
 
       const pdfTemplateInput = {
-        formData,
-        submissionData: {
-          uuid: submissionUUID,
-          submittedAt: submissionData[0]!.submittedAt,
-          stopReason: submissionData[0]?.stopReason,
-          stopReasonQuestionId: submissionData[0]?.stopReasonQuestionId,
-          skippedSteps: submissionData[0]!.skippedSteps,
-        },
-        answers: answersData.map((answer) => ({
-          questionId: answer.questionId,
-          answerType: answer.answerType,
-          booleanAnswer: answer.booleanAnswer,
-          stringAnswer: answer.stringAnswer,
-          stringArrayAnswer: answer.answerType === "string_array" ? stringArrayAnswersData.filter((stringArrayAnswer) => stringArrayAnswer.answerId === answer.id).map((stringArrayAnswer) => stringArrayAnswer.value) : null,
-          skipped: answer.skipped,
-        }))
+        formData: submission.formData,
+        submissionData: submission.submissionData,
+        answers: submission.answers,
       };
       // * generate the pdf
       const pdf = await generatePDF(PDFTemplate(pdfTemplateInput));

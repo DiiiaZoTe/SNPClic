@@ -2,8 +2,6 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { lucia } from "@/server/auth";
 import { logError } from "@/lib/utilities/logger";
-import { redirect } from "next/navigation";
-import { redirects } from "@/lib/auth/redirects";
 
 // MAIN HELPER FUNCTION
 // check if session is valid

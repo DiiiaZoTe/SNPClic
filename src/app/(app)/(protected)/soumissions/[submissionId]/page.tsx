@@ -2,8 +2,8 @@ import { unstable_noStore as noStore } from "next/cache";
 
 import { siteConfig } from "@/config/site";
 import { getSharedMetadata } from "@/config/shared-metadata";
-import { api } from "@/trpc/server";
-import { Suspense } from "react";
+import { type Metadata } from "next";
+
 import { SubmissionRecap } from "./recap";
 import { DownloadButton } from "@/components/utilities/downloadButton";
 import { Download, Loader2 } from "lucide-react";
@@ -11,49 +11,75 @@ import { Loading } from "@/components/utilities/loading";
 import { DeleteButton } from "./delete";
 import { formatDate } from "@/lib/utilities/format-date";
 
-const METADATA = {
-  title: "Soumissions",
-  description: "Vos soumissions de questionnaires SNPClic",
-  url: siteConfig.url + "/questionnaire",
-};
+import { validateRequestSSR } from "@/server/auth/validate-request";
+import { redirect } from "next/navigation";
+import { redirects } from "@/lib/auth/redirects";
 
-export const metadata = {
-  title: METADATA.title,
-  description: METADATA.description,
-  ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
-};
+import { getSubmissionDetails } from "@/server/db/queries/submission";
+import { Suspense } from "react";
+import { User } from "lucia";
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { submissionId } = params;
+  const metadata = {
+    title: `Soumission Détail`,
+    description: `Détails de la soumission ${submissionId} SNPclic`,
+    url: `${siteConfig.url}/soumissions/${submissionId}`,
+  };
+  return {
+    title: metadata.title,
+    description: metadata.description,
+    ...getSharedMetadata(metadata.title, metadata.description, metadata.url),
+  };
+}
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({
-  params,
-}: {
+type Props = {
   params: {
     submissionId: string;
   };
-}) {
+};
+
+export default async function Page({ params }: Props) {
   noStore();
+  // validate request
+  const { user } = await validateRequestSSR();
+  if (!user) redirect(redirects.toNonProtected);
 
   return (
-    <div className="container h-full flex flex-col gap-8 my-8 max-w-2xl mx-auto">
+    // <div className="container h-full flex flex-col gap-8 my-8 max-w-2xl mx-auto">
+    <div className="flex flex-col gap-8 max-w-2xl mx-auto">
       <h1 className="text-xl sm:text-2xl font-bold">{params.submissionId}</h1>
       <Suspense fallback={<LoadingScreen />}>
-        <Submission submissionId={params.submissionId} />
+        <Submission submissionId={params.submissionId} user={user} />
       </Suspense>
     </div>
   );
 }
 
-const Submission = async ({ submissionId }: { submissionId: string }) => {
-  const submission = await api.submission.getSubmissionDetailById.query({
-    submissionId: submissionId,
-  });
+const Submission = async ({
+  submissionId,
+  user,
+}: {
+  submissionId: string;
+  user: User;
+}) => {
+  const submission = await getSubmissionDetails({ submissionId, user });
+
+  if (submission.error !== undefined) {
+    return (
+      <div className="h-full flex-1 flex flex-col items-center justify-center gap-2">
+        <p>Une erreur est survenue...</p>
+        <p>{submission.error}</p>
+      </div>
+    );
+  }
 
   const date = new Date(submission.submissionData.submittedAt);
   const { formattedDate, formattedTime } = formatDate(date);
-
   return (
-    <div className="flex flex-col gap-8 pb-8">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-2">
         <h2 className="text-xl font-bold leading-none tracking-tight">
           Informations générales:

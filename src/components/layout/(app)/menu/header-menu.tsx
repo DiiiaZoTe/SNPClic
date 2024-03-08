@@ -30,14 +30,17 @@ export const HeaderMenu = ({
       <span className="hidden sm:block min-w-0 truncate">{email}</span>
       <div className="flex gap-4 sm:hidden">
         <ThemeToggle buttonVariant="outline" />
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="p-2 cursor-pointer">
               <User2 className="w-5 h-5" />
               <span className="sr-only">Menu utilisateur</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent
+            align="end"
+            className="[--scrollbar-size:3px] overflow-y-scroll max-h-[calc(100svh-5rem)]"
+          >
             <DropdownMenuLabel className="font-normal text-muted-foreground">
               {email}
             </DropdownMenuLabel>
