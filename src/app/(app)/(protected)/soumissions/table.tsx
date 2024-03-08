@@ -81,7 +81,7 @@ export const SubmissionTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-foreground font-semibold min-w-[20ch] rounded-tl-md">
+            <TableHead className="text-foreground font-semibold min-w-[22ch] rounded-tl-md">
               Identifiant
             </TableHead>
             <TableHead className="text-foreground font-semibold">
