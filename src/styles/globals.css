@@ -25,7 +25,7 @@
     --ring: 142 83% 36%;
     --radius: 0.5rem;
 
-    --scrollbar-size: 10px;
+    --scrollbar-size: 8px;
   }
 
   .dark {
@@ -86,7 +86,8 @@
     /* background: theme("colors.neutral.400"); */
     background: hsl(0 0% 60%);
   }
-  .scrollbar {}
+  .scrollbar {
+  }
 
   /* ----------- Highlight content ----------- */
   ::selection {

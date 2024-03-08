@@ -100,10 +100,8 @@ export default function RootLayout({
         />
         <meta name="theme-color" content="#ffffff" />
       </head>
-      <body className="flex flex-col min-h-screen bg-background font-sans antialiased">
-        <Providers>
-            {children}
-        </Providers>
+      <body className="flex flex-col min-h-svh bg-background font-sans antialiased [--scrollbar-size:3px] sm:[--scrollbar-size:8px]">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
