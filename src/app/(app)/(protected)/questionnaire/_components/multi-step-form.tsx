@@ -160,7 +160,7 @@ const MultiStepFormComponent = () => {
         title={
           <Balancer>
             {submitForm.isLoading
-              ? "Envoie du questionnaire et génération du PDF"
+              ? "Envoi du questionnaire et génération du PDF"
               : pdfGeneration.isLoading
               ? "Génération du PDF"
               : "Traitement en cours"}
@@ -199,8 +199,8 @@ const MultiStepFormComponent = () => {
             isLoading={submitForm.isLoading}
             isSuccess={submitForm.isSuccess}
             title="Finaliser le questionnaire"
-            description="Envoyer vos réponses pour terminer le questionnaire. Une fois terminé, vous ne pourrez plus modifier vos réponses. L'envoie peut prendre quelques instants."
-            error="Une erreur est survenue lors de l'envoie du questionnaire. Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter."
+            description="Envoyer vos réponses pour terminer le questionnaire. Une fois terminé, vous ne pourrez plus modifier vos réponses. L'envoi peut prendre quelques instants."
+            error="Une erreur est survenue lors de l'envoi du questionnaire. Veuillez réessayer dans quelques secondes. Si le problème persiste, veuillez nous contacter."
             buttonLabel="Envoyer et terminer"
           />
         ) : (
