@@ -4,6 +4,7 @@ import { sql, eq, inArray } from "drizzle-orm";
 import { db } from "./index";
 import { form, formSubmission, submissionAnswer, submissionAnswerStringArray } from "./schema";
 import { generateUUID } from "@/lib/utilities/uuid";
+import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 // import { insertNewAccount } from "@/server/auth/utilities";
 
 // * Insert form data
@@ -13,6 +14,12 @@ import { generateUUID } from "@/lib/utilities/uuid";
 //   name: "Questionnaire SNPClic",
 //   config: FORM_DATA.config,
 // }).then((result) => {
+//   console.log(result)
+// }).catch((error) => {
+//   console.error(error)
+// });
+//* update form data config
+// db.update(form).set({ config: FORM_DATA.config }).where(eq(form.id, 1n)).then((result) => {
 //   console.log(result)
 // }).catch((error) => {
 //   console.error(error)

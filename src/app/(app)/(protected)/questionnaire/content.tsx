@@ -481,7 +481,8 @@ export const FORM_DATA: Form = {
         {
           type: "text",
           id: "6bad5100-696c-458a-9598-e72b9ed0db7e",
-          text: "Nom complet du patient",
+          text: "Initiales du patient",
+          description: "Pas de nom complet",
           defaultAnswer: "",
           isRequired: true,
         },
