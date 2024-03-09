@@ -3,6 +3,7 @@ import { Provider } from "jotai";
 import { getSharedMetadata } from "@/config/shared-metadata";
 import { siteConfig } from "@/config/site";
 import { FORM_DATA } from "./content";
+import { TitleWrapper } from "@/components/layout/(app)/title-wrapper";
 
 const METADATA = {
   title: "Questionnaire",
@@ -21,8 +22,10 @@ export default async function Page() {
   const form = FORM_DATA;
   if (!form) return <div>Formulaire non trouvé</div>;
   return (
-    <Provider>
-      <MultiStepForm form={form} />
-    </Provider>
+    <TitleWrapper title="Questionnaire">
+      <Provider>
+        <MultiStepForm form={form} />
+      </Provider>
+    </TitleWrapper>
   );
 }

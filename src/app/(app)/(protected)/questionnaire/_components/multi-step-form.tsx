@@ -189,7 +189,7 @@ const MultiStepFormComponent = () => {
   // * form is awaiting final submission
   if (!successInsert || !successPDF) {
     return (
-      <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
+      <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-3xl animate-in-down">
         {!successInsert && <FormTracker canOnlyGoBack={false} />}
         <Recap />
         {!successInsert ? (
@@ -222,7 +222,7 @@ const MultiStepFormComponent = () => {
 
   // * form is fully submitted
   return (
-    <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-xl animate-in-down">
+    <div className="w-full flex flex-col gap-8 items-center grow overflow-y-auto max-w-3xl animate-in-down">
       <ExtraSection
         title="Voir ma soumission"
         description="Vous pouvez voir votre soumission pour vérifier que tout est correct."

@@ -17,7 +17,7 @@ export const TopHeader = async ({
   if (!user || !session) redirect(redirects.toNonProtected);
   return (
     <header className="flex flex-col w-full">
-      <div className="w-full flex justify-between items-center gap-4 px-4 py-2">
+      <div className="w-full flex justify-between items-center gap-4 px-4 pt-2">
         <div className="flex items-center gap-4 flex-nowrap">
           <LogoText className="text-3xl" />
           <Logo className="w-7 h-7 hidden xs:block" />

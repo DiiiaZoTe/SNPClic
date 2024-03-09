@@ -27,7 +27,7 @@ export default async function Layout({
         <TopHeader navItems={navItems} />
         <main className="flex flex-1 min-h-0 w-full border-t border-muted ">
           <div className="w-full h-full flex flex-col py-8 overflow-y-auto">
-            <div className="container w-full">{children}</div>
+            <div className="container w-full flex-1">{children}</div>
           </div>
         </main>
       </div>

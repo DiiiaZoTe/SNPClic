@@ -1,3 +1,4 @@
+import { TitleWrapper } from "@/components/layout/(app)/title-wrapper";
 import { getSharedMetadata } from "@/config/shared-metadata";
 import { siteConfig } from "@/config/site";
 
@@ -14,9 +15,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return (
-    <div>
-      <h1>Statistiques</h1>
-    </div>
-  );
+  return <TitleWrapper title="Statistiques"></TitleWrapper>;
 }

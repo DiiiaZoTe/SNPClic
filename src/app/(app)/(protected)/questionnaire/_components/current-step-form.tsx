@@ -23,7 +23,7 @@ export const CurrentStepForm = () => {
         custom={useMSF.stepper.direction}
       >
         <motion.div
-          className="w-full max-w-xl"
+          className="w-full max-w-3xl"
           key={`currentStep_${useMSF.stepper.currentStep}`}
           custom={useMSF.stepper.direction}
           variants={stepFormVariants}

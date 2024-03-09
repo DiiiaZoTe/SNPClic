@@ -6,6 +6,7 @@ import { siteConfig } from "@/config/site";
 import { validateRequestSSR } from "@/server/auth/validate-request";
 import { redirect } from "next/navigation";
 import { redirects } from "@/lib/auth/redirects";
+import { TitleWrapper } from "@/components/layout/(app)/title-wrapper";
 
 const METADATA = {
   title: "Dashboard",
@@ -24,13 +25,5 @@ export default async function Page() {
   const { user } = await validateRequestSSR();
   if (!user) redirect(redirects.toNonProtected);
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <MyLink href="/questionnaire">questionnaire</MyLink>
-      <Logout>
-        <button>Logout</button>
-      </Logout>
-    </div>
-  );
+  return <TitleWrapper title="Dashboard"></TitleWrapper>;
 }

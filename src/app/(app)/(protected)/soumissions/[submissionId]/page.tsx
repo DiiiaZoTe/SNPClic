@@ -18,6 +18,7 @@ import { redirects } from "@/lib/auth/redirects";
 import { getSubmissionDetails } from "@/server/db/queries/submission";
 import { Suspense } from "react";
 import { User } from "lucia";
+import { TitleWrapper } from "@/components/layout/(app)/title-wrapper";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { submissionId } = params;
@@ -48,13 +49,11 @@ export default async function Page({ params }: Props) {
   if (!user) redirect(redirects.toNonProtected);
 
   return (
-    // <div className="container h-full flex flex-col gap-8 my-8 max-w-2xl mx-auto">
-    <div className="flex flex-col gap-8 max-w-2xl mx-auto">
-      <h1 className="text-xl sm:text-2xl font-bold">{params.submissionId}</h1>
+    <TitleWrapper title={params.submissionId}>
       <Suspense fallback={<LoadingScreen />}>
         <Submission submissionId={params.submissionId} user={user} />
       </Suspense>
-    </div>
+    </TitleWrapper>
   );
 }
 
@@ -79,7 +78,7 @@ const Submission = async ({
   const date = new Date(submission.submissionData.submittedAt);
   const { formattedDate, formattedTime } = formatDate(date);
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 max-w-3xl w-full mx-auto">
       <div className="flex flex-col gap-2">
         <h2 className="text-xl font-bold leading-none tracking-tight">
           Informations générales:

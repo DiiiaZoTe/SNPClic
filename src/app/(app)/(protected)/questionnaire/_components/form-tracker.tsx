@@ -42,7 +42,7 @@ export const FormTracker = ({
   );
 
   return (
-    <div className="w-full max-w-xl flex justify-between items-center gap-8">
+    <div className="w-full max-w-3xl flex justify-between items-center gap-8">
       <Button
         onClick={() => {
           useMSF.stepper.goTo.previous();

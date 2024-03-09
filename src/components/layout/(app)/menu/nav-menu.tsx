@@ -13,9 +13,9 @@ export const NavMenu = ({ navItems }: { navItems: NavSectionProps[] }) => {
 
   return (
     <ScrollArea className="hidden sm:block whitespace-nowrap overflow-auto">
-      <nav className="flex w-max px-4 gap-2 items-center pb-2">
-        {navItems.map(({ section, items }, index) => (
-          <>
+      <nav className="flex w-max px-4 gap-2 items-center py-2">
+        {navItems.map(({ items }, index) => (
+          <div key={index} className="flex gap-2 items-center">
             <div key={index} className="relative flex">
               {items.map(({ label, href, Icon, nextLink }, index) => (
                 <Button
@@ -43,7 +43,7 @@ export const NavMenu = ({ navItems }: { navItems: NavSectionProps[] }) => {
             {index < navItems.length - 1 && (
               <div className="border border-muted rounded h-6" />
             )}
-          </>
+          </div>
         ))}
       </nav>
       <ScrollBar orientation="horizontal" className="h-1.5" />

@@ -16,6 +16,7 @@ import { SubmissionPagination } from "@/app/(app)/(protected)/soumissions/pagina
 import { Button } from "@/components/ui/button";
 import MyLink from "@/components/utilities/link";
 import { Plus } from "lucide-react";
+import { TitleWrapper } from "@/components/layout/(app)/title-wrapper";
 
 const METADATA = {
   title: "Soumissions",
@@ -71,23 +72,24 @@ export default async function Page({
 
   if (!submissions.length) {
     return (
-      <div className="h-full flex flex-col justify-center items-center gap-8">
-        Vous n&apos;avez aucune soumissions.
-        <Button variant="black" asChild>
-          <MyLink href="/questionnaire">
-            <Plus className="w-4 h-4 mr-2" />
-            Ajouter une soumission
-          </MyLink>
-        </Button>
-      </div>
+      <TitleWrapper title="Soumissions">
+        <div className="h-full flex flex-col justify-center items-center gap-8">
+          Vous n&apos;avez aucune soumissions.
+          <Button variant="black" asChild>
+            <MyLink href="/questionnaire">
+              <Plus className="w-4 h-4 mr-2" />
+              Ajouter une soumission
+            </MyLink>
+          </Button>
+        </div>
+      </TitleWrapper>
     );
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-bold">Soumissions</h1>
+    <TitleWrapper title="Soumissions">
       <SubmissionTable submissions={submissions} />
       <SubmissionPagination total={count} page={page} pageSize={pageSize} />
-    </div>
+    </TitleWrapper>
   );
 }
