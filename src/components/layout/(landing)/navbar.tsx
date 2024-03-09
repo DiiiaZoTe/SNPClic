@@ -46,7 +46,7 @@ const MobileNavbar = ({ links }: { links: string[][] }) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="p-2">
+        <Button variant="linkForeground" className="p-2">
           <MenuIcon className="w-6 h-6" />
           <span className="sr-only">Menu</span>
         </Button>

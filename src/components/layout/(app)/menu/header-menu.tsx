@@ -17,6 +17,7 @@ import { GitHubLogo } from "@/components/logos/githubLogo";
 import MyLink from "@/components/utilities/link";
 import { githubConfig } from "@/config/site";
 import { SubmitButton } from "@/components/utilities/submitButton";
+import { useMediaQuery } from "@/lib/hooks/use-media-query";
 
 export const HeaderMenu = ({
   email,
@@ -25,76 +26,84 @@ export const HeaderMenu = ({
   email: string;
   navItems: NavSectionProps[];
 }) => {
+  const isMobile = useMediaQuery("(max-width: 639px)");
+
   return (
-    <>
-      <span className="hidden sm:block min-w-0 truncate">{email}</span>
-      <div className="flex gap-4 sm:hidden">
-        <ThemeToggle buttonVariant="outline" />
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="p-2 cursor-pointer">
+    <div className="flex gap-4">
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          {isMobile ? (
+            <Button variant="linkForeground" className="p-2 cursor-pointer">
               <User2 className="w-5 h-5" />
               <span className="sr-only">Menu utilisateur</span>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="[--scrollbar-size:3px] overflow-y-scroll max-h-[calc(100svh-5rem)]"
-          >
-            <DropdownMenuLabel className="font-normal text-muted-foreground">
-              {email}
-            </DropdownMenuLabel>
+          ) : (
+            <Button variant="linkForeground">
+              <span className="min-w-0 truncate">{email}</span>
+            </Button>
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="[--scrollbar-size:3px] overflow-y-scroll max-h-[calc(100svh-5rem)]"
+        >
+          {isMobile && (
+            <>
+              <DropdownMenuLabel className="font-normal text-muted-foreground">
+                {email}
+              </DropdownMenuLabel>
 
-            <DropdownMenuSeparator />
+              <DropdownMenuSeparator />
 
-            {navItems.map(({ section, items }, index) => (
-              <div key={index}>
-                <DropdownMenuLabel>{section}</DropdownMenuLabel>
-                {items.map(({ label, href, Icon, nextLink }) => (
-                  <DropdownMenuItem key={label} asChild>
-                    <MyLink
-                      href={href}
-                      nextLink={nextLink === undefined ? true : nextLink}
-                    >
-                      <Icon className="h-4 w-4 mr-2" />
-                      {label}
-                    </MyLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </div>
-            ))}
+              {navItems.map(({ section, items }, index) => (
+                <div key={index}>
+                  <DropdownMenuLabel>{section}</DropdownMenuLabel>
+                  {items.map(({ label, href, nextLink }) => (
+                    <DropdownMenuItem key={label} asChild>
+                      <MyLink
+                        href={href}
+                        nextLink={nextLink === undefined ? true : nextLink}
+                      >
+                        {label}
+                      </MyLink>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                </div>
+              ))}
+            </>
+          )}
 
-            <DropdownMenuLabel>Liens externes</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <MyLink href={githubConfig.repo} nextLink={false}>
-                <GitHubLogo className="h-4 w-4 mr-2" />
-                Source GitHub
-              </MyLink>
-            </DropdownMenuItem>
+          <DropdownMenuLabel>Liens externes</DropdownMenuLabel>
+          <DropdownMenuItem asChild>
+            <MyLink href={githubConfig.repo} nextLink={false}>
+              <GitHubLogo className="h-4 w-4 mr-2" />
+              Source GitHub
+            </MyLink>
+          </DropdownMenuItem>
 
-            <DropdownMenuSeparator />
+          <DropdownMenuSeparator />
 
-            <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <MyLink href="/parametres">
-                <Settings className="h-4 w-4 mr-2" />
-                Paramètres
-              </MyLink>
-            </DropdownMenuItem>
-            <Logout className="w-full h-full">
-              <SubmitButton
-                variant="unstyled"
-                className="w-full h-full px-2 py-1.5 text-destructive text-left text-sm cursor-default flex items-center hover:bg-destructive/10 relative select-none rounded-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground"
-                loader={<Loader2 className="h-4 w-4 animate-spin" />}
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Se déconnecter
-              </SubmitButton>
-            </Logout>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </>
+          <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+          <DropdownMenuItem asChild>
+            <MyLink href="/parametres">
+              <Settings className="h-4 w-4 mr-2" />
+              Paramètres
+            </MyLink>
+          </DropdownMenuItem>
+          <Logout className="w-full h-full">
+            <SubmitButton
+              variant="unstyled"
+              className="w-full h-full px-2 py-1.5 text-destructive text-left text-sm cursor-default flex items-center hover:bg-destructive/10 relative select-none rounded-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground"
+              loader={<Loader2 className="h-4 w-4 animate-spin" />}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Se déconnecter
+            </SubmitButton>
+          </Logout>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ThemeToggle buttonVariant="linkForeground" />
+    </div>
   );
 };
