@@ -32,16 +32,18 @@ export const HeaderMenu = ({
     <div className="flex gap-4">
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          {isMobile ? (
-            <Button variant="linkForeground" className="p-2 cursor-pointer">
+          <div>
+            <Button
+              variant="linkForeground"
+              className="p-2 cursor-pointer sm:hidden"
+            >
               <User2 className="w-5 h-5" />
               <span className="sr-only">Menu utilisateur</span>
             </Button>
-          ) : (
-            <Button variant="linkForeground">
+            <Button variant="linkForeground" className="hidden sm:block">
               <span className="min-w-0 truncate">{email}</span>
             </Button>
-          )}
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
