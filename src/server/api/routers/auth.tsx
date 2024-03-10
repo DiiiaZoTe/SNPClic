@@ -36,20 +36,11 @@ import { isWithinExpirationDate } from "oslo";
 import { eq } from "drizzle-orm";
 import { siteConfig } from "@/config/site";
 import ResetPasswordEmail from "emails/reset-password";
+import { changePasswordServerSchema } from "@/lib/auth/schemas";
 
 export const authRouter = createTRPCRouter({
   changePassword: protectedProcedure
-    .input(
-      z.object({
-        currentPassword: z
-          .string()
-          .min(1, "Veuillez entrer votre mot de passe actuel."),
-        newPassword: z
-          .string()
-          .min(8, "Veuillez entrer un nouveau mot de passe.")
-          .max(255),
-      })
-    )
+    .input(changePasswordServerSchema)
     .mutation(async ({ ctx, input }) => {
       const selectUser = await ctx.db.query.user.findFirst({
         where: (table, { eq }) => eq(table.id, ctx.user.id),
