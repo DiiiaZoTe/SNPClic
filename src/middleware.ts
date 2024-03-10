@@ -13,7 +13,7 @@ const SKIP_MIDDLEWARE = [
 ]
 
 export async function middleware(request: NextRequest) {
-  console.log(`${request.nextUrl.pathname} - ${request.ip} - ${request.geo?.country}`);
+  console.log(`${request.nextUrl.pathname} - ${request.headers.get('X-Forwarded-For')}`);
 
   // Skip middleware for certain paths
   if (skipMiddleware(request)) return NextResponse.next();
