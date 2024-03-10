@@ -30,6 +30,7 @@ export const HeaderMenu = ({
 
   return (
     <div className="flex gap-4">
+      <ThemeToggle buttonVariant="linkForeground" />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <div>
@@ -105,7 +106,6 @@ export const HeaderMenu = ({
           </Logout>
         </DropdownMenuContent>
       </DropdownMenu>
-      <ThemeToggle buttonVariant="linkForeground" />
     </div>
   );
 };
