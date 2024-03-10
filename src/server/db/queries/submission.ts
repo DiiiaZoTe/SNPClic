@@ -4,7 +4,7 @@ import { db } from "@/server/db";
 
 import { eq, and, desc, count, inArray } from "drizzle-orm";
 import { MySqlSelect } from "drizzle-orm/mysql-core";
-import { formSubmission, submissionAnswer, submissionAnswerStringArray } from "@/server/db/schema";
+import { formSubmission, submissionAnswer, submissionAnswerStringArray, user } from "@/server/db/schema";
 import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 import type { User } from "lucia";
 import { logError } from "@/lib/utilities/logger";
@@ -40,8 +40,10 @@ export const getAllSubmission = async ({
         stopReason: formSubmission.stopReason,
         stopReasonQuestionId: formSubmission.stopReasonQuestionId,
         skippedSteps: formSubmission.skippedSteps,
+        email: user.email,
       })
       .from(formSubmission)
+      .leftJoin(user, eq(formSubmission.submittedBy, user.id))
       .orderBy(desc(formSubmission.submittedAt))
       .$dynamic();
     if (noLimit) return await query;
@@ -80,8 +82,10 @@ export const getAllSubmissionByUser = async ({
         stopReason: formSubmission.stopReason,
         stopReasonQuestionId: formSubmission.stopReasonQuestionId,
         skippedSteps: formSubmission.skippedSteps,
+        email: user.email,
       })
       .from(formSubmission)
+      .leftJoin(user, eq(formSubmission.submittedBy, user.id))
       .where(eq(formSubmission.submittedBy, userId))
       .orderBy(desc(formSubmission.submittedAt))
       .$dynamic();

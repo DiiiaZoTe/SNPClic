@@ -38,11 +38,14 @@ import { toast } from "sonner";
 import { errorToast } from "@/components/utilities/toasts";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utilities/format-date";
+import Balancer from "react-wrap-balancer";
 
 export const SubmissionTable = ({
   submissions,
+  showEmail = false,
 }: {
   submissions: Submission[];
+  showEmail?: boolean;
 }) => {
   const router = useRouter();
 
@@ -84,6 +87,11 @@ export const SubmissionTable = ({
             <TableHead className="text-foreground font-semibold min-w-[22ch] rounded-tl-md">
               Identifiant
             </TableHead>
+            {showEmail && (
+              <TableHead className="text-foreground font-semibold min-w-[22ch]">
+                Email
+              </TableHead>
+            )}
             <TableHead className="text-foreground font-semibold">
               Date
             </TableHead>
@@ -100,10 +108,6 @@ export const SubmissionTable = ({
         </TableHeader>
         <TableBody>
           {submissions.map((submission, index) => {
-            // format the date and time in GMT+1
-            // const date = new Date(submission.submittedAt);
-            // const formattedDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`;
-            // const formattedTime = `${date.getHours()}h${date.getMinutes()}`;
             const date = new Date(submission.submittedAt);
             const { formattedDate, formattedTime } = formatDate(date);
 
@@ -116,10 +120,13 @@ export const SubmissionTable = ({
                 >
                   <Button asChild variant="linkForeground">
                     <MyLink href={`/soumissions/${submission.uuid}`}>
-                      {submission.uuid}
+                      <Balancer>{submission.uuid}</Balancer>
                     </MyLink>
                   </Button>
                 </TableCell>
+                {showEmail && (
+                  <TableCell>{submission.email ?? "Non disponible"}</TableCell>
+                )}
                 <TableCell>{formattedDate}</TableCell>
                 <TableCell>{formattedTime}</TableCell>
                 <TableCell>
