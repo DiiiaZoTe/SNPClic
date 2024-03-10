@@ -38,7 +38,6 @@ import { toast } from "sonner";
 import { errorToast } from "@/components/utilities/toasts";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/utilities/format-date";
-import Balancer from "react-wrap-balancer";
 
 export const SubmissionTable = ({
   submissions,
@@ -84,7 +83,7 @@ export const SubmissionTable = ({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-foreground font-semibold min-w-[22ch] rounded-tl-md">
+            <TableHead className="text-foreground font-semibold min-w-[15ch] rounded-tl-md">
               Identifiant
             </TableHead>
             {showEmail && (
@@ -119,8 +118,11 @@ export const SubmissionTable = ({
                   )}
                 >
                   <Button asChild variant="linkForeground">
-                    <MyLink href={`/soumissions/${submission.uuid}`}>
-                      <Balancer>{submission.uuid}</Balancer>
+                    <MyLink
+                      href={`/soumissions/${submission.uuid}`}
+                      className="truncate"
+                    >
+                      {`${submission.uuid.slice(0, 14)}...`}
                     </MyLink>
                   </Button>
                 </TableCell>
