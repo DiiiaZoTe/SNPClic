@@ -10,10 +10,7 @@ export const checkSessionValid = async () => {
   if (!sessionId) {
     return { user: null, session: null };
   }
-  console.log("---- DB called");
-
   return await lucia.validateSession(sessionId);
-
 }
 
 // --------------------- Server action / api version ---------------------
@@ -21,7 +18,6 @@ export const checkSessionValid = async () => {
 // DO NOT USE FOR TRPC as we cannot set cookies or redirect
 
 export const uncachedValidateRequestAPI = async () => {
-  console.log("calling uncachedValidateRequest");
   try {
     const result = await checkSessionValid();
 
@@ -65,7 +61,6 @@ export const validateRequestAPI = cache(uncachedValidateRequestAPI);
 // during SSR, we cannot set cookies but we can redirect
 
 export const uncachedValidateRequestSSR = async () => {
-  console.log("calling uncachedValidateRequestSSR");
   try {
     // check if session is valid
     const result = await checkSessionValid();
@@ -99,7 +94,6 @@ export const validateRequestSSR = cache(uncachedValidateRequestSSR);
 // during TRPC, we cannot set cookies or redirect
 
 export const uncachedValidateRequestTRPC = async () => {
-  console.log("calling uncachedValidateRequestTRPC");
   try {
     // check if session is valid
     const result = await checkSessionValid();

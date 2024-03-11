@@ -10,7 +10,6 @@ export default async function Template({
   children: React.ReactNode;
 }) {
   const { user, session } = await validateRequestSSR();
-  console.log("calling validateRequestSSR from (protected template)");
   if (!user || !session) redirect(redirects.toNonProtected);
 
   return <>{children}</>;
