@@ -5,6 +5,7 @@ import { db } from "./index";
 import { form, formSubmission, submissionAnswer, submissionAnswerStringArray } from "./schema";
 import { generateUUID } from "@/lib/utilities/uuid";
 import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
+import { getAllUsers } from "./queries/auth";
 // import { insertNewAccount } from "@/server/auth/utilities";
 
 // * Insert form data
@@ -60,3 +61,11 @@ import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 //   .catch((error) => {
 //     console.error(error)
 //   });
+
+
+// * get all the users with email filter
+// getAllUsers({ emailFilter: "alex" }).then((result) => {
+//   console.log(result)
+// }).catch((error) => {
+//   console.error(error)
+// });
