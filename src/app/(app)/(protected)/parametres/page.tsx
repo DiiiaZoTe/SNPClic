@@ -21,7 +21,7 @@ export default function Page() {
     <TitleWrapper title="Paramètres">
       <Section
         title="Changez votre mot de passe"
-        className="mx-auto w-full max-w-xs"
+        className="m-auto w-full max-w-xs"
       >
         <ChangePasswordForm />
       </Section>
