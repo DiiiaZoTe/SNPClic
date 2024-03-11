@@ -3,19 +3,11 @@
 import { db } from "@/server/db";
 
 import { eq, and, desc, count, inArray } from "drizzle-orm";
-import { MySqlSelect } from "drizzle-orm/mysql-core";
 import { formSubmission, submissionAnswer, submissionAnswerStringArray, user } from "@/server/db/schema";
 import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 import type { User } from "lucia";
 import { logError } from "@/lib/utilities/logger";
-
-function withPagination<T extends MySqlSelect>(
-  qb: T,
-  page: number = 1,
-  pageSize: number = 10,
-) {
-  return qb.limit(pageSize).offset((page - 1) * pageSize);
-}
+import { withPagination } from "./utilities";
 
 /** getAll the submission by user, paginated limit 10 by default.
  *  @warning  if `noLimit` is true, return all the submissions without limit.
