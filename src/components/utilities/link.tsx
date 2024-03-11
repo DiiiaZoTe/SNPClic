@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
 import React from "react";
 
@@ -8,14 +9,28 @@ type MyLinkProps = Omit<
   LinkProps & {
     prefetch?: boolean;
     nextLink?: boolean;
+    disabled?: boolean;
   } & React.RefAttributes<HTMLAnchorElement>;
 
 const MyLink = React.forwardRef<HTMLAnchorElement, MyLinkProps>(
-  ({ prefetch = false, nextLink = true, ...props }, ref) => {
-    if (nextLink) return <Link {...props} prefetch={prefetch} ref={ref} />;
+  (
+    { prefetch = false, nextLink = true, className, disabled, ...props },
+    ref
+  ) => {
+    if (nextLink)
+      return (
+        <Link {...props} className={className} prefetch={prefetch} ref={ref} />
+      );
 
     const { href, ...rest } = props;
-    return <a href={href as string} ref={ref} {...rest} />;
+    return (
+      <a
+        href={href as string}
+        ref={ref}
+        className={cn(className, disabled && "pointer-events-none")}
+        {...rest}
+      />
+    );
   }
 );
 

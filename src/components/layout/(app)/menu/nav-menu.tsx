@@ -33,6 +33,7 @@ export const NavMenu = ({ navItems }: { navItems: NavSectionProps[] }) => {
                     href={href}
                     nextLink={nextLink === undefined ? true : nextLink}
                     className="flex items-center gap-2"
+                    disabled={currentPath === href}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{label}</span>
