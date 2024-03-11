@@ -30,12 +30,12 @@ export const SubmissionPagination = ({
         {previous && ( // if there is a previous page
           <>
             <PaginationItem>
-              <PaginationPrevious href={`/soumissions?page=${previous}`} />
+              <PaginationPrevious href={`?page=${previous}`} />
             </PaginationItem>
 
             {previous > 1 && ( // show first page if previous is 2 or more
               <PaginationItem>
-                <PaginationLink href={`/soumissions?page=1`}>1</PaginationLink>
+                <PaginationLink href={`?page=1`}>1</PaginationLink>
               </PaginationItem>
             )}
 
@@ -46,7 +46,7 @@ export const SubmissionPagination = ({
             )}
 
             <PaginationItem>
-              <PaginationLink href={`/soumissions?page=${previous}`}>
+              <PaginationLink href={`?page=${previous}`}>
                 {previous}
               </PaginationLink>
             </PaginationItem>
@@ -62,7 +62,7 @@ export const SubmissionPagination = ({
         {next && ( // if there is a next page
           <>
             <PaginationItem>
-              <PaginationLink href={`/soumissions?page=${next}`}>
+              <PaginationLink href={`?page=${next}`}>
                 {next}
               </PaginationLink>
             </PaginationItem>
@@ -75,14 +75,14 @@ export const SubmissionPagination = ({
 
             {next < totalPages && ( // show last page if next is 1 or more from the end
               <PaginationItem>
-                <PaginationLink href={`/soumissions?page=${last}`}>
+                <PaginationLink href={`?page=${last}`}>
                   {last}
                 </PaginationLink>
               </PaginationItem>
             )}
 
             <PaginationItem>
-              <PaginationNext href={`/soumissions?page=${next}`}>
+              <PaginationNext href={`?page=${next}`}>
                 {totalPages}
               </PaginationNext>
             </PaginationItem>
