@@ -5,10 +5,10 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { lucia } from "@/server/auth";
 import { redirects } from "@/lib/auth/redirects";
-import { LoginSchema, loginSchema } from "@/lib/auth/schemas";
+import { loginSchema } from "@/lib/auth/schemas";
 import { Scrypt } from "lucia";
-import { db } from "@/server/db";
 import { revalidatePath } from "next/cache";
+import { getUserByEmail } from "../db/queries/auth";
 
 
 export async function logoutAction() {
@@ -75,9 +75,7 @@ export async function loginAction(
     }
 
     // find user in database
-    const existingUser = await db.query.user.findFirst({
-      where: (table, { eq }) => eq(table.email, input.email),
-    });
+    const existingUser = await getUserByEmail({ email: input.email });
 
     // check if user exists and has a password hash
     if (!existingUser || !existingUser.hashedPassword) {

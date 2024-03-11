@@ -8,7 +8,6 @@ import { formSubmission, submissionAnswer, submissionAnswerStringArray, user } f
 import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 import type { User } from "lucia";
 import { logError } from "@/lib/utilities/logger";
-import { error } from "console";
 
 function withPagination<T extends MySqlSelect>(
   qb: T,
