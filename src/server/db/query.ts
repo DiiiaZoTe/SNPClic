@@ -1,7 +1,7 @@
 // Use this file to run queries on the database using the drizzle-orm library.
 
 import { sql, eq, inArray } from "drizzle-orm";
-import { db } from "./index";
+import db from "./index";
 import { form, formSubmission, submissionAnswer, submissionAnswerStringArray } from "./schema";
 import { generateUUID } from "@/lib/utilities/uuid";
 import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";

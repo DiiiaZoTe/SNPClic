@@ -85,7 +85,7 @@ export const UserTable = ({ users }: { users: User[] }) => {
               Email
             </TableHead>
             <TableHead className="text-foreground font-semibold">
-              Role
+              Rôle
             </TableHead>
             <TableHead className="text-foreground font-semibold">
               Date de création

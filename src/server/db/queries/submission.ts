@@ -1,6 +1,6 @@
 "use server"
 
-import { db } from "@/server/db";
+import db from "@/server/db";
 
 import { eq, and, desc, count, inArray } from "drizzle-orm";
 import { formSubmission, submissionAnswer, submissionAnswerStringArray, user } from "@/server/db/schema";

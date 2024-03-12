@@ -1,6 +1,6 @@
 "use server"
 
-import { db } from "@/server/db";
+import db from "@/server/db";
 import { logError } from "@/lib/utilities/logger";
 import { User, passwordResetToken, session, user } from "@/server/db/schema";
 import { and, asc, count, eq, like, lt } from "drizzle-orm";

@@ -1,6 +1,6 @@
 import { Lucia, TimeSpan } from "lucia";
 import { DrizzleMySQLAdapter } from "@lucia-auth/adapter-drizzle";
-import { db } from "@/server/db";
+import db from "@/server/db";
 import { session, user, type User as DbUser, type Session as DBSession } from "@/server/db/schema";
 
 // Uncomment the following lines if you are using nodejs 18 or lower. Not required in Node.js 20, CloudFlare Workers, Deno, Bun, and Vercel Edge Functions.
@@ -14,6 +14,7 @@ export const lucia = new Lucia(adapter, {
     return {};
   },
   getUserAttributes: (attributes) => {
+    
     return {
       id: attributes.id,
       email: attributes.email,

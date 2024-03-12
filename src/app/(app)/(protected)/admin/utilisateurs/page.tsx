@@ -7,6 +7,7 @@ import { getAllUsers, getCountUsers } from "@/server/db/queries/auth";
 import { UserTable } from "./table";
 import { MyPagination } from "@/components/utilities/pagination";
 import { AddUser } from "./add-user";
+import { Filter } from "./filter";
 
 const METADATA = {
   title: "Admin - Utilisateurs",
@@ -58,8 +59,14 @@ export default async function Page({
   if (!users.length) {
     return (
       <TitleWrapper title="Utilisateurs">
-        <div className="h-full flex flex-col justify-center items-center gap-8">
-          Il n&apos;y a aucun utilisateur.
+        <div className="flex flex-col gap-4 justify-between h-full">
+          <div className="flex justify-between items-end">
+            <Filter email={searchParams.email} role={searchParams.role} />
+            <AddUser />
+          </div>
+          <div className="h-full flex flex-col justify-center items-center gap-8">
+            Il n&apos;y a aucun utilisateur.
+          </div>
         </div>
       </TitleWrapper>
     );
@@ -67,7 +74,8 @@ export default async function Page({
 
   return (
     <TitleWrapper title="Utilisateurs">
-      <div className="flex items-center">
+      <div className="flex flex-col gap-4 w-full sm:flex-row sm:justify-between sm:items-end">
+        <Filter email={searchParams.email} role={searchParams.role} />
         <AddUser />
       </div>
       <UserTable users={users} />

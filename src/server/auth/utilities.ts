@@ -1,6 +1,6 @@
 "server only";
 
-import { db } from "@/server/db";
+import db from "@/server/db";
 import { PasswordResetToken, emailVerificationCode, passwordResetToken, user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { Scrypt, generateId } from "lucia";

@@ -18,6 +18,8 @@ export const metadata = {
   ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   return (
     <div className="flex-1 w-full grid grid-cols-5 relative">
