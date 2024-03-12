@@ -8,7 +8,7 @@ import { redirects } from "@/lib/auth/redirects";
 import { loginSchema } from "@/lib/auth/schemas";
 import { Scrypt } from "lucia";
 import { revalidatePath } from "next/cache";
-import { getUserByEmail } from "../db/queries/auth";
+import { deleteAllUserExpiredSessions, getUserByEmail } from "@/server/db/queries/auth";
 
 
 export async function logoutAction() {
@@ -110,6 +110,13 @@ export async function loginAction(
       sessionCookie.value,
       sessionCookie.attributes
     );
+    // * extra logic to keep the sessions table clean
+    // send a request to delete all the expired sessions of the user
+    // this is a background task and we don't need to wait for it
+    // this will also help to keep the sessions table clean
+    // we could have used a cron job for this but it's not necessary
+    deleteAllUserExpiredSessions({ userId: existingUser.id })
+
   } catch (error) { // unexpected error
     logError({
       request: headers(),
@@ -122,6 +129,7 @@ export async function loginAction(
       loginError: `Échec de la connexion.`,
     }
   }
+
   // redirect to the page after login
   redirect(redirects.afterLogin);
 

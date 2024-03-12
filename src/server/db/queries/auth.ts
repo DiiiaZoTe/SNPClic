@@ -2,8 +2,8 @@
 
 import { db } from "@/server/db";
 import { logError } from "@/lib/utilities/logger";
-import { User, passwordResetToken, user } from "@/server/db/schema";
-import { and, asc, count, eq, like } from "drizzle-orm";
+import { User, passwordResetToken, session, user } from "@/server/db/schema";
+import { and, asc, count, eq, like, lt } from "drizzle-orm";
 import { withPagination } from "./utilities";
 import { MySqlSelect } from "drizzle-orm/mysql-core";
 
@@ -200,5 +200,21 @@ export const updateUserPassword = async ({ userId, newHashedPassword }: { userId
       otherData: { e },
     })
     return false;
+  }
+}
+
+/** delete all user expired sessions */
+export const deleteAllUserExpiredSessions = async ({ userId }: { userId: string }) => {
+  try {
+    await db.delete(session).where(and(
+      eq(session.userId, userId),
+      lt(session.expiresAt, new Date())
+    ));
+  } catch (e) {
+    logError({
+      error: `Error deleting all user expired sessions ${userId}`,
+      location: "deleteAllUserExpiredSessions",
+      otherData: { e },
+    })
   }
 }

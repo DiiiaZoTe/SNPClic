@@ -69,7 +69,8 @@ export const uncachedValidateRequestSSR = async () => {
     // session was found and not refreshed (normal case), return the result
     if (!result.session.fresh) return result;
 
-    // session was found and refreshed, bypass that and invalidate the session since we cannot set cookies
+    // session was found and refreshed, 
+    // bypass that and invalidate the session since we cannot set cookies during SSR
     if (result.session.fresh) {
       await lucia.invalidateSession(result.session.id);
       return { user: null, session: null };
