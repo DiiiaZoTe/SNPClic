@@ -4,9 +4,6 @@ import { Logo } from "@/components/logos/logo";
 import { ContentWrapper } from "../../content-wrapper";
 import { ResetPasswordForm } from "./form";
 import { getSharedMetadata } from "@/config/shared-metadata";
-import { validateRequestSSR } from "@/server/auth/validate-request";
-import { redirect } from "next/navigation";
-import { redirects } from "@/lib/auth/redirects";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const METADATA = {
@@ -30,8 +27,6 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const { user } = await validateRequestSSR();
-  if (user) redirect(redirects.toProtected);
   const { token } = params;
 
   return (

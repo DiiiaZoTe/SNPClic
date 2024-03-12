@@ -5,9 +5,6 @@ import { Logo } from "@/components/logos/logo";
 import { ContentWrapper } from "../content-wrapper";
 import { LoginForm } from "./form";
 import { getSharedMetadata } from "@/config/shared-metadata";
-import { validateRequestSSR } from "@/server/auth/validate-request";
-import { redirect } from "next/navigation";
-import { redirects } from "@/lib/auth/redirects";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const METADATA = {
@@ -25,8 +22,6 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const { user } = await validateRequestSSR();
-  if (user) redirect(redirects.toProtected);
 
   // check if referer is from the same domain
   const referer = headers().get("referer") || "";

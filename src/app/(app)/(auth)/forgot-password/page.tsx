@@ -1,13 +1,9 @@
-import { headers } from "next/headers";
 import { BackButton } from "../back-button";
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/logos/logo";
 import { ContentWrapper } from "../content-wrapper";
 import { ForgotPasswordForm } from "./form";
 import { getSharedMetadata } from "@/config/shared-metadata";
-import { validateRequestSSR } from "@/server/auth/validate-request";
-import { redirect } from "next/navigation";
-import { redirects } from "@/lib/auth/redirects";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const METADATA = {
@@ -22,12 +18,7 @@ export const metadata = {
   ...getSharedMetadata(METADATA.title, METADATA.description, METADATA.url),
 };
 
-export const dynamic = "force-dynamic";
-
 export default async function Page() {
-  const { user } = await validateRequestSSR();
-  if (user) redirect(redirects.toProtected);
-
   return (
     <div className="flex-1 w-full grid grid-cols-5 relative">
       <div className="relative w-full flex flex-col col-span-5 lg:col-span-3 p-4 sm:p-8">
