@@ -54,4 +54,7 @@ declare global {
 if (process.env.NODE_ENV !== 'production' && !global.db) {
   global.db = DrizzleConnectionManager.getInstance().db;
 }
+if (process.env.NODE_ENV === 'production') {
+  global.db = DrizzleConnectionManager.getInstance().db;
+}
 export default db;
