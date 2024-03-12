@@ -13,36 +13,36 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { errorToast } from "@/components/utilities/toasts";
 import { ChevronRight, Loader2 } from "lucide-react";
 
-import { ChangePasswordSchema, changePasswordSchema } from "@/lib/auth/schemas";
+import { ResetPasswordSchema, resetPasswordSchema } from "@/lib/auth/schemas";
 
 import { SubmitButton } from "@/components/utilities/submitButton";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { errorToast } from "@/components/utilities/toasts";
+import { useRouter } from "next/navigation";
 
-export const ChangePasswordForm = () => {
-  const { mutate, isLoading } = api.auth.changePassword.useMutation({
+export const ResetPasswordForm = ({ token }: { token: string }) => {
+  const router = useRouter();
+
+  const { mutate, isLoading } = api.auth.resetPassword.useMutation({
     onSuccess: ({ message }) => {
-      toast.dismiss();
       toast.success(message);
-      form.reset();
+      router.push("/login");
     },
     onError: (error) => {
       toast.dismiss();
       errorToast({
-        title: "Erreur lors du changement de mot de passe",
-        description:
-          error.message ?? "Une erreur est survenue. Veuillez réessayer.",
+        title: "Erreur de réinitialisation de mot de passe",
+        description: error.message ?? "Une erreur inconnue s'est produite",
       });
     },
   });
 
-  const form = useForm<ChangePasswordSchema>({
-    resolver: zodResolver(changePasswordSchema),
+  const form = useForm<ResetPasswordSchema>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      currentPassword: "",
       newPassword: "",
       confirmNewPassword: "",
     },
@@ -51,29 +51,14 @@ export const ChangePasswordForm = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(({ currentPassword, newPassword }) => {
-          mutate({ currentPassword, newPassword });
+        onSubmit={form.handleSubmit(({ newPassword }) => {
+          mutate({
+            newPassword,
+            token: token,
+          });
         })}
         className="w-full flex flex-col gap-4"
       >
-        <FormField
-          control={form.control}
-          name="currentPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mot de passe actuel</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  autoComplete="current-password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <FormField
           control={form.control}
           name="newPassword"
@@ -106,12 +91,11 @@ export const ChangePasswordForm = () => {
         />
 
         <SubmitButton
-          className="group flex gap-2 items-center"
-          variant="black"
+          className="group flex gap-2 items-center min-w-32"
           loading={isLoading}
           loader={<Loader2 className="animate-spin" />}
         >
-          Confirmer
+          Réinitialiser
           <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </SubmitButton>
 

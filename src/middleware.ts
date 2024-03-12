@@ -13,7 +13,7 @@ const SKIP_MIDDLEWARE = [
 ]
 
 export async function middleware(request: NextRequest) {
-  console.log(`${request.headers.get("x-forwarded-for")} -> ${request.nextUrl.pathname}`);
+  console.log(`${request.headers.get("x-forwarded-for")} -> ${request.nextUrl}`);
 
   // Skip middleware for certain paths
   if (skipMiddleware(request)) return NextResponse.next();

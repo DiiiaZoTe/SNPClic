@@ -8,7 +8,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-export const SubmissionPagination = ({
+export const MyPagination = ({
   total,
   page = 1,
   pageSize = 10,

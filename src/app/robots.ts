@@ -6,7 +6,13 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: [],
+      disallow: [
+        // disallow reset-password and reset-password/* routes
+        "/reset-password",
+        "/reset-password/*",
+        "/forgot-password",
+        "/admin/*",
+      ],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
   }

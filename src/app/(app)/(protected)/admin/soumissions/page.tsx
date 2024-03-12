@@ -12,7 +12,8 @@ import { redirect } from "next/navigation";
 import { redirects } from "@/lib/auth/redirects";
 
 import { SubmissionTable } from "@/app/(app)/(protected)/soumissions/table";
-import { SubmissionPagination } from "@/app/(app)/(protected)/soumissions/pagination";
+import { MyPagination } from "@/components/utilities/pagination";
+import { TitleWrapper } from "@/components/layout/(app)/title-wrapper";
 
 const METADATA = {
   title: "Admin - Soumissions",
@@ -67,17 +68,18 @@ export default async function Page({
 
   if (!submissions.length) {
     return (
-      <div className="h-full flex flex-col justify-center items-center gap-8">
-        Il n&apos;y a aucune soumissions.
-      </div>
+      <TitleWrapper title="Toutes les soumissions">
+        <div className="h-full flex flex-col justify-center items-center gap-8">
+          Il n&apos;y a aucune soumissions.
+        </div>
+      </TitleWrapper>
     );
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-bold">Soumissions</h1>
+    <TitleWrapper title="Toutes les soumissions">
       <SubmissionTable submissions={submissions} showEmail />
-      <SubmissionPagination total={count} page={page} pageSize={pageSize} />
-    </div>
+      <MyPagination total={count} page={page} pageSize={pageSize} />
+    </TitleWrapper>
   );
 }

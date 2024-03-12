@@ -7,6 +7,7 @@ import { z } from "zod";
 import { logError } from "@/lib/utilities/logger";
 
 import {
+  adminProcedure,
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
@@ -27,6 +28,8 @@ import { redirects } from "@/lib/auth/redirects";
 import {
   generateEmailVerificationCode,
   generatePasswordResetToken,
+  getAndDeletePasswordResetToken,
+  insertNewAccountWithTemporaryPassword,
   timeFromNow,
 } from "@/server/auth/utilities";
 
@@ -36,7 +39,18 @@ import { isWithinExpirationDate } from "oslo";
 import { eq } from "drizzle-orm";
 import { siteConfig } from "@/config/site";
 import ResetPasswordEmail from "emails/reset-password";
-import { changePasswordServerSchema } from "@/lib/auth/schemas";
+import {
+  changePasswordServerSchema,
+  emailSchema,
+  resetPasswordServerSchema,
+} from "@/lib/auth/schemas";
+import {
+  deleteUserByEmail,
+  getUserByEmail,
+  updateUserPassword,
+} from "@/server/db/queries/auth";
+import EmailAccountCreatedTempPass from "emails/account-created-temp";
+import { api } from "@/trpc/server";
 
 export const authRouter = createTRPCRouter({
   changePassword: protectedProcedure
@@ -74,15 +88,180 @@ export const authRouter = createTRPCRouter({
         });
       }
       const newHashed = await new Scrypt().hash(input.newPassword);
-      const [updateUser] = await ctx.db
-        .update(user)
-        .set({ hashedPassword: newHashed })
-        .where(eq(user.id, ctx.user.id));
-      if (!updateUser.affectedRows) {
+      const updateUser = await updateUserPassword({
+        userId: ctx.user.id,
+        newHashedPassword: newHashed,
+      });
+      if (!updateUser) {
         logError({
           request: ctx.headers,
           error: `Failed updating user password`,
           location: `/api/trpc/auth.changePassword`,
+        });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Une erreur est survenue lors du changement de votre mot de passe.`,
+        });
+      }
+      return { success: true, message: "Mot de passe changé." };
+    }),
+
+  deleteUserByEmail: adminProcedure
+    .input(
+      z.object({
+        email: z
+          .string()
+          .email("Veuillez fournir une adresse e-mail valide.")
+          .min(1, "Veuillez fournir un e-mail valide."),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { email } = input;
+      const deleteUser = await deleteUserByEmail({ email });
+      if (deleteUser.error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            deleteUser.error ??
+            "Une erreur est survenue lors de la suppression.",
+        });
+      }
+      return {
+        success: true,
+        email,
+      };
+    }),
+
+  createNewUserAccount: adminProcedure
+    .input(emailSchema)
+    .mutation(async ({ input }) => {
+      const newUser = await insertNewAccountWithTemporaryPassword(input.email);
+      if (!newUser) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Une erreur est survenue lors de la création du compte.`,
+        });
+      }
+
+      try {
+        await sendEmail({
+          to: input.email,
+          subject: "Compte SNPClic créé",
+          react: (
+            <EmailAccountCreatedTempPass password={newUser.temporaryPassword} />
+          ),
+        });
+      } catch (error) {
+        logError({
+          error: "Failed sending account created email",
+          location: "createNewUserAccount",
+          otherData: { error },
+        });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Le compte a été créé, mais une erreur est survenue lors de l'envoi de l'e-mail de confirmation. 
+          Veuillez demander à l'utilisateur de changer son mot de passe temporaire via la page de connexion.`,
+        });
+      }
+      return { success: true, email: input.email };
+    }),
+
+  forgotPassword: publicProcedure
+    .input(emailSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { email } = input;
+      const message =
+        "Si un compte existe avec cette adresse e-mail, un e-mail de réinitialisation de mot de passe a été envoyé.";
+      const user = await getUserByEmail({ email });
+      if (!user) {
+        return {
+          message:
+            "Si un compte existe avec cette adresse e-mail, un e-mail de réinitialisation de mot de passe a été envoyé.",
+        };
+      }
+      const verificationToken = await generatePasswordResetToken(user.id);
+      if (!verificationToken) {
+        return { message };
+      }
+      const verificationLink = `${siteConfig.url}/reset-password/${verificationToken}`;
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: "Réinitialiser votre mot de passe",
+          react: <ResetPasswordEmail link={verificationLink} />,
+        });
+      } catch (error) {
+        logError({
+          request: ctx.headers,
+          error: "Failed sending password reset email",
+          location: "forgotPassword",
+          otherData: { error },
+        });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Nous recontrons des difficultés d'envoie d'e-mail. Veuillez réessayer plus tard.`,
+        });
+      }
+      return { success: true, message };
+    }),
+
+  resetPassword: publicProcedure
+    .input(resetPasswordServerSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { token, newPassword } = input;
+      const message = `Lien de réinitialisation de mot de passe non valide ou expiré.`;
+
+      const resultDBToken = await getAndDeletePasswordResetToken(token);
+      if (!resultDBToken.success) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message,
+        });
+      }
+      const dbToken = resultDBToken.data;
+
+      const isNotExpired =
+        dbToken && !isWithinExpirationDate(dbToken.expiresAt);
+      if (!dbToken || isNotExpired) {
+        logError({
+          request: ctx.headers,
+          error: !dbToken
+            ? `Invalid password reset token`
+            : isNotExpired
+            ? `Password reset link expired`
+            : `Unknown password reset error`,
+          location: `/api/trpc/auth.resetPassword`,
+        });
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message,
+        });
+      }
+      try {
+        await lucia.invalidateUserSessions(dbToken.userId);
+      } catch (error) {
+        logError({
+          request: ctx.headers,
+          error: "Failed invalidating user sessions",
+          location: `/api/trpc/auth.resetPassword`,
+          otherData: { error },
+        });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Une erreur est survenue lors de la réinitialisation de votre mot de passe.`,
+        });
+      }
+
+      const newHashed = await new Scrypt().hash(input.newPassword);
+      const updateUser = await updateUserPassword({
+        userId: dbToken.userId,
+        newHashedPassword: newHashed,
+      });
+      if (!updateUser) {
+        logError({
+          request: ctx.headers,
+          error: `Failed updating user password`,
+          location: `/api/trpc/auth.resetPassword`,
         });
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",

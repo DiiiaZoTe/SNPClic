@@ -1,13 +1,14 @@
 "server only";
 
 import { db } from "@/server/db";
-import { emailVerificationCode, passwordResetToken, user } from "@/server/db/schema";
+import { PasswordResetToken, emailVerificationCode, passwordResetToken, user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { Scrypt, generateId } from "lucia";
 import { TimeSpan, createDate } from "oslo";
 import { alphabet, generateRandomString } from "oslo/crypto";
 import { logError } from "@/lib/utilities/logger";
 import { headers } from "next/headers";
+import { getDBPasswordResetToken, deleteDBPasswordResetToken } from "@/server/db/queries/auth";
 
 /** 
  * Insert a new account into the database and return the user id.
@@ -86,9 +87,9 @@ export async function generateEmailVerificationCode(
     return code;
   } catch (error) {
     logError({
-      request: `generateEmailVerificationCode`,
+      request: headers(),
       error: `Failed to generate password reset token for user ${userId} and email ${email}`,
-      location: `/api/trpc/auth.generateEmailVerificationCode`,
+      location: `auth utilities generateEmailVerificationCode`,
       otherData: { error }
     });
     return undefined;
@@ -103,18 +104,53 @@ export async function generatePasswordResetToken(userId: string) {
     await db.insert(passwordResetToken).values({
       id: tokenId,
       userId,
-      expiresAt: createDate(new TimeSpan(2, "h")),
+      expiresAt: createDate(new TimeSpan(1, "h")),
     });
     return tokenId;
   } catch (error) {
     logError({
-      request: `generatePasswordResetToken`,
+      request: headers(),
       error: `Failed to generate password reset token for user ${userId}`,
-      location: `/api/trpc/auth.generatePasswordResetToken`,
+      location: `auth utilities generatePasswordResetToken`,
       otherData: { error }
     });
     return undefined;
   }
+}
+
+/** Get and delete the password reset token */
+export async function getAndDeletePasswordResetToken(token: string): Promise<{
+  success: false;
+  error: string;
+} | {
+  success: true;
+  data: PasswordResetToken
+}> {
+  const dbToken = await getDBPasswordResetToken(token);
+  if (!dbToken) {
+    logError({
+      request: headers(),
+      error: `Password reset token not found ${token}`,
+      location: `auth utilities getAndDeletePasswordResetToken`,
+    });
+    return {
+      success: false,
+      error: "Token not found",
+    };
+  }
+  const result = await deleteDBPasswordResetToken(token);
+  if (!result.success) {
+    logError({
+      request: headers(),
+      error: `Failed to delete password reset token ${token}`,
+      location: `auth utilities getAndDeletePasswordResetToken`,
+    });
+    return {
+      success: false,
+      error: "Failed to delete token",
+    };
+  }
+  return { success: true, data: dbToken };
 }
 
 /** Get the time between now and the date given */

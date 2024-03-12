@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 import { redirects } from "@/lib/auth/redirects";
 
 import { SubmissionTable } from "@/app/(app)/(protected)/soumissions/table";
-import { SubmissionPagination } from "@/app/(app)/(protected)/soumissions/pagination";
+import { MyPagination } from "@/components/utilities/pagination";
 import { Button } from "@/components/ui/button";
 import MyLink from "@/components/utilities/link";
 import { Plus } from "lucide-react";
@@ -89,7 +89,7 @@ export default async function Page({
   return (
     <TitleWrapper title="Soumissions">
       <SubmissionTable submissions={submissions} />
-      <SubmissionPagination total={count} page={page} pageSize={pageSize} />
+      <MyPagination total={count} page={page} pageSize={pageSize} />
     </TitleWrapper>
   );
 }

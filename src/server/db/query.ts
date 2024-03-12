@@ -6,7 +6,7 @@ import { form, formSubmission, submissionAnswer, submissionAnswerStringArray } f
 import { generateUUID } from "@/lib/utilities/uuid";
 import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 import { getAllUsers } from "./queries/auth";
-// import { insertNewAccount } from "@/server/auth/utilities";
+import { insertNewAccount } from "@/server/auth/utilities";
 
 // * Insert form data
 // import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
@@ -54,7 +54,8 @@ import { getAllUsers } from "./queries/auth";
 //       })
 //   })
 
-// insertNewAccount("alex.vencel.96@gmail.com", "Test1234")
+// * Insert a new account for testing
+// insertNewAccount("test2@snpclic.fr", "Test1234")
 //   .then((result) => {
 //     console.log(result)
 //   })

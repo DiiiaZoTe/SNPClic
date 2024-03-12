@@ -81,6 +81,7 @@ export const passwordResetToken = mysqlTable(
     userIx: index("user_ix").on(table.expiresAt),
   }),
 );
+export type PasswordResetToken = typeof passwordResetToken.$inferSelect;
 
 // Form table
 export const form = mysqlTable("form", {

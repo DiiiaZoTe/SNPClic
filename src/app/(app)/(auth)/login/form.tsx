@@ -22,6 +22,8 @@ import { useFormState } from "react-dom";
 import { loginAction } from "@/server/auth/actions";
 import { useEffect, useRef } from "react";
 import { SubmitButton } from "@/components/utilities/submitButton";
+import MyLink from "@/components/utilities/link";
+import { Button } from "@/components/ui/button";
 
 export const LoginForm = () => {
   const [state, formAction] = useFormState(loginAction, null);
@@ -103,12 +105,23 @@ export const LoginForm = () => {
             <FormItem>
               <FormLabel>Mot de passe</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  {...field}
-                />
+                <div className="flex flex-col gap-2">
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    {...field}
+                  />
+                  <Button
+                    asChild
+                    variant="linkForeground"
+                    className="p-0 h-fit font-normal"
+                  >
+                    <MyLink href="/forgot-password" className="text-xs w-fit">
+                      Mot de passe oublié?
+                    </MyLink>
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
