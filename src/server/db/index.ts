@@ -38,7 +38,6 @@ class DrizzleConnectionManager {
 
   public static getInstance(): DrizzleConnectionManager {
     if (!DrizzleConnectionManager.instance) {
-      console.log("\nCreating new drizzle instance\n");
       DrizzleConnectionManager.instance = new DrizzleConnectionManager();
     }
     return DrizzleConnectionManager.instance;
