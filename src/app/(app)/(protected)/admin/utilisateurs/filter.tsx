@@ -7,17 +7,10 @@ import { z } from "zod";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
+import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,7 +23,6 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const roles = [
@@ -43,7 +35,13 @@ const FormSchema = z.object({
   email: z.string().optional(),
 });
 
-export function FormFilter({ email, role }: { email?: string; role?: string }) {
+interface FormFilter {
+  email?: string;
+  role?: string;
+  className?: string;
+}
+
+export function FormFilter({ email, role, className }: FormFilter) {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -67,7 +65,10 @@ export function FormFilter({ email, role }: { email?: string; role?: string }) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-col sm:flex-row gap-4 sm:items-end"
+        className={cn(
+          "w-full flex flex-col sm:flex-row gap-4 sm:items-end",
+          className
+        )}
       >
         <FormField
           control={form.control}
@@ -151,23 +152,22 @@ export function FormFilter({ email, role }: { email?: string; role?: string }) {
 }
 
 export function Filter({ email, role }: { email?: string; role?: string }) {
-  const isDesktop = useMediaQuery("(min-width: 639px)");
-
-  if (isDesktop) {
-    return <FormFilter email={email} role={role} />;
-  }
-
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Filtrer</Button>
-      </SheetTrigger>
-      <SheetContent
-        className="flex flex-col gap-6 p-6 sm:p-8 w-full pt-12 overflow-y-scroll max-h-[100dvh]"
-        side="bottom"
-      >
-        <FormFilter email={email} role={role} />
-      </SheetContent>
-    </Sheet>
+    <>
+      <FormFilter email={email} role={role} className="hidden sm:flex" />
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="outline" className="sm:hidden">
+            Filtrer
+          </Button>
+        </SheetTrigger>
+        <SheetContent
+          className="flex flex-col gap-6 p-6 sm:p-8 w-full pt-12 overflow-y-scroll max-h-[100dvh]"
+          side="bottom"
+        >
+          <FormFilter email={email} role={role} />
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
