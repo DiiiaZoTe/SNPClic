@@ -2,7 +2,7 @@
 
 import db from "@/server/db";
 
-import { eq, and, desc, count, inArray } from "drizzle-orm";
+import { eq, and, desc, count, inArray, ne, sql } from "drizzle-orm";
 import { formSubmission, submissionAnswer, submissionAnswerStringArray, user } from "@/server/db/schema";
 import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 import type { User } from "lucia";
@@ -18,9 +18,11 @@ export const getAllSubmission = async ({
     pageSize: 10,
   },
   noLimit = false,
+  withDeleted = false,
 }: {
   pagination?: { page?: number; pageSize?: number };
   noLimit?: boolean;
+  withDeleted?: boolean;
 }) => {
   try {
     const query = db
@@ -35,6 +37,7 @@ export const getAllSubmission = async ({
       })
       .from(formSubmission)
       .leftJoin(user, eq(formSubmission.submittedBy, user.id))
+      .where(!withDeleted ? sql`${formSubmission.submittedBy} IS NOT NULL` : undefined)
       .orderBy(desc(formSubmission.submittedAt))
       .$dynamic();
     if (noLimit) return await query;
@@ -94,11 +97,12 @@ export const getAllSubmissionByUser = async ({
 }
 
 /** get the number of submission from a user */
-export const getCountSubmission = async () => {
+export const getCountSubmission = async (withDeleted = false) => {
   try {
     return db
       .select({ value: count(formSubmission.uuid) })
       .from(formSubmission)
+      .where(!withDeleted ? sql`${formSubmission.submittedBy} IS NOT NULL` : undefined);
   } catch (e) {
     logError({
       error: "Error getting submission count",
