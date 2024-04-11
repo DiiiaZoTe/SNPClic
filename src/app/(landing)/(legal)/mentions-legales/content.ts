@@ -33,7 +33,7 @@ export const LEGAL_CONTENT = [
       },
       {
         "subtitle": "Hébergeur",
-        "subcontent": "Non determiné",
+        "subcontent": "Hetzner",
       }
     ]
   },
