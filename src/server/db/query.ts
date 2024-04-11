@@ -9,7 +9,6 @@ import { getAllUsers } from "./queries/auth";
 import { insertNewAccount } from "@/server/auth/utilities";
 
 // * Insert form data
-// import { FORM_DATA } from "@/app/(app)/(protected)/questionnaire/content";
 // db.insert(form).values({
 //   uuid: generateUUID(),
 //   name: "Questionnaire SNPClic",
@@ -55,7 +54,7 @@ import { insertNewAccount } from "@/server/auth/utilities";
 //   })
 
 // * Insert a new account for testing
-// insertNewAccount("test2@snpclic.fr", "Test1234")
+// insertNewAccount("email", "pass")
 //   .then((result) => {
 //     console.log(result)
 //   })
