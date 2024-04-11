@@ -8,7 +8,7 @@ export const pdfGetHtmlString = async (element: JSX.Element) => {
 };
 
 export async function getBrowserInstance() {
-  const executablePath = await chromium.executablePath
+  const executablePath = await chromium.executablePath;
 
   console.log("Generating PDF - puppeteer executablePath", executablePath);
 
@@ -52,7 +52,7 @@ async function getPDFBuffer(html: string) {
     })
 
   } catch (error) {
-    logError({ location: 'getPDFBuffer', error, request: { html } })
+    logError({ location: 'getPDFBuffer', error })
   }
   finally {
     if (browser) await browser.close()
