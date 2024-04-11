@@ -59,7 +59,7 @@ export const LoginForm = () => {
         message: errorMessage,
       });
       errorToast({
-        title: "Erreur de déconnexion",
+        title: "Erreur de connexion",
         description: errorMessage,
       });
     }
