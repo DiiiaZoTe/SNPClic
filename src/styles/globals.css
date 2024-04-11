@@ -86,8 +86,6 @@
     /* background: theme("colors.neutral.400"); */
     background: hsl(0 0% 60%);
   }
-  .scrollbar {
-  }
 
   /* ----------- Highlight content ----------- */
   ::selection {
