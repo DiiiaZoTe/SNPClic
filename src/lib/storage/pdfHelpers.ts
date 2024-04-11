@@ -10,6 +10,8 @@ export const pdfGetHtmlString = async (element: JSX.Element) => {
 export async function getBrowserInstance() {
   const executablePath = await chromium.executablePath
 
+  console.log("Generating PDF - puppeteer executablePath", executablePath);
+
   if (!executablePath) {
     // running locally
     const puppeteer = require('puppeteer')
