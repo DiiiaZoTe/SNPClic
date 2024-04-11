@@ -9,9 +9,11 @@ export const PRIVACY_CONTENT = [
                 Vous pouvez utiliser notre site sans fournir aucune information personnelle.`
   },
   {
-    "title": "Pas de Cookies",
+    "title": "Pas de Cookies de Collecte de Données",
     "content": `Nous n'utilisons pas de cookies ou d'autres technologies de suivi pour collecter
-                des informations sur votre utilisation de notre site.`
+                des informations sur votre utilisation de notre site. Nous utilisons des cookies
+                strictement nécessaires pour le bon fonctionnement de notre site web tel que les
+                cookies de session.`
   },
   {
     "title": "Liens vers d'Autres Sites",
