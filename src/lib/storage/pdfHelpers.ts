@@ -10,8 +10,8 @@ export const pdfGetHtmlString = async (element: JSX.Element) => {
 export async function getBrowserInstance() {
   const puppeteer = require('puppeteer')
   return puppeteer.launch({
-    args: chromium.args,
-    headless: true,
+    args: ['--no-sandbox', ...chromium.args],
+    headless: 'new',
     defaultViewport: {
       width: 1920,
       height: 1080
