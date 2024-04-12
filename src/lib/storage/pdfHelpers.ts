@@ -1,6 +1,5 @@
-// import chromium from 'chrome-aws-lambda'
-import chromium from "@sparticuz/chromium";
-import { logError } from '../utilities/logger';
+import chromium from 'chrome-aws-lambda'
+import { logError } from '../utilities/logger'
 
 export const pdfGetHtmlString = async (element: JSX.Element) => {
   const { renderToStaticMarkup: jsxToHtmlString } = await import("react-dom/server");
@@ -9,14 +8,30 @@ export const pdfGetHtmlString = async (element: JSX.Element) => {
 };
 
 export async function getBrowserInstance() {
-  const puppeteer = require('puppeteer');
-  return puppeteer.launch({
+  const executablePath = await chromium.executablePath;
+
+  if (!executablePath) {
+    // running locally
+    const puppeteer = require('puppeteer')
+    return puppeteer.launch({
+      args: chromium.args,
+      headless: true,
+      defaultViewport: {
+        width: 1920,
+        height: 1080
+      },
+      ignoreHTTPSErrors: true
+    })
+  }
+
+  return chromium.puppeteer.launch({
     args: chromium.args,
-    headless: true,
     defaultViewport: {
       width: 1920,
       height: 1080
     },
+    executablePath,
+    headless: chromium.headless,
     ignoreHTTPSErrors: true
   })
 }
@@ -35,7 +50,7 @@ async function getPDFBuffer(html: string) {
     })
 
   } catch (error) {
-    logError({ location: 'getPDFBuffer', error })
+    logError({ location: 'getPDFBuffer', error, request: { html } })
   }
   finally {
     if (browser) await browser.close()
