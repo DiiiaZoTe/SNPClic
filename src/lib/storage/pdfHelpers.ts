@@ -10,7 +10,7 @@ export async function getBrowserInstance() {
   const puppeteer = require('puppeteer')
   return puppeteer.launch({
     args: ['--no-sandbox'],
-    headless: 'new',
+    headless: true,
     defaultViewport: {
       width: 1920,
       height: 1080
