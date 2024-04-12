@@ -1,3 +1,4 @@
+import chromium from 'chrome-aws-lambda'
 import { logError } from '../utilities/logger'
 
 export const pdfGetHtmlString = async (element: JSX.Element) => {
@@ -9,7 +10,7 @@ export const pdfGetHtmlString = async (element: JSX.Element) => {
 export async function getBrowserInstance() {
   const puppeteer = require('puppeteer')
   return puppeteer.launch({
-    args: ['--no-sandbox'],
+    args: chromium.args,
     headless: true,
     defaultViewport: {
       width: 1920,
