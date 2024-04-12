@@ -9,29 +9,15 @@ export const pdfGetHtmlString = async (element: JSX.Element) => {
 
 export async function getBrowserInstance() {
   const executablePath = await chromium.executablePath;
-
-  if (!executablePath) {
-    // running locally
-    const puppeteer = require('puppeteer')
-    return puppeteer.launch({
-      args: chromium.args,
-      headless: true,
-      defaultViewport: {
-        width: 1920,
-        height: 1080
-      },
-      ignoreHTTPSErrors: true
-    })
-  }
-
-  return chromium.puppeteer.launch({
+  console.log({ executablePath })
+  const puppeteer = require('puppeteer')
+  return puppeteer.launch({
     args: chromium.args,
+    headless: true,
     defaultViewport: {
       width: 1920,
       height: 1080
     },
-    executablePath,
-    headless: chromium.headless,
     ignoreHTTPSErrors: true
   })
 }
@@ -50,7 +36,7 @@ async function getPDFBuffer(html: string) {
     })
 
   } catch (error) {
-    logError({ location: 'getPDFBuffer', error, request: { html } })
+    logError({ location: 'getPDFBuffer', error })
   }
   finally {
     if (browser) await browser.close()

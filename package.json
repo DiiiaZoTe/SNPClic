@@ -58,7 +58,7 @@
     "next-themes": "^0.2.1",
     "oslo": "^1.1.2",
     "postcss": "^8.4.35",
-    "puppeteer": "21.9.0",
+    "puppeteer": "^22.0.0",
     "react": "^18.2.0",
     "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.2.0",
