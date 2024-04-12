@@ -8,30 +8,14 @@ export const pdfGetHtmlString = async (element: JSX.Element) => {
 };
 
 export async function getBrowserInstance() {
-  const executablePath = await chromium.executablePath
-
-  if (!executablePath) {
-    // running locally
-    const puppeteer = require('puppeteer')
-    return puppeteer.launch({
-      args: chromium.args,
-      headless: true,
-      defaultViewport: {
-        width: 1920,
-        height: 1080
-      },
-      ignoreHTTPSErrors: true
-    })
-  }
-
-  return chromium.puppeteer.launch({
+  const puppeteer = require('puppeteer')
+  return puppeteer.launch({
     args: chromium.args,
+    headless: true,
     defaultViewport: {
       width: 1920,
       height: 1080
     },
-    executablePath,
-    headless: chromium.headless,
     ignoreHTTPSErrors: true
   })
 }
