@@ -3,7 +3,7 @@ import {
   andCondition,
   orCondition,
   evaluateCondition,
-} from '../src/app/questionnaire/_utils/conditions'; // Update the import path to point to your new conditions.ts
+} from '@/app/(app)/(protected)/questionnaire/_utils/conditions'; // Update the import path to point to your new conditions.ts
 
 describe('Form Conditions Evaluation Tests', () => {
   // Test for createQuestionCondition
