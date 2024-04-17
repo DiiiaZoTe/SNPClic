@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { getSharedMetadata } from "@/config/shared-metadata";
 import Providers from "./providers";
+import Script from "next/script";
+import { env } from "@/env";
 
 export const metadata: Metadata = {
   title: {
@@ -99,6 +101,14 @@ export default function RootLayout({
           content="/favicon/ms-icon-144x144.png"
         />
         <meta name="theme-color" content="#ffffff" />
+        {env.NEXT_PUBLIC_ENVIRONMENT === "production" && (
+          <Script
+            id="umami-analytics"
+            defer
+            src="https://analytics.alexvencel.com/script.js"
+            data-website-id="d614f428-1c9d-4356-a211-25ed54db7a6b"
+          />
+        )}
       </head>
       <body className="flex flex-col min-h-svh bg-background font-sans antialiased [--scrollbar-size:3px] sm:[--scrollbar-size:8px]">
         <Providers>{children}</Providers>
