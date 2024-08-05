@@ -8,6 +8,7 @@ import {
   adminNavItems,
 } from "@/app/(app)/(protected)/nav-content";
 import { TopHeader } from "@/components/layout/(app)/menu/top-header";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const dynamic = "force-dynamic";
 
@@ -23,13 +24,13 @@ export default async function Layout({
 
   return (
     <SessionProvider value={{ user, session }}>
-      <div className="flex w-full flex-col h-[100svh] overflow-clip">
+      <div className="flex w-full flex-col">
         <TopHeader navItems={navItems} />
-        <main className="flex flex-1 min-h-0 w-full border-t border-muted ">
-          <div className="w-full h-full flex flex-col py-8 overflow-y-auto">
-            <div className="container w-full flex-1">{children}</div>
-          </div>
-        </main>
+        <ScrollArea className="w-full border-t border-muted">
+          <main className=" h-[calc(100svh-105px)] flex min-h-0 w-full flex-col">
+            <div className="container w-full flex-1 py-8">{children}</div>
+          </main>
+        </ScrollArea>
       </div>
     </SessionProvider>
   );

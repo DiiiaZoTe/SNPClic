@@ -16,7 +16,7 @@ export const ContentWrapper = ({
 }) => {
   return (
     <div className="m-auto w-full max-w-sm flex flex-col gap-8 animate-in">
-      <LogoText  className="text-5xl sm:text-6xl"/>
+      <LogoText className="text-5xl sm:text-6xl"/>
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold">
           <Balancer>{text.title}</Balancer>
