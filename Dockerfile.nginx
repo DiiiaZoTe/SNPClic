@@ -7,7 +7,7 @@ COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 # if the environment is preview modify the nginx.conf to redirect to replace snpclic by preview.snpclic
 RUN if [ "$APP_ENVIRONMENT" = "preview" ]; then \
-    sed -i 's/snpclic.com/preview.snpclic.com/g' /etc/nginx/conf.d/default.conf; \
+      sed -i 's/snpclic/preview.snpclic/g' /etc/nginx/conf.d/default.conf; \
     fi
 
 EXPOSE 80
