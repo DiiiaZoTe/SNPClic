@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import MyLink from "@/components/utilities/link";
 
 export default function Home() {
+  console.log("building home page");
+
   return (
     <div className="flex flex-col gap-16 max-w-xl items-center self-center grow">
       <div className="flex flex-col gap-8 justify-center items-start">
