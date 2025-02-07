@@ -21,7 +21,7 @@ services:
         PDF_API_URL: ${PDF_API_URL}
     container_name: app
     ports:
-      - 3000
+      - "3000:3000"
     environment:
       NEXT_PUBLIC_ENVIRONMENT: development
       DATABASE_HOST: db
@@ -35,7 +35,7 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY}
       PDF_API_KEY: ${PDF_API_KEY}
       PDF_API_URL: ${PDF_API_URL}
-      SERVICE_FQDN_APP:
+      SERVICE_FQDN_APP_3000:
     depends_on:
       db:
         condition: service_healthy
@@ -76,12 +76,13 @@ services:
         APP_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT:-production}
     container_name: nginx
     environment:
-      SERVICE_FQDN_APP:
+      SERVICE_FQDN_APP_3001:
     ports:
-      - 80
+      - "3001:80"
     depends_on:
       - app
       - db
+
     networks:
       - snpclic-network
 
