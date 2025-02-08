@@ -21,9 +21,9 @@ services:
         PDF_API_URL: ${PDF_API_URL}
     container_name: app
     ports:
-      - "3000:3000"
+      - "3331:3000"
     environment:
-      NEXT_PUBLIC_ENVIRONMENT: development
+      NEXT_PUBLIC_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT:-production}
       DATABASE_HOST: db
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
@@ -35,7 +35,7 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY}
       PDF_API_KEY: ${PDF_API_KEY}
       PDF_API_URL: ${PDF_API_URL}
-      SERVICE_FQDN_APP_3000:
+      SERVICE_FQDN_APP_3331:
     depends_on:
       db:
         condition: service_healthy
@@ -76,9 +76,9 @@ services:
         APP_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT:-production}
     container_name: nginx
     environment:
-      SERVICE_FQDN_APP_3001:
+      SERVICE_FQDN_APP_3332:
     ports:
-      - "3001:80"
+      - "3332:80"
     depends_on:
       - app
       - db
