@@ -49,7 +49,7 @@ services:
         target: /app/node_modules
 
   db-dev:
-    image: mysql:8
+    image: mysql:9
     container_name: db-dev
     restart: unless-stopped
     environment:

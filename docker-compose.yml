@@ -43,7 +43,7 @@ services:
       - snpclic-network
 
   db:
-    image: mysql:8
+    image: mysql:9
     container_name: db
     restart: unless-stopped
     environment:
