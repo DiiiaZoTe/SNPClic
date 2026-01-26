@@ -103,10 +103,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
         {env.NEXT_PUBLIC_ENVIRONMENT === "production" && (
           <Script
-            id="umami-analytics"
-            defer
-            src="https://analytics.alexvencel.com/script.js"
-            data-website-id="d614f428-1c9d-4356-a211-25ed54db7a6b"
+            src="https://analytics.alexvencel.com/api/script.js"
+            data-site-id="6f7c8158c10e"
+            strategy="afterInteractive"
           />
         )}
       </head>
