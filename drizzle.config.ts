@@ -3,8 +3,8 @@ import { DB_CONFIG } from "./src/server/db/config";
 
 export default {
   schema: "./src/server/db/schema.ts",
-  driver: "mysql2",
+  dialect: "mysql",
   dbCredentials: {
-    uri: DB_CONFIG.url,
+    url: DB_CONFIG.url,
   },
 } satisfies Config;

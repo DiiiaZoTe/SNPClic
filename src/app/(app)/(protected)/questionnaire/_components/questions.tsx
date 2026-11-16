@@ -1,8 +1,8 @@
 "use client";
 
-import { ControllerRenderProps, UseFormReturn } from "react-hook-form";
+import { ControllerRenderProps } from "react-hook-form";
 
-import type { Answer, Question, QuestionType } from "../types";
+import type { Question, QuestionType } from "../types";
 import { useMultiStepFormContext } from "../_hooks/multi-step-form-context";
 
 import {
@@ -36,13 +36,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-type UseFormType = UseFormReturn<
-  {
-    [x: string]: Answer;
-  },
-  any,
-  undefined
->;
+type UseFormType = ReturnType<typeof useMultiStepFormContext>["form"];
 
 export const QuestionSwitch = ({
   question,

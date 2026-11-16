@@ -25,16 +25,17 @@ export type User = ReturnType<typeof getAllUsers> extends Promise<(infer R)[]>
   ? R
   : never;
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: {
-    page?: string;
-    pageSize?: string;
-    email?: string;
-    role?: string;
-  };
-}) {
+export default async function Page(
+  props: {
+    searchParams: Promise<{
+      page?: string;
+      pageSize?: string;
+      email?: string;
+      role?: string;
+    }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   noStore();
 
   const { page: pageStr = "1", pageSize: pageSizeStr = "10" } = searchParams;

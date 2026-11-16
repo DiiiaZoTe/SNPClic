@@ -7,10 +7,6 @@ await import("./src/env.js");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
-  experimental: {
-    serverComponentsExternalPackages: ["chrome-aws-lambda"]
-  },
   async headers() {
     return [
 

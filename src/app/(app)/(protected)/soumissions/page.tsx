@@ -38,14 +38,15 @@ export type Submission = ReturnType<
   ? R
   : never;
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: {
-    page?: string;
-    pageSize?: string;
-  };
-}) {
+export default async function Page(
+  props: {
+    searchParams: Promise<{
+      page?: string;
+      pageSize?: string;
+    }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   noStore();
 
   // validate request

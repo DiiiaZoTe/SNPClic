@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic";
 export default async function Page() {
 
   // check if referer is from the same domain
-  const referer = headers().get("referer") || "";
+  const referer = (await headers()).get("referer") || "";
   const backLink = referer.startsWith(siteConfig.url + "/login")
     ? "/"
     : referer.startsWith(siteConfig.url)

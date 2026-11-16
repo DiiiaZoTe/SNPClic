@@ -21,12 +21,13 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 type Props = {
-  params: {
+  params: Promise<{
     token: string;
-  };
+  }>;
 };
 
-export default async function Page({ params }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
   const { token } = params;
 
   return (

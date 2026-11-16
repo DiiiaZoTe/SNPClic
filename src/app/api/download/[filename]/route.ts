@@ -4,10 +4,13 @@ import { r2 } from '@/server/storage/r2'
 import { NextRequest } from 'next/server';
 import { logError } from '@/lib/utilities/logger';
 
-export async function POST(
-  request: NextRequest,
-  { params: { filename } }: { params: { filename: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ filename: string }> }) {
+  const params = await props.params;
+
+  const {
+    filename
+  } = params;
+
   if (!filename) return new Response("File name is required.", { status: 400 });
 
   try {

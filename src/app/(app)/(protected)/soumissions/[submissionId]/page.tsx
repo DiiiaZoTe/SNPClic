@@ -20,7 +20,8 @@ import { Suspense } from "react";
 import { User } from "lucia";
 import { TitleWrapper } from "@/components/layout/(app)/title-wrapper";
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const { submissionId } = params;
   const metadata = {
     title: `Soumission Détail`,
@@ -37,12 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const dynamic = "force-dynamic";
 
 type Props = {
-  params: {
+  params: Promise<{
     submissionId: string;
-  };
+  }>;
 };
 
-export default async function Page({ params }: Props) {
+export default async function Page(props: Props) {
+  const params = await props.params;
   noStore();
   // validate request
   const { user } = await validateRequestSSR();

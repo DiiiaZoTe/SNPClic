@@ -23,7 +23,7 @@ export async function insertNewAccount(email: string, password: string) {
 
     if (existingUser) {
       logError({
-        request: headers(),
+        request: await headers(),
         error: `Sign up fail, account ${email} already exists`,
         location: `auth utilities insertNewAccount`,
       });
@@ -39,7 +39,7 @@ export async function insertNewAccount(email: string, password: string) {
     });
     if (!insertNewUser.affectedRows) {
       logError({
-        request: headers(),
+        request: await headers(),
         error: `Failed to insert new user ${email}`,
         location: `auth utilities insertNewAccount`,
       });
@@ -48,7 +48,7 @@ export async function insertNewAccount(email: string, password: string) {
     return userId;
   } catch (error) {
     logError({
-      request: headers(),
+      request: await headers(),
       error: `Unexpected error creating new user ${email}`,
       location: `auth utilities insertNewAccount`,
       otherData: { error }
@@ -87,7 +87,7 @@ export async function generateEmailVerificationCode(
     return code;
   } catch (error) {
     logError({
-      request: headers(),
+      request: await headers(),
       error: `Failed to generate password reset token for user ${userId} and email ${email}`,
       location: `auth utilities generateEmailVerificationCode`,
       otherData: { error }
@@ -109,7 +109,7 @@ export async function generatePasswordResetToken(userId: string) {
     return tokenId;
   } catch (error) {
     logError({
-      request: headers(),
+      request: await headers(),
       error: `Failed to generate password reset token for user ${userId}`,
       location: `auth utilities generatePasswordResetToken`,
       otherData: { error }
@@ -129,7 +129,7 @@ export async function getAndDeletePasswordResetToken(token: string): Promise<{
   const dbToken = await getDBPasswordResetToken(token);
   if (!dbToken) {
     logError({
-      request: headers(),
+      request: await headers(),
       error: `Password reset token not found ${token}`,
       location: `auth utilities getAndDeletePasswordResetToken`,
     });
@@ -141,7 +141,7 @@ export async function getAndDeletePasswordResetToken(token: string): Promise<{
   const result = await deleteDBPasswordResetToken(token);
   if (!result.success) {
     logError({
-      request: headers(),
+      request: await headers(),
       error: `Failed to delete password reset token ${token}`,
       location: `auth utilities getAndDeletePasswordResetToken`,
     });
