@@ -10,6 +10,8 @@ RUN cd /temp && npm install
 
 # Prepare the final image, copy necessary files
 FROM base AS release
+# The npm bundled with node:22-alpine ships vulnerable pacote/sigstore/ip-address
+RUN npm install -g npm@11.21.2 && npm cache clean --force
 COPY --from=install /temp/node_modules ./node_modules
 COPY . .
 

@@ -94,6 +94,7 @@
     "tsx": "^4.7.0"
   },
   "overrides": {
-    "postcss": "$postcss"
+    "postcss": "$postcss",
+    "esbuild": "^0.28.2"
   }
 }
